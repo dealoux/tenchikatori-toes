@@ -12,15 +12,14 @@ export enum EnemyStaste{
 export class Enemy extends Entity{
     speed: number;
 
-    constructor(scene: Phaser.Scene, {x, y, texture, frame}: IEntity){
-        super(scene, {x, y, texture, frame});
+    constructor(scene: Phaser.Scene, {pos, texture, frame}: IEntity){
+        super(scene, {pos, texture, frame});
         this.getBody().setCollideWorldBounds(true);
         this.hp = 100;
         this.speed = SPEED_NORMAL;     
     }
 
     static preload(scene: Phaser.Scene) {
-        scene.load.image('enna', 'assets/touhouenna.png');
 	}
     
     getDamage(value?: number): void {

@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/geocine/phaser3-rollup-typescript.git"
+    "url": "git+https://github.com/ennacord/touhou-ToES.git"
   },
   "author": "Ennacord",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/geocine/phaser3-rollup-typescript/issues"
+    "url": "https://github.com/ennacord/touhou-ToES/issues"
   },
-  "homepage": "https://github.com/geocine/phaser3-rollup-typescript#readme",
+  "homepage": "https://github.com/ennacord/touhou-ToES#readme",
   "dependencies": {
     "phaser": "^3.55.2"
   },

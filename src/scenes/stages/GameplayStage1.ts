@@ -34,6 +34,13 @@ export default class GameplayStage1 extends GameplayScene {
 			...DEFAULT_DIALOG_LINE_CREATE_OPTS,
 			text: chant,
 		});
+
+		// let x = 100
+
+		// for(let i = 0; i<16; i++){
+		// 	this.add.image(x, 400, 'cards', i);
+		// 	x+=20;
+		// }
 	}
 
 	update() {

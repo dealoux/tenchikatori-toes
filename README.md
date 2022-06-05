@@ -1,6 +1,6 @@
 # Touhou Tenchikatori ~ Testament of Empyrean Songbird
 Touhou bullet hell fan game, Enna Alouette themed, a product of [EnnaCord](https://discord.gg/enna).
-  Engine: [Phaser 3](https://newdocs.phaser.io/docs/3.55.2). Languague: [TypeScript](https://www.typescriptlang.org/docs/)
+  Engine: [Phaser 3](https://newdocs.phaser.io/docs/3.55.2). Language: [TypeScript](https://www.typescriptlang.org/docs/)
 
 ## Available Commands
 

@@ -23,7 +23,7 @@ export default class GameplayScene extends Scene {
 			this.dialog?.update(this, { dialogUpdate: DialogUpdateAction.PROGRESS });
 		});
 
-		this.player = new Player(this, { x: WINDOW_WIDTH/2, y: WINDOW_HEIGHT/2, texture:'enna' });
+		this.player = new Player(this, { pos: new Phaser.Math.Vector2(WINDOW_WIDTH/2, WINDOW_HEIGHT/2), texture: 'enna' } );
 	}
 
 	update() {

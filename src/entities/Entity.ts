@@ -1,10 +1,14 @@
 import Phaser from 'phaser';
 
 export interface IEntity{
-    x: number;
-    y: number;
+    pos: Phaser.Math.Vector2;
     texture: string;
     frame?: string | number;
+}
+
+export interface IEntHitbox{
+    width: number;
+    height: number;
 }
 
 export enum EntityState{
@@ -14,14 +18,21 @@ export enum EntityState{
 
 export class Entity extends Phaser.Physics.Arcade.Sprite{
     state: EntityState;
-    protected hp: number;
+    hp: number;
+    hitbox: IEntHitbox;
+    bulletPoints: Map<string, Phaser.Math.Vector2>;
 
-    constructor(scene: Phaser.Scene, {x, y, texture, frame}: IEntity){
-        super(scene, x, y, texture, frame);
+    constructor(scene: Phaser.Scene, { pos, texture, frame }: IEntity){
+        super(scene, pos.x, pos.y, texture, frame);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         
         this.hp = 0;
         this.state = EntityState.ALIVE;
+        this.hitbox = {
+            width: this.scaleX,
+            height: this.scaleY
+        }
+        this.bulletPoints = new Map;
     }
 }
