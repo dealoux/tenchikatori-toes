@@ -1,5 +1,5 @@
 # Touhou Tenchikatori ~ Testament of Empyrean Songbird
-Touhou bullet hell fan game, Enna Alouette themed, a product of [EnnaCord](https://discord.gg/enna).
+Touhou bullet hell fan game, [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed, a product of [EnnaCord](https://discord.gg/enna).
   Engine: [Phaser 3](https://newdocs.phaser.io/docs/3.55.2). Language: [TypeScript](https://www.typescriptlang.org/docs/)
 
 ## Available Commands
@@ -14,8 +14,8 @@ Touhou bullet hell fan game, Enna Alouette themed, a product of [EnnaCord](https
 ## Development
 
 After cloning the repo, run `npm install` from your project directory. Then, you can start the local development
-server by running `npm run dev` and navigate to http://localhost:3000.
+server by running `npm run dev` and navigate to localhost.
 
 ## Production
 
-After running `npm run build`, the files you need for production will be on the `dist` folder. To test code on your `dist` folder, run `npm run serve` and navigate to http://localhost:5000
+After running `npm run build`, the files you need for production will be on the `dist` folder. To test code on your `dist` folder, run `npm run serve` and navigate to localhost
