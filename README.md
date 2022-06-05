@@ -1,5 +1,5 @@
 # Touhou Tenchikatori ~ Testament of Empyrean Songbird
-Touhou bullet hell fan game, [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed, a product of [EnnaCord](https://discord.gg/enna).
+[Touhou](https://en.wikipedia.org/wiki/Touhou_Project) style bullet hell fan game, [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed, a product of [EnnaCord](https://discord.gg/enna).
   Engine: [Phaser 3](https://newdocs.phaser.io/docs/3.55.2). Language: [TypeScript](https://www.typescriptlang.org/docs/)
 
 ## Available Commands
