@@ -1,9 +1,9 @@
-import Phaser, { Physics, Math } from 'phaser';
+import Phaser, { Physics } from 'phaser';
 import {Entity, IEntity, IEntHitbox} from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
-import { Projectile, ProjectileGroup, ProjectileManager } from '../objects/Projectile';
+import { PPoint, Projectile, ProjectileGroup, ProjectileManager } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
-import { PlayersProjectileType, ShootPoints, PPoint, PlayersShot1, PlayersShot2 } from '../objects/Projectile_Player';
+import { ShootPoints, PlayersProjectileType, shootPointsNormal, shootPointsFocused, PlayersShot1, PlayersShot2 } from '../objects/Projectile_Player';
 import { Vector } from 'matter';
 
 const SPEED_NORMAL = 250;
@@ -23,7 +23,7 @@ export class Player extends Entity{
     speed: number;
     grazeHitbox: IEntHitbox;
     projectileManager : ProjectileManager;
-    shootPoints : ShootPoints;
+    currShootPoints : ShootPoints;
 
     lastShotTime: number;
     specials: number;
@@ -37,12 +37,7 @@ export class Player extends Entity{
         this.hitbox = { width: 10, height: 10 }
         this.grazeHitbox = { width: this.scaleX, height: this.scaleY };
 
-        this.shootPoints = {
-            point_1: { pos: new Math.Vector2(15, -10), theta: 0 },
-            point_2: { pos: new Math.Vector2(-15, -10), theta: 0 },
-            point_3: { pos: new Math.Vector2(35, 0), theta: 35},
-            point_4: { pos: new Math.Vector2(-35, 0), theta: 35},
-        }
+        this.currShootPoints = shootPointsNormal;
 
         this.lastShotTime = 0;
         this.specials = 3;
@@ -95,9 +90,11 @@ export class Player extends Entity{
         // focus mode
         if(inputs.focus){
             this.speed = SPEED_FOCUSED;
+            this.currShootPoints = shootPointsFocused;
         }
         else{
             this.speed = SPEED_NORMAL;
+            this.currShootPoints = shootPointsNormal;
         }
 
         // directional movements
@@ -134,14 +131,14 @@ export class Player extends Entity{
     }
 
     private getPShort(name: string, point: PPoint){
-        this.projectileManager.getP(name, { pos: new Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
+        this.projectileManager.getP(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
     }
 
     shoot(){
-        this.getPShort(PlayersProjectileType.shot_1, this.shootPoints.point_1);
-        this.getPShort(PlayersProjectileType.shot_1, this.shootPoints.point_2);
-        this.getPShort(PlayersProjectileType.shot_2, this.shootPoints.point_3);
-        this.getPShort(PlayersProjectileType.shot_2, this.shootPoints.point_4);
+        this.getPShort(PlayersProjectileType.shot_1, this.currShootPoints.point_1);
+        this.getPShort(PlayersProjectileType.shot_1, this.currShootPoints.point_2);
+        this.getPShort(PlayersProjectileType.shot_2, this.currShootPoints.point_3);
+        this.getPShort(PlayersProjectileType.shot_2, this.currShootPoints.point_4);
         this.lastShotTime = this.time() + SHOT_DELAY;
     }
 

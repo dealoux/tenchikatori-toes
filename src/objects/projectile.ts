@@ -1,7 +1,11 @@
 import Phaser from 'phaser';
 import { IEntity, Entity } from '../entities/Entity';
 import { Player } from '../entities/Player';
-import { PPoint } from './Projectile_Player';
+
+export interface PPoint{
+    pos: Phaser.Math.Vector2;
+    theta: number;
+}
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite{
     offset: Phaser.Math.Vector2;
@@ -29,7 +33,8 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite{
 
     update(point: PPoint){
         this.body.reset(point.pos.x + this.offset.x, point.pos.y + this.offset.y);
-        this.setRotation(point.theta);
+        this.setAngle(point.theta - 90);
+        //this.setRotation(point.theta - Math.PI/2);
         this.setStatus(true);
     }
 }
