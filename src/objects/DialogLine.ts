@@ -2,7 +2,6 @@ import { WINDOW_HEIGHT, WINDOW_WIDTH } from "../constants";
 import Phaser from 'phaser';
 
 const VERY_LONG_TIME = 1000 * 30; // 30 mins
-//const VERY_LONG_TIME = 1000 * 60 * 30; // 30 mins
 const VERY_FAR_AWAY = WINDOW_HEIGHT * 5;
 
 export interface DialogLineCreateOpts {

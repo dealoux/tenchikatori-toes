@@ -1,8 +1,10 @@
-import Phaser, { Physics } from 'phaser';
+import Phaser, { Physics, Math } from 'phaser';
 import {Entity, IEntity, IEntHitbox} from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
-import { ProjectileGroup, ProjectileManager } from '../objects/Projectile';
+import { Projectile, ProjectileGroup, ProjectileManager } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
+import { PlayersProjectileType, ShootPoints, PPoint, PlayersShot1, PlayersShot2 } from '../objects/Projectile_Player';
+import { Vector } from 'matter';
 
 const SPEED_NORMAL = 250;
 const SPEED_FOCUSED = SPEED_NORMAL*.5;
@@ -13,12 +15,6 @@ export enum PlayerState{
     FOCUSED,
 }
 
-export enum PlayersProjectileType{
-    shot_1 = 'card1',
-    shot_2 = 'card2',
-    special = 'moon',
-}
-
 export enum PlayerEvents{
     special = 'special',
 }
@@ -27,6 +23,7 @@ export class Player extends Entity{
     speed: number;
     grazeHitbox: IEntHitbox;
     projectileManager : ProjectileManager;
+    shootPoints : ShootPoints;
 
     lastShotTime: number;
     specials: number;
@@ -40,12 +37,20 @@ export class Player extends Entity{
         this.hitbox = { width: 10, height: 10 }
         this.grazeHitbox = { width: this.scaleX, height: this.scaleY };
 
+        this.shootPoints = {
+            point_1: { pos: new Math.Vector2(15, -10), theta: 0 },
+            point_2: { pos: new Math.Vector2(-15, -10), theta: 0 },
+            point_3: { pos: new Math.Vector2(35, 0), theta: 35},
+            point_4: { pos: new Math.Vector2(-35, 0), theta: 35},
+        }
+
         this.lastShotTime = 0;
         this.specials = 3;
         this.castingSpecial = false;
-        this.projectileManager = new ProjectileManager(scene);
-        this.projectileManager.pList.set(PlayersProjectileType.shot_1, new ProjectileGroup(scene, PlayersProjectileType.shot_1, 30));
-        this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
+        this.projectileManager = new ProjectileManager(scene, Player);
+        this.projectileManager.addPGroup(PlayersProjectileType.shot_1, PlayersShot1, 30);
+        this.projectileManager.addPGroup(PlayersProjectileType.shot_2, PlayersShot2, 30);
+        //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
     }
 
     static preload(scene: Phaser.Scene) {
@@ -128,23 +133,26 @@ export class Player extends Entity{
         return this.scene.game.getTime();
     }
 
-    shoot(){
-        const shot = this.projectileManager.pList.get(PlayersProjectileType.shot_1);
+    private getPShort(name: string, point: PPoint){
+        this.projectileManager.getP(name, { pos: new Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
+    }
 
-        if(shot){
-            shot.getProjectile(this.getBody().x, this.getBody().y);
-            this.lastShotTime = this.time() + SHOT_DELAY;
-        }
+    shoot(){
+        this.getPShort(PlayersProjectileType.shot_1, this.shootPoints.point_1);
+        this.getPShort(PlayersProjectileType.shot_1, this.shootPoints.point_2);
+        this.getPShort(PlayersProjectileType.shot_2, this.shootPoints.point_3);
+        this.getPShort(PlayersProjectileType.shot_2, this.shootPoints.point_4);
+        this.lastShotTime = this.time() + SHOT_DELAY;
     }
 
     special(){
-        const shot = this.projectileManager.pList.get(PlayersProjectileType.special);
+        // const shot = this.projectileManager.pList.get(PlayersProjectileType.special);
 
-        if(shot){
-            this.castingSpecial = true;
-            eventsCenter.emit(PlayerEvents.special);
-            shot.getProjectile(this.getBody().x, this.getBody().y);
-            this.specials--; 
-        }
+        // if(shot){
+        //     this.castingSpecial = true;
+        //     eventsCenter.emit(PlayerEvents.special);
+        //     shot.getProjectile(this.getBody().x, this.getBody().y);
+        //     this.specials--; 
+        // }
     }
 }
