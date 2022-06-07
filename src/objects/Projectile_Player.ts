@@ -40,8 +40,8 @@ export const SHOOTPOINTS_NORMAL : ShootPoints = {
     // point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: Phaser.Math.DegToRad(55) },
     point_1: { pos: new Phaser.Math.Vector2(-20, -10), theta: 90 },
     point_2: { pos: new Phaser.Math.Vector2(20, -10), theta: 90 },
-    point_3: { pos: new Phaser.Math.Vector2(35, 0), theta: 155 },
-    point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: 25 },
+    point_3: { pos: new Phaser.Math.Vector2(35, 0), theta: 125 },
+    point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: 55 },
 }
 
 export const SHOOTPOINTS_FOCUSED : ShootPoints = {
