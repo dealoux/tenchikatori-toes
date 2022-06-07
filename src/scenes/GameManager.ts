@@ -14,7 +14,7 @@ export default class GameManager extends Scene {
 	}
 
 	preload() {
-		
+		this.load.image('empty', 'assets/sprites/empty.png');
 	}
 
 	create() {

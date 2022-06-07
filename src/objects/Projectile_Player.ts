@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { IEntity } from '../entities/Entity';
 import { Player } from '../entities/Player';
-import { Projectile, PPoint } from './Projectile';
+import { Projectile, PPoint, ProjectileData } from './Projectile';
 
 export interface ShootPoints{
     point_1: PPoint,
@@ -10,55 +10,68 @@ export interface ShootPoints{
     point_4: PPoint,
 }
 
-export enum PlayersProjectileType{
-    shot_1 = 'card1',
-    shot_2 = 'card2',
-    special = 'moon',
+export const Data_PlayerShot1 : ProjectileData = {
+    key: 'card1',
+    velocity: -18,
+    hitRadius: 6,
+    offset: new Phaser.Math.Vector2(0, 6),
 }
 
-export enum PlayersProjectileVelocity{
-    shot_1 = -800,
-    shot_2 = -700,
-    special = -400,
+export const Data_PlayerShot2 : ProjectileData = {
+    key: 'card2',
+    velocity: -15,
+    hitRadius: 6,
+    offset: new Phaser.Math.Vector2(0, 6),
 }
 
-export const shootPointsNormal : ShootPoints = {
+export const Data_PlayerSpecial : ProjectileData = {
+    key: 'moon',
+    velocity: -1500,
+    hitRadius: 6,
+    offset: new Phaser.Math.Vector2(0, 0),
+}
+
+export const SHOT_DELAY = 50;
+
+export const SHOOTPOINTS_NORMAL : ShootPoints = {
     // point_1: { pos: new Phaser.Math.Vector2(20, -10), theta: Phaser.Math.DegToRad(90) },
     // point_2: { pos: new Phaser.Math.Vector2(-20, -10), theta: Phaser.Math.DegToRad(90) },
     // point_3: { pos: new Phaser.Math.Vector2(35, 0), theta: Phaser.Math.DegToRad(125) },
     // point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: Phaser.Math.DegToRad(55) },
-    point_1: { pos: new Phaser.Math.Vector2(20, -10), theta: 90 },
-    point_2: { pos: new Phaser.Math.Vector2(-20, -10), theta: 90 },
-    point_3: { pos: new Phaser.Math.Vector2(35, 0), theta: 125 },
-    point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: 55 },
+    point_1: { pos: new Phaser.Math.Vector2(-20, -10), theta: 90 },
+    point_2: { pos: new Phaser.Math.Vector2(20, -10), theta: 90 },
+    point_3: { pos: new Phaser.Math.Vector2(35, 0), theta: 155 },
+    point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: 25 },
 }
 
-export const shootPointsFocused : ShootPoints = {
-    point_1: { pos: new Phaser.Math.Vector2(12, -10), theta: 90 },
-    point_2: { pos: new Phaser.Math.Vector2(-12, -10), theta: 90 },
+export const SHOOTPOINTS_FOCUSED : ShootPoints = {
+    point_1: { pos: new Phaser.Math.Vector2(-12, -10), theta: 90 },
+    point_2: { pos: new Phaser.Math.Vector2(12, -10), theta: 90 },
     point_3: { pos: new Phaser.Math.Vector2(20, -5), theta: 105 },
     point_4: { pos: new Phaser.Math.Vector2(-20, -5), theta: 75 },
 }
 
-export class PlayersShot1 extends Projectile{
+export class PlayerShot1 extends Projectile{
     constructor(scene: Phaser.Scene, pos: Phaser.Math.Vector2){
-        super(scene, { pos, texture: PlayersProjectileType.shot_1 }, new Phaser.Math.Vector2(32, 0));
+        super(scene, { pos, texture: Data_PlayerShot1.key }, Data_PlayerShot1);
+        this.body.setCircle(Data_PlayerShot1.hitRadius);
     }
 
     update(point: PPoint) {
         super.update(point);
-        this.scene.physics.velocityFromAngle(point.theta, PlayersProjectileVelocity.shot_1, this.body.velocity);
-        //this.scene.physics.velocityFromRotation(point.theta, PlayersProjectileVelocity.shot_1, this.body.velocity);
+        this.scene.physics.velocityFromAngle(point.theta, Data_PlayerShot1.velocity, this.body.velocity);
+        //this.scene.physics.velocityFromRotation(point.theta, PlayerShot1Data.velocity, this.body.velocity);
     }
 }
 
-export class PlayersShot2 extends Projectile{
+export class PlayerShot2 extends Projectile{
     constructor(scene: Phaser.Scene, pos: Phaser.Math.Vector2){
-        super(scene, { pos, texture: PlayersProjectileType.shot_2 }, new Phaser.Math.Vector2(32, 0));
+        super(scene, { pos, texture: Data_PlayerShot2.key }, Data_PlayerShot2);
+        this.body.setCircle(Data_PlayerShot2.hitRadius);
     }
 
     update(point: PPoint) {
         super.update(point);
-        this.scene.physics.velocityFromAngle(point.theta, PlayersProjectileVelocity.shot_2, this.body.velocity);
+        this.scene.physics.velocityFromAngle(point.theta, Data_PlayerShot2.velocity, this.body.velocity);
     }
 }

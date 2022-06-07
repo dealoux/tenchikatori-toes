@@ -3,12 +3,15 @@ import {Entity, IEntity, IEntHitbox} from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
 import { PPoint, Projectile, ProjectileGroup, ProjectileManager } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
-import { ShootPoints, PlayersProjectileType, shootPointsNormal, shootPointsFocused, PlayersShot1, PlayersShot2 } from '../objects/Projectile_Player';
+import { ShootPoints, Data_PlayerShot1, Data_PlayerShot2, Data_PlayerSpecial, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
 import { Vector } from 'matter';
+
+interface functionDelegate{
+    () : void;
+}
 
 const SPEED_NORMAL = 250;
 const SPEED_FOCUSED = SPEED_NORMAL*.5;
-const SHOT_DELAY = 300;
 
 export enum PlayerState{
     NORMAL,
@@ -19,11 +22,20 @@ export enum PlayerEvents{
     special = 'special',
 }
 
+const GRAZE_HITBOX = 40;
+const HITBOX = 6;
+
 export class Player extends Entity{
     speed: number;
-    grazeHitbox: IEntHitbox;
+    hitbox: Phaser.Physics.Arcade.Sprite;
+    hitboxOffset: Phaser.Math.Vector2;
+
     projectileManager : ProjectileManager;
     currShootPoints : ShootPoints;
+    shots : Function[];
+    shotCounts : number;
+
+    actionDelegate : functionDelegate;
 
     lastShotTime: number;
     specials: number;
@@ -31,28 +43,47 @@ export class Player extends Entity{
 
     constructor(scene: Phaser.Scene, { pos , texture, frame }: IEntity){
         super(scene, { pos, texture, frame });
-        this.getBody().setCollideWorldBounds(true);
         this.hp = 100;
         this.speed = SPEED_NORMAL;
-        this.hitbox = { width: 10, height: 10 }
-        this.grazeHitbox = { width: this.scaleX, height: this.scaleY };
 
-        this.currShootPoints = shootPointsNormal;
+        // /this.setDisplaySize(59, 55);
+        
+        // graze hitbox
+        this.body
+            .setCircle(GRAZE_HITBOX)
+            .setOffset(-10, -10);
+        this.getGrazeHitbox().setCollideWorldBounds(true);
+        // hitbox
+        this.hitboxOffset = new Phaser.Math.Vector2(GRAZE_HITBOX + HITBOX/2, GRAZE_HITBOX + HITBOX/2);
+        this.hitbox = this.scene.physics.add.sprite(this.body.x + this.hitboxOffset.x, this.body.y + this.hitboxOffset.y, 'empty').setCircle(HITBOX);
+
+        this.actionDelegate = this.shoot;
+        
+        this.currShootPoints = SHOOTPOINTS_NORMAL;
 
         this.lastShotTime = 0;
         this.specials = 3;
         this.castingSpecial = false;
         this.projectileManager = new ProjectileManager(scene, Player);
-        this.projectileManager.addPGroup(PlayersProjectileType.shot_1, PlayersShot1, 30);
-        this.projectileManager.addPGroup(PlayersProjectileType.shot_2, PlayersShot2, 30);
+        this.projectileManager.addPGroup(Data_PlayerShot1.key, PlayerShot1, 40);
+        this.projectileManager.addPGroup(Data_PlayerShot2.key, PlayerShot2, 40);
         //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
+
+        this.shots = [
+            function(player: Player) { player.getPShort(Data_PlayerShot1.key, player.currShootPoints.point_1); },
+            function(player: Player) { player.getPShort(Data_PlayerShot1.key, player.currShootPoints.point_2); },
+            function(player: Player) { player.getPShort(Data_PlayerShot2.key, player.currShootPoints.point_3); },
+            function(player: Player) { player.getPShort(Data_PlayerShot2.key, player.currShootPoints.point_4); },
+        ]
+
+        this.shotCounts = 4;
     }
 
     static preload(scene: Phaser.Scene) {
         scene.load.image('enna', 'assets/sprites/touhouenna.png');
-        scene.load.image(PlayersProjectileType.shot_1, 'assets/sprites/touhou_test/card1.png');
-        scene.load.image(PlayersProjectileType.shot_2, 'assets/sprites/touhou_test/card3.png');
-        scene.load.spritesheet(PlayersProjectileType.special, 'assets/sprites/touhou_test/moon.png', { frameWidth: 32, frameHeight: 16 });
+        scene.load.image(Data_PlayerShot1.key, 'assets/sprites/touhou_test/card1.png');
+        scene.load.image(Data_PlayerShot2.key, 'assets/sprites/touhou_test/card3.png');
+        scene.load.spritesheet(Data_PlayerSpecial.key, 'assets/sprites/touhou_test/moon.png', { frameWidth: 32, frameHeight: 16 });
 
         // scene.load.spritesheet(
         //     'cards', 
@@ -80,35 +111,39 @@ export class Player extends Entity{
     }
 
     update(){
-        this.getBody().setVelocity(0);
+        // positions
+        this.getGrazeHitbox().setVelocity(0);
+        this.hitbox.setPosition(this.body.position.x + this.hitboxOffset.x, this.body.position.y + this.hitboxOffset.y);
+        //this.getHitbox().setVelocity(this.body.velocity.x, this.body.velocity.y);
+
         this.inputHandling();
     }
 
     private inputHandling(){
         const {inputs} = InputHandler.Instance();
 
+        // directional movements
+        if (inputs.up) {
+            this.moveVertically(-this.speed);
+        }
+        if (inputs.down) {
+            this.moveVertically(this.speed)
+        }
+        if (inputs.left) {
+            this.moveHorizontally(-this.speed);
+        }
+        if (inputs.right) {
+            this.moveHorizontally(this.speed);
+        }
+
         // focus mode
         if(inputs.focus){
             this.speed = SPEED_FOCUSED;
-            this.currShootPoints = shootPointsFocused;
+            this.currShootPoints = SHOOTPOINTS_FOCUSED;
         }
         else{
             this.speed = SPEED_NORMAL;
-            this.currShootPoints = shootPointsNormal;
-        }
-
-        // directional movements
-        if (inputs.up) {
-            this.body.velocity.y = -this.speed;
-        }
-        if (inputs.down) {
-            this.body.velocity.y = this.speed;
-        }
-        if (inputs.left) {
-            this.body.velocity.x = -this.speed;
-        }
-        if (inputs.right) {
-            this.body.velocity.x = this.speed;
+            this.currShootPoints = SHOOTPOINTS_NORMAL;
         }
 
         // actions
@@ -122,7 +157,22 @@ export class Player extends Entity{
         }
     }
 
-    private getBody(): Physics.Arcade.Body{
+    private moveVertically(y: number){
+        this.getGrazeHitbox().setVelocityY(y);
+        //this.getHitbox().setVelocity(this.body.velocity.x, this.body.velocity.y);
+    }
+
+    private moveHorizontally(y: number){
+        this.getGrazeHitbox().setVelocityX(y);
+        //this.getHitbox().setVelocity(this.body.velocity.x, this.body.velocity.y);
+    }
+
+    private getHitbox(){
+        return this.hitbox.body as Physics.Arcade.Body;
+        
+    }
+
+    private getGrazeHitbox(){
         return this.body as Physics.Arcade.Body
     }
 
@@ -131,18 +181,23 @@ export class Player extends Entity{
     }
 
     private getPShort(name: string, point: PPoint){
-        this.projectileManager.getP(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
+        this.projectileManager.getP(name, { pos: new Phaser.Math.Vector2(this.body.position.x + GRAZE_HITBOX + point.pos.x, this.body.position.y - GRAZE_HITBOX/2 + point.pos.y), theta: point.theta });
     }
 
-    shoot(){
-        this.getPShort(PlayersProjectileType.shot_1, this.currShootPoints.point_1);
-        this.getPShort(PlayersProjectileType.shot_1, this.currShootPoints.point_2);
-        this.getPShort(PlayersProjectileType.shot_2, this.currShootPoints.point_3);
-        this.getPShort(PlayersProjectileType.shot_2, this.currShootPoints.point_4);
+    private shoot(){
+        // this.getPShort(PlayersProjectileType.shot_1, this.currShootPoints.point_1);
+        // this.getPShort(PlayersProjectileType.shot_1, this.currShootPoints.point_2);
+        // this.getPShort(PlayersProjectileType.shot_2, this.currShootPoints.point_3);
+        // this.getPShort(PlayersProjectileType.shot_2, this.currShootPoints.point_4);
+
+        for(let i = 0; i<this.shotCounts; i++){
+            this.shots[i](this);
+        }
+
         this.lastShotTime = this.time() + SHOT_DELAY;
     }
 
-    special(){
+    private special(){
         // const shot = this.projectileManager.pList.get(PlayersProjectileType.special);
 
         // if(shot){

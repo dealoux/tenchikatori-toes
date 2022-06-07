@@ -19,7 +19,6 @@ export enum EntityState{
 export class Entity extends Phaser.Physics.Arcade.Sprite{
     state: EntityState;
     hp: number;
-    hitbox: IEntHitbox;
     bulletPoints: Map<string, Phaser.Math.Vector2>;
 
     constructor(scene: Phaser.Scene, { pos, texture, frame }: IEntity){
@@ -29,10 +28,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         
         this.hp = 0;
         this.state = EntityState.ALIVE;
-        this.hitbox = {
-            width: this.scaleX,
-            height: this.scaleY
-        }
         this.bulletPoints = new Map;
     }
 }

@@ -7,14 +7,24 @@ export interface PPoint{
     theta: number;
 }
 
-export class Projectile extends Phaser.Physics.Arcade.Sprite{
-    offset: Phaser.Math.Vector2;
+export interface ProjectileData{
+    key: string,
+    velocity: number,
+    hitRadius: number,
+    offset: Phaser.Math.Vector2,
+}
 
-    constructor(scene: Phaser.Scene, { pos = new Phaser.Math.Vector2(0, 0), texture, frame }: IEntity, offset: Phaser.Math.Vector2){
+export class Projectile extends Phaser.Physics.Arcade.Sprite{
+    constructor(scene: Phaser.Scene, { pos = new Phaser.Math.Vector2(0, 0), texture, frame }: IEntity, data: ProjectileData){
         super(scene, pos.x, pos.y, texture , frame);
-        this.offset = offset;
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
         this.active = false;
         this.visible = false;
+        
+        this.body
+            .setCircle(data.hitRadius)
+            .setOffset(data.offset.x, data.offset.y)
     }
 
     setStatus(status: boolean | false){
@@ -32,7 +42,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite{
     }
 
     update(point: PPoint){
-        this.body.reset(point.pos.x + this.offset.x, point.pos.y + this.offset.y);
+        this.body.reset(point.pos.x, point.pos.y);
         this.setAngle(point.theta - 90);
         //this.setRotation(point.theta - Math.PI/2);
         this.setStatus(true);
