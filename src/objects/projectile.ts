@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { IEntity, Entity } from '../entities/Entity';
+import { IEntity, collisionGroups, Entity } from '../entities/Entity';
 import { Player } from '../entities/Player';
 
 export interface PPoint{
@@ -8,24 +8,27 @@ export interface PPoint{
 }
 
 export interface ProjectileData{
-    key: string,
-    velocity: number,
-    hitRadius: number,
-    offset: Phaser.Math.Vector2,
+    entData: IEntity,
+    speed: number,
 }
 
-export class Projectile extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene: Phaser.Scene, { pos = new Phaser.Math.Vector2(0, 0), texture, frame }: IEntity, data: ProjectileData){
-        super(scene, pos.x, pos.y, texture , frame);
+export class Projectile extends Phaser.Physics.Matter.Sprite{
+    constructor(scene: Phaser.Scene, data: ProjectileData){
+        super(scene.matter.world, data.entData.pos.x, data.entData.pos.y, data.entData.texture , data.entData.frame, {
+            isSensor: true,
+            friction: 0,
+            frictionAir: 0,
+            circleRadius: data.entData.hitRadius,
+            collisionFilter: { group: data.entData.collisionGroup }
+        });
         scene.add.existing(this);
-        scene.physics.add.existing(this);
         this.active = false;
         this.visible = false;
-        
-        this.body
-            .setCircle(data.hitRadius)
-            .setOffset(data.offset.x, data.offset.y)
     }
+
+    // create(){
+    //     this.on
+    // }
 
     setStatus(status: boolean | false){
         this.setActive(status);
@@ -42,16 +45,15 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite{
     }
 
     update(point: PPoint){
-        this.body.reset(point.pos.x, point.pos.y);
-        this.setAngle(point.theta - 90);
-        //this.setRotation(point.theta - Math.PI/2);
+        this.setPosition(point.pos.x, point.pos.y);
+        this.setRotation(point.theta);
         this.setStatus(true);
     }
 }
 
-export class ProjectileGroup extends Phaser.Physics.Arcade.Group{
+export class ProjectileGroup extends Phaser.GameObjects.Group{
     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
-        super(scene.physics.world, scene);
+        super(scene);
 
         this.createMultiple({
             key: name,
@@ -69,14 +71,20 @@ export class ProjectileGroup extends Phaser.Physics.Arcade.Group{
             projectile.update(point);
         }
     }
+
+    // update(){
+    //     for(let projectile in this){
+    //         projectile.update();
+    //     }
+    // }
 }
 
-export class ProjectileManager extends Phaser.Physics.Arcade.Factory{
+export class ProjectileManager extends Phaser.Physics.Matter.Factory{
     pList : Map<string, ProjectileGroup>;
     owner: Function;
 
     constructor(scene: Phaser.Scene, owner: Function){
-        super(scene.physics.world);
+        super(scene.matter.world);
 
         this.pList = new Map;
         this.owner = owner;
@@ -94,4 +102,10 @@ export class ProjectileManager extends Phaser.Physics.Arcade.Factory{
         if(!this.pList.has(name))
             this.pList.set(name, new ProjectileGroup(this.scene, name, type, quantity));
     }
+
+    // update(){
+    //     for(let [key, value] of this.pList){
+    //         value.update();
+    //     }
+    // }
 }

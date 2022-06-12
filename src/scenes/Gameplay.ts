@@ -3,9 +3,9 @@ import { Dialog, DialogUpdateAction } from '../objects/Dialog';
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
 import { Player } from '../entities/Player';
-import { IEntity } from '../entities/Entity';
+import { IEntity, collisionGroups } from '../entities/Entity';
 
-export default class GameplayScene extends Scene {
+export class GameplayScene extends Scene {
 	dialog?: IDialog;
 	player?: Player;
 

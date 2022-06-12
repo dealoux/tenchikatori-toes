@@ -1,9 +1,5 @@
-# Touhou Tenchikatori ~ Testament of Empyrean Songbird
-[Touhou](https://en.wikipedia.org/wiki/Touhou_Project) style bullet hell fan game, [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed.
-
-Engine: [Phaser 3](https://newdocs.phaser.io/docs/3.55.2), important link(s): [examples](https://phaser.io/examples/v3).
-
-A product of [EnnaCord](https://discord.gg/enna).
+# Tenchikatori ~ Testament of Empyrean Songbird
+A danmaku fangame, [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed.
 
 ## Available Commands
 
@@ -22,3 +18,11 @@ server by running `npm run dev` and navigate to localhost.
 ## Production
 
 After running `npm run build`, the files you need for production will be on the `dist` folder. To test code on your `dist` folder, run `npm run serve` and navigate to localhost
+
+## Important Links
+
+- Game Engine: [Phaser 3](https://newdocs.phaser.io/docs/) 
+- Physics Engine: [Matter.js](https://brm.io/matter-js/), 
+- Examples: [Phaser 3 examples](http://labs.phaser.io/index.html).
+
+A product of [EnnaCord](https://discord.gg/enna).

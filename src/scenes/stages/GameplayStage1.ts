@@ -1,5 +1,5 @@
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../../objects/DialogLine';
-import GameplayScene from '../Gameplay';
+import { GameplayScene } from '../Gameplay';
 
 //#region Dialogues
 const chant = [

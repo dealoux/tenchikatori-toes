@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { IEntity } from '../entities/Entity';
+import { collisionGroups } from '../entities/Entity';
 import { Player } from '../entities/Player';
 import { Projectile, PPoint, ProjectileData } from './Projectile';
 
@@ -10,68 +10,79 @@ export interface ShootPoints{
     point_4: PPoint,
 }
 
+export const SHOT_DELAY = 50;
+
 export const Data_PlayerShot1 : ProjectileData = {
-    key: 'card1',
-    velocity: -18,
-    hitRadius: 6,
-    offset: new Phaser.Math.Vector2(0, 6),
+    entData: {
+        pos: new Phaser.Math.Vector2(0, 0),
+        texture: 'card1',
+        offset: new Phaser.Math.Vector2(0, 0),
+        collisionGroup: collisionGroups.PLAYER,
+    },
+    speed: 24,
 }
 
 export const Data_PlayerShot2 : ProjectileData = {
-    key: 'card2',
-    velocity: -15,
-    hitRadius: 6,
-    offset: new Phaser.Math.Vector2(0, 6),
+    entData: {
+        pos: new Phaser.Math.Vector2(0, 0),
+        texture: 'card2',
+        offset: new Phaser.Math.Vector2(0, 0),
+        collisionGroup: collisionGroups.PLAYER,
+    },
+    speed: 22,
 }
 
 export const Data_PlayerSpecial : ProjectileData = {
-    key: 'moon',
-    velocity: -1500,
-    hitRadius: 6,
-    offset: new Phaser.Math.Vector2(0, 0),
+    entData: {
+        pos: new Phaser.Math.Vector2(0, 0),
+        texture: 'moon',
+        offset: new Phaser.Math.Vector2(0, 0),
+        collisionGroup: collisionGroups.PLAYER,
+    },
+    speed: 15,
 }
 
-export const SHOT_DELAY = 50;
-
 export const SHOOTPOINTS_NORMAL : ShootPoints = {
-    // point_1: { pos: new Phaser.Math.Vector2(20, -10), theta: Phaser.Math.DegToRad(90) },
-    // point_2: { pos: new Phaser.Math.Vector2(-20, -10), theta: Phaser.Math.DegToRad(90) },
-    // point_3: { pos: new Phaser.Math.Vector2(35, 0), theta: Phaser.Math.DegToRad(125) },
-    // point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: Phaser.Math.DegToRad(55) },
-    point_1: { pos: new Phaser.Math.Vector2(-20, -10), theta: 90 },
-    point_2: { pos: new Phaser.Math.Vector2(20, -10), theta: 90 },
-    point_3: { pos: new Phaser.Math.Vector2(35, 0), theta: 125 },
-    point_4: { pos: new Phaser.Math.Vector2(-35, 0), theta: 55 },
+    point_1: { pos: new Phaser.Math.Vector2(-20, -60), theta: Phaser.Math.DegToRad(0) },
+    point_2: { pos: new Phaser.Math.Vector2(20, -60), theta: Phaser.Math.DegToRad(0) },
+    point_3: { pos: new Phaser.Math.Vector2(60, -40), theta: Phaser.Math.DegToRad(35) },
+    point_4: { pos: new Phaser.Math.Vector2(-60, -40), theta: Phaser.Math.DegToRad(-35) },
 }
 
 export const SHOOTPOINTS_FOCUSED : ShootPoints = {
-    point_1: { pos: new Phaser.Math.Vector2(-12, -10), theta: 90 },
-    point_2: { pos: new Phaser.Math.Vector2(12, -10), theta: 90 },
-    point_3: { pos: new Phaser.Math.Vector2(20, -5), theta: 105 },
-    point_4: { pos: new Phaser.Math.Vector2(-20, -5), theta: 75 },
+    point_1: { pos: new Phaser.Math.Vector2(-12, -60), theta: Phaser.Math.DegToRad(0) },
+    point_2: { pos: new Phaser.Math.Vector2(12, -60), theta: Phaser.Math.DegToRad(0) },
+    point_3: { pos: new Phaser.Math.Vector2(36, -50), theta: Phaser.Math.DegToRad(15) },
+    point_4: { pos: new Phaser.Math.Vector2(-36, -50), theta: Phaser.Math.DegToRad(-15) },
 }
 
 export class PlayerShot1 extends Projectile{
     constructor(scene: Phaser.Scene, pos: Phaser.Math.Vector2){
-        super(scene, { pos, texture: Data_PlayerShot1.key }, Data_PlayerShot1);
-        this.body.setCircle(Data_PlayerShot1.hitRadius);
+        super(scene, Data_PlayerShot1);
+        //this.body.setCircle(Data_PlayerShot1.hitRadius);
     }
 
     update(point: PPoint) {
         super.update(point);
-        this.scene.physics.velocityFromAngle(point.theta, Data_PlayerShot1.velocity, this.body.velocity);
+        
+        let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(Data_PlayerShot1.speed);
+        this.setVelocity(velocity.x, velocity.y);
+
+        //this.y += Data_PlayerShot1.velocity;
         //this.scene.physics.velocityFromRotation(point.theta, PlayerShot1Data.velocity, this.body.velocity);
     }
 }
 
 export class PlayerShot2 extends Projectile{
     constructor(scene: Phaser.Scene, pos: Phaser.Math.Vector2){
-        super(scene, { pos, texture: Data_PlayerShot2.key }, Data_PlayerShot2);
-        this.body.setCircle(Data_PlayerShot2.hitRadius);
+        super(scene, Data_PlayerShot2);
+        //this.body.setCircle(Data_PlayerShot2.hitRadius);
     }
 
     update(point: PPoint) {
         super.update(point);
-        this.scene.physics.velocityFromAngle(point.theta, Data_PlayerShot2.velocity, this.body.velocity);
+
+        let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(Data_PlayerShot2.speed);
+        this.setVelocity(velocity.x, velocity.y);
     }
 }

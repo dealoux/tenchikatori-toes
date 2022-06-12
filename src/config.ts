@@ -15,9 +15,11 @@ export const DefaultConfig = {
   },
 
   physics: {
-    default: 'arcade',
-    arcade: {
+    default: 'matter',
+    matter: {
       debug: true,
+      gravity: { x: 0, y: 0 },
+      setBounds: { left: true, right: true, top: true, bottom: true, }
     },
   },
 
