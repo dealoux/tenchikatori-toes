@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { collisionGroups } from '../entities/Entity';
+import { collisionGroups, collisionCategories } from '../entities/Entity';
 import { Player } from '../entities/Player';
 import { Projectile, PPoint, ProjectileData } from './Projectile';
 
@@ -62,8 +62,8 @@ export class PlayerShot1 extends Projectile{
         //this.body.setCircle(Data_PlayerShot1.hitRadius);
     }
 
-    update(point: PPoint) {
-        super.update(point);
+    updateTransform(point: PPoint) {
+        super.updateTransform(point);
         
         let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(Data_PlayerShot1.speed);
         this.setVelocity(velocity.x, velocity.y);
@@ -79,8 +79,8 @@ export class PlayerShot2 extends Projectile{
         //this.body.setCircle(Data_PlayerShot2.hitRadius);
     }
 
-    update(point: PPoint) {
-        super.update(point);
+    updateTransform(point: PPoint) {
+        super.updateTransform(point);
 
         let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(Data_PlayerShot2.speed);
         this.setVelocity(velocity.x, velocity.y);

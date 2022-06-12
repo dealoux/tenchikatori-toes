@@ -1,9 +1,10 @@
 import Phaser, { Physics } from 'phaser';
-import {Entity, IEntity, collisionGroups } from './Entity';
+import {IEntity, collisionGroups } from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
 import { PPoint, Projectile, ProjectileGroup, ProjectileManager } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
 import { ShootPoints, Data_PlayerShot1, Data_PlayerShot2, Data_PlayerSpecial, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
+import { Character } from './Character';
 
 interface functionDelegate{
     () : void;
@@ -24,7 +25,7 @@ export enum PlayerEvents{
 const HITBOX = 6;
 const GRAZE_HITBOX = 40;
 
-export class Player extends Entity{
+export class Player extends Character{
     speed: number;
     graze: MatterJS.BodyType; // graze hitbox
 
@@ -109,7 +110,12 @@ export class Player extends Entity{
         });
     }
 
+    create(){
+        super.create();
+    }
+
     update(){
+        //super.update();
         this.inputHandling();
     }
 
@@ -173,8 +179,6 @@ export class Player extends Entity{
         }
 
         this.lastShotTime = this.time() + SHOT_DELAY;
-
-        console.log(InputHandler.Instance().inputs);
     }
 
     private special(){

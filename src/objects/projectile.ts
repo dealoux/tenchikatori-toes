@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { IEntity, collisionGroups, Entity } from '../entities/Entity';
+import { IEntity, collisionGroups, collisionCategories, Entity } from '../entities/Entity';
 
 export interface PPoint{
     pos: Phaser.Math.Vector2;
@@ -11,26 +11,18 @@ export interface ProjectileData{
     speed: number,
 }
 
-export class Projectile extends Phaser.Physics.Matter.Sprite{
+export class Projectile extends Entity{
     constructor(scene: Phaser.Scene, data: ProjectileData){
-        super(scene.matter.world, data.entData.pos.x, data.entData.pos.y, data.entData.texture , data.entData.frame, {
-            label: 'hitbox',
-            isSensor: true,
-            friction: 0,
-            frictionAir: 0,
-            circleRadius: data.entData.hitRadius,
-            collisionFilter: { group: data.entData.collisionGroup }
-        });
-        scene.add.existing(this);
-        this.active = false;
-        this.visible = false;
+        super(scene, { pos: data.entData.pos, texture: data.entData.texture, collisionGroup: data.entData.collisionGroup, hitRadius: data.entData.hitRadius, frame: data.entData.frame, offset: data.entData.offset });
+
+        this.setCollidesWith([collisionCategories.blue, collisionCategories.red]);
     }
 
     // create(){
     //     this.on
     // }
 
-    setStatus(status: boolean | false){
+    protected setStatus(status: boolean | false){
         this.setActive(status);
         this.setVisible(status);
     }
@@ -44,7 +36,7 @@ export class Projectile extends Phaser.Physics.Matter.Sprite{
         }
     }
 
-    update(point: PPoint){
+    updateTransform(point: PPoint){
         this.setPosition(point.pos.x, point.pos.y);
         this.setRotation(point.theta);
         this.setStatus(true);
@@ -68,15 +60,9 @@ export class ProjectileGroup extends Phaser.GameObjects.Group{
         const projectile = this.getFirstDead(false);
 
         if(projectile){
-            projectile.update(point);
+            projectile.updateTransform(point);
         }
     }
-
-    // update(){
-    //     for(let projectile in this){
-    //         projectile.update();
-    //     }
-    // }
 }
 
 export class ProjectileManager extends Phaser.Physics.Matter.Factory{
@@ -102,10 +88,4 @@ export class ProjectileManager extends Phaser.Physics.Matter.Factory{
         if(!this.pList.has(name))
             this.pList.set(name, new ProjectileGroup(this.scene, name, type, quantity));
     }
-
-    // update(){
-    //     for(let [key, value] of this.pList){
-    //         value.update();
-    //     }
-    // }
 }
