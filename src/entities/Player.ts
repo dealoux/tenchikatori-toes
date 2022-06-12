@@ -26,7 +26,7 @@ const GRAZE_HITBOX = 40;
 
 export class Player extends Entity{
     speed: number;
-    //graze: Phaser.Physics.Arcade.Sprite; // graze hitbox
+    graze: MatterJS.BodyType; // graze hitbox
 
     projectileManager : ProjectileManager;
     currShootPoints : ShootPoints;
@@ -44,12 +44,21 @@ export class Player extends Entity{
         this.hp = 100;
         this.speed = SPEED_NORMAL;
 
-        
-        //this.graze = this.scene.physics.add.sprite(this.body.x + this.hitboxOffset.x, this.body.y + this.hitboxOffset.y, 'empty').setCircle(HITBOX);
-
         this.actionDelegate = this.shoot;
         
         this.currShootPoints = SHOOTPOINTS_NORMAL;
+
+        this.graze = scene.matter.add.circle(pos.x, pos.y, GRAZE_HITBOX,{
+            label: 'graze',
+            isStatic: true,
+            isSensor: true,
+            friction: 0,
+            frictionAir: 0,
+            collisionFilter: { group: collisionGroups.OTHER }
+        });
+
+        this.getBody().parts.splice(0, 0, this.graze);
+        //console.log(this.getBody().parts);
 
         this.lastShotTime = 0;
         this.specials = 3;
@@ -101,11 +110,6 @@ export class Player extends Entity{
     }
 
     update(){
-        // positions
-        //this.setVelocity(0, 0);
-        //this.hitbox.setPosition(this.body.position.x + this.hitboxOffset.x, this.body.position.y + this.hitboxOffset.y);
-        //this.getHitbox().setVelocity(this.body.velocity.x, this.body.velocity.y);
-
         this.inputHandling();
     }
 
@@ -155,10 +159,6 @@ export class Player extends Entity{
         this.x += x;
     }
 
-    // private getHitbox(){
-    //     return this.hitbox.body as MatterJS.BodyType;
-    // }
-
     private time(){
         return this.scene.game.getTime();
     }
@@ -173,6 +173,8 @@ export class Player extends Entity{
         }
 
         this.lastShotTime = this.time() + SHOT_DELAY;
+
+        console.log(InputHandler.Instance().inputs);
     }
 
     private special(){

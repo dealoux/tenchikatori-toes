@@ -4,6 +4,7 @@ import Phaser from 'phaser';
 export enum collisionGroups{
 	PLAYER = -1,
 	ENEMY = -2,
+    OTHER = -3,
 }
 
 export enum collisionCategories{
@@ -32,6 +33,7 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
 
     constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity){
         super(scene.matter.world, pos.x, pos.y, texture, frame,{
+            label: 'hitbox',
             isStatic: true,
             isSensor: true,
             friction: 0,
@@ -41,7 +43,6 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
         });
 
         scene.add.existing(this);
-        //scene.matter.body.setInertia(this.getBody(), Infinity);
 
         this.hp = 0;
         this.state = EntityState.ALIVE;
@@ -53,7 +54,7 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
     }
 
     protected preUpdate(time: number, delta: number){
-        //this.setAngularVelocity(0);
+       
     }
 
     update() {

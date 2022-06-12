@@ -24,6 +24,9 @@ export class GameplayScene extends Scene {
 		});
 
 		this.player = new Player(this, { pos: new Phaser.Math.Vector2(WINDOW_WIDTH/2, WINDOW_HEIGHT/2), texture: 'enna' } );
+
+		this.game.events.on(Phaser.Core.Events.BLUR, () => this.scene.pause(this.scene.key));
+		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.scene.resume(this.scene.key));
 	}
 
 	update() {

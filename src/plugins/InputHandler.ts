@@ -49,7 +49,7 @@ export class InputHandler{
         this.keys.set(InputStrings.Pause, [keyboard.addKey(KeyCodes.ESC)]);
     }
 
-    getInput(inputKey: string) : boolean{
+    private getInput(inputKey: string) : boolean{
         let result = false;
         let keysRow = this.keys.get(inputKey);
 
@@ -63,6 +63,19 @@ export class InputHandler{
         }
 
         return result;
+    }
+
+    reset(){
+        this.inputs = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            shot: false,
+            special: false,
+            focus: false,
+            pause: false,
+        }
     }
 
     update (scene: Phaser.Scene) {

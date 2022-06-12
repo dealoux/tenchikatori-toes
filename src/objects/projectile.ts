@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { IEntity, collisionGroups, Entity } from '../entities/Entity';
-import { Player } from '../entities/Player';
 
 export interface PPoint{
     pos: Phaser.Math.Vector2;
@@ -15,6 +14,7 @@ export interface ProjectileData{
 export class Projectile extends Phaser.Physics.Matter.Sprite{
     constructor(scene: Phaser.Scene, data: ProjectileData){
         super(scene.matter.world, data.entData.pos.x, data.entData.pos.y, data.entData.texture , data.entData.frame, {
+            label: 'hitbox',
             isSensor: true,
             friction: 0,
             frictionAir: 0,
