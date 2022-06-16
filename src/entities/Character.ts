@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { IEntity, Entity } from './Entity';
 
-import { PPoint, Projectile } from '../objects/Projectile';
+import { PPoint } from '../objects/Projectile';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
 import { ShootPoints } from '../objects/Projectile_Player';
@@ -59,7 +59,7 @@ export class Character extends Entity{
         return this.scene.game.getTime();
     }
 
-    protected getPShort(name: string, point: PPoint){
-        this.projectileManager?.getP(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
+    protected spawnProjectile(name: string, point: PPoint){
+        this.projectileManager?.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
     }
 }

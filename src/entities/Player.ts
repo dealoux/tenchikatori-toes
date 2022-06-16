@@ -63,10 +63,10 @@ export class Player extends Character{
         //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
 
         this.shots = [
-            function(player: Player) { player.getPShort(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_1); },
-            function(player: Player) { player.getPShort(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_2); },
-            function(player: Player) { player.getPShort(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_3); },
-            function(player: Player) { player.getPShort(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_4); },
+            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_1); },
+            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_2); },
+            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_3); },
+            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_4); },
         ]
 
         this.shotCounts = 4;

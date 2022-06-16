@@ -1,9 +1,6 @@
 import Phaser from 'phaser';
-import {IEntity, collisionGroups } from '../entities/Entity';
-import { PPoint, Projectile, ProjectileData } from '../objects/Projectile';
-import eventsCenter from '../plugins/EventsCentre';
-import { SHOTPOOL_ENEMY, EnemyShotBlue, EnemyShotRed, Data_ShotBlue as DATA_SHOTBLUE, Data_ShotRed as DATA_SHOTRED } from '../objects/Projectile_Enemy';
-import { Character, Characters } from '../entities/Character';
+import { IEntity } from '../entities/Entity';
+import { PPoint } from '../objects/Projectile';
 
 export class PoolGroup extends Phaser.GameObjects.Group{
     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
@@ -38,16 +35,16 @@ export class PoolManager extends Phaser.Physics.Matter.Factory{
         this.owner = owner;
     }
 
-    getP(name:string, point : PPoint){
+    addPGroup(name: string, type: Function, quantity: number = 1){
+        if(!this.pList.has(name))
+            this.pList.set(name, new PoolGroup(this.scene, name, type, quantity));
+    }
+
+    spawnInstance(name:string, point : PPoint){
         const group = this.pList.get(name);
 
         if(group){
             group.getInstance(point);
         }
-    }
-
-    addPGroup(name: string, type: Function, quantity: number = 1){
-        if(!this.pList.has(name))
-            this.pList.set(name, new PoolGroup(this.scene, name, type, quantity));
     }
 }
