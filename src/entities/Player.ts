@@ -1,10 +1,11 @@
-import Phaser, { Physics } from 'phaser';
+import Phaser from 'phaser';
 import {IEntity, collisionGroups } from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
-import { PPoint, Projectile, ProjectileGroup, ProjectileManager } from '../objects/Projectile';
+import { PPoint, Projectile } from '../objects/Projectile';
+import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
-import { ShootPoints, Data_PlayerShot1, Data_PlayerShot2, Data_PlayerSpecial, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
-import { Character } from './Character';
+import { ShootPoints, DATA_PLAYERSHOT1, DATA_PLAYERSHOT2, DATA_PLAYERSPECIAL, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, SHOTPOOL_PLAYER, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
+import { Character, Characters } from './Character';
 
 interface functionDelegate{
     () : void;
@@ -26,64 +27,56 @@ const HITBOX = 6;
 const GRAZE_HITBOX = 40;
 
 export class Player extends Character{
-    speed: number;
-    graze: MatterJS.BodyType; // graze hitbox
+    actionDelegate : functionDelegate;
 
-    projectileManager : ProjectileManager;
+    graze: MatterJS.BodyType; // graze hitbox
     currShootPoints : ShootPoints;
     shots : Function[];
     shotCounts : number;
-
-    actionDelegate : functionDelegate;
-
+    
     lastShotTime: number;
     specials: number;
     castingSpecial: boolean;
 
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
-        super(scene, { pos, texture, collisionGroup: collisionGroups.PLAYER, hitRadius: HITBOX, frame, offset });
-        this.hp = 100;
-        this.speed = SPEED_NORMAL;
-
+        super(scene, { pos, texture, collisionGroup: collisionGroups.PLAYER, hitRadius: HITBOX, frame, offset }, 3, SPEED_NORMAL, new PoolManager(scene, Player));
+        
         this.actionDelegate = this.shoot;
         
-        this.currShootPoints = SHOOTPOINTS_NORMAL;
-
         this.graze = scene.matter.add.circle(pos.x, pos.y, GRAZE_HITBOX,{
             label: 'graze',
             isStatic: true,
             isSensor: true,
             friction: 0,
             frictionAir: 0,
-            collisionFilter: { group: collisionGroups.OTHER }
+            collisionFilter: { group: collisionGroups.PLAYER }
         });
-
         this.getBody().parts.splice(0, 0, this.graze);
         //console.log(this.getBody().parts);
 
+        this.currShootPoints = SHOOTPOINTS_NORMAL;
         this.lastShotTime = 0;
         this.specials = 3;
         this.castingSpecial = false;
-        this.projectileManager = new ProjectileManager(scene, Player);
-        this.projectileManager.addPGroup(Data_PlayerShot1.entData.texture, PlayerShot1, 40);
-        this.projectileManager.addPGroup(Data_PlayerShot2.entData.texture, PlayerShot2, 40);
+        this.projectileManager?.addPGroup(DATA_PLAYERSHOT1.entData.texture, PlayerShot1, SHOTPOOL_PLAYER);
+        this.projectileManager?.addPGroup(DATA_PLAYERSHOT2.entData.texture, PlayerShot2, SHOTPOOL_PLAYER);
         //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
 
         this.shots = [
-            function(player: Player) { player.getPShort(Data_PlayerShot1.entData.texture, player.currShootPoints.point_1); },
-            function(player: Player) { player.getPShort(Data_PlayerShot1.entData.texture, player.currShootPoints.point_2); },
-            function(player: Player) { player.getPShort(Data_PlayerShot2.entData.texture, player.currShootPoints.point_3); },
-            function(player: Player) { player.getPShort(Data_PlayerShot2.entData.texture, player.currShootPoints.point_4); },
+            function(player: Player) { player.getPShort(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_1); },
+            function(player: Player) { player.getPShort(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_2); },
+            function(player: Player) { player.getPShort(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_3); },
+            function(player: Player) { player.getPShort(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_4); },
         ]
 
         this.shotCounts = 4;
     }
 
     static preload(scene: Phaser.Scene) {
-        scene.load.image('enna', 'assets/sprites/touhouenna.png');
-        scene.load.image(Data_PlayerShot1.entData.texture, 'assets/sprites/touhou_test/card1.png');
-        scene.load.image(Data_PlayerShot2.entData.texture, 'assets/sprites/touhou_test/card3.png');
-        scene.load.spritesheet(Data_PlayerSpecial.entData.texture, 'assets/sprites/touhou_test/moon.png', { frameWidth: 32, frameHeight: 16 });
+        scene.load.image(Characters.PLAYER, 'assets/sprites/touhouenna.png');
+        scene.load.image(DATA_PLAYERSHOT1.entData.texture, 'assets/sprites/touhou_test/card1.png');
+        scene.load.image(DATA_PLAYERSHOT2.entData.texture, 'assets/sprites/touhou_test/card3.png');
+        scene.load.spritesheet(DATA_PLAYERSPECIAL.entData.texture, 'assets/sprites/touhou_test/moon.png', { frameWidth: 32, frameHeight: 16 });
 
         // scene.load.spritesheet(
         //     'cards', 
@@ -155,22 +148,6 @@ export class Player extends Character{
                 this.special();
             }
         }
-    }
-
-    private moveVertically(y: number){
-        this.y += y;
-    }
-
-    private moveHorizontally(x: number){
-        this.x += x;
-    }
-
-    private time(){
-        return this.scene.game.getTime();
-    }
-
-    private getPShort(name: string, point: PPoint){
-        this.projectileManager.getP(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
     }
 
     private shoot(){

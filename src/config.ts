@@ -2,9 +2,9 @@ import Phaser from 'phaser';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from './constants';
 
 export const DefaultConfig = {
-  title: "Touhou Tenchikatori ~ Testament of Empyrean Songbird",
+  title: "Tenchikatori ~ Testament of Empyrean Songbird",
   type: Phaser.AUTO,
-  parent: 'Touhou-ToES',
+  parent: 'Tenchikatori-ToES',
   //backgroundColor: '#33A5E7',
 
   scale: {
@@ -18,8 +18,8 @@ export const DefaultConfig = {
     default: 'matter',
     matter: {
       debug: true,
+      setBounds: true,
       gravity: { x: 0, y: 0 },
-      setBounds: { left: true, right: true, top: true, bottom: true, }
     },
   },
 

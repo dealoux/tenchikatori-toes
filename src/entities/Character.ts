@@ -1,22 +1,34 @@
 import Phaser from 'phaser';
 import { IEntity, Entity } from './Entity';
 
+import { PPoint, Projectile } from '../objects/Projectile';
+import { PoolManager } from '../@types/Pool';
+import eventsCenter from '../plugins/EventsCentre';
+import { ShootPoints } from '../objects/Projectile_Player';
+
 export enum CharacterState{
     ALIVE,
     DEAD
 }
 
+export enum Characters{
+    PLAYER = 'enna',
+    YOUSEIS = 'youseis'
+}
+
 export class Character extends Entity{
     state: CharacterState;
     hp: number;
-    bulletPoints: Map<string, Phaser.Math.Vector2>;
+    speed: number;
+    projectileManager?: PoolManager;
 
-    constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity){
-        super(scene, { pos, texture, collisionGroup, hitRadius, frame });
+    constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
+        super(scene, { pos, texture, collisionGroup, hitRadius, frame }, true);
 
-        this.hp = 0;
+        this.hp = hp;
+        this.speed = speed;
         this.state = CharacterState.ALIVE;
-        this.bulletPoints = new Map;
+        this.projectileManager = projectileManager
     }
 
     // protected preUpdate(time: number, delta: number){
@@ -34,4 +46,20 @@ export class Character extends Entity{
     // protected handleCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData){
     //     super.handleCollision(data);
     // }
+
+    protected moveVertically(y: number){
+        this.y += y;
+    }
+
+    protected moveHorizontally(x: number){
+        this.x += x;
+    }
+
+    protected time(){
+        return this.scene.game.getTime();
+    }
+
+    protected getPShort(name: string, point: PPoint){
+        this.projectileManager?.getP(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
+    }
 }

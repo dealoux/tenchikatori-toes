@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ennacord/Tenchikatori-ToES.git"
+    "url": "git+https://github.com/ennacord/tenchikatori-toes.git"
   },
   "author": "Ennacord",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ennacord/Tenchikatori-ToES/issues"
+    "url": "https://github.com/ennacord/tenchikatori-toes/issues"
   },
-  "homepage": "https://github.com/ennacord/Tenchikatori-ToES#readme",
+  "homepage": "https://github.com/ennacord/tenchikatori-toes#readme",
   "dependencies": {
     "phaser": "^3.55.2"
   },

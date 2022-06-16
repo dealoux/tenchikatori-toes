@@ -7,8 +7,8 @@ export enum collisionGroups{
 }
 
 export enum collisionCategories{
-	red = 1,
-	blue = 2,
+	red = 2,
+	blue = 4,
 }
 
 export interface IEntity{
@@ -21,9 +21,9 @@ export interface IEntity{
 }
 
 export class Entity extends Phaser.Physics.Matter.Sprite{
-    constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity){
+    constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity, active?: boolean | false){
         super(scene.matter.world, pos.x, pos.y, texture, frame,{
-            label: 'hitbox',
+            label: texture,
             //isStatic: true,
             isSensor: true,
             friction: 0,
@@ -32,11 +32,15 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
             collisionFilter: { group: collisionGroup }
         });
 
-        scene.add.existing(this);
-    }
+        this.scene.add.existing(this);
 
-    protected getBody(){
-        return this.body as MatterJS.BodyType
+        // only active entities are updated
+        if(!active){
+            this.removeInteractive();
+            this.world.remove(this.getBody());
+        }
+
+        this.create();
     }
 
     protected preUpdate(time: number, delta: number){
@@ -51,7 +55,26 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
         
     }
 
+
+    getBody(){
+        return this.body as MatterJS.BodyType
+    }
+
     protected handleCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData){
         console.dir(data);
+    }
+
+    protected setStatus(status: boolean | false){
+        this.setActive(status);
+        this.setVisible(status);
+
+        if(status == true){
+            this.world.add(this.getBody());
+        }
+            
+        else{
+            this.removeInteractive();
+            this.world.remove(this.getBody());
+        }
     }
 }

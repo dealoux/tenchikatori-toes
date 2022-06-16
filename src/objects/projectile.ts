@@ -18,13 +18,17 @@ export class Projectile extends Entity{
         this.setCollidesWith([collisionCategories.blue, collisionCategories.red]);
     }
 
-    // create(){
-    //     this.on
-    // }
+    create(){
+        super.create();
+    }
 
-    protected setStatus(status: boolean | false){
-        this.setActive(status);
-        this.setVisible(status);
+    protected handleCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData){
+        //super.handleCollision(data);
+
+        const {bodyA, bodyB} = data;
+        switch(bodyB.gameObject){
+
+        }
     }
 
     preUpdate(time: number, delta: number): void {
@@ -40,52 +44,5 @@ export class Projectile extends Entity{
         this.setPosition(point.pos.x, point.pos.y);
         this.setRotation(point.theta);
         this.setStatus(true);
-    }
-}
-
-export class ProjectileGroup extends Phaser.GameObjects.Group{
-    constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
-        super(scene);
-
-        this.createMultiple({
-            key: name,
-            classType: type,
-            frameQuantity: quantity,
-            active: false,
-            visible: false,
-        });
-    }
-
-    getProjectile(point : PPoint){
-        const projectile = this.getFirstDead(false);
-
-        if(projectile){
-            projectile.updateTransform(point);
-        }
-    }
-}
-
-export class ProjectileManager extends Phaser.Physics.Matter.Factory{
-    pList : Map<string, ProjectileGroup>;
-    owner: Function;
-
-    constructor(scene: Phaser.Scene, owner: Function){
-        super(scene.matter.world);
-
-        this.pList = new Map;
-        this.owner = owner;
-    }
-
-    getP(name:string, point : PPoint){
-        const group = this.pList.get(name);
-
-        if(group){
-            group.getProjectile(point);
-        }
-    }
-
-    addPGroup(name: string, type: Function, quantity: number = 1){
-        if(!this.pList.has(name))
-            this.pList.set(name, new ProjectileGroup(this.scene, name, type, quantity));
     }
 }
