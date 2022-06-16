@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
-import {IEntity, collisionGroups } from './Entity';
+import {IEntity, VPoint, collisionGroups } from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
-import { PPoint, Projectile } from '../objects/Projectile';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
 import { ShootPoints, DATA_PLAYERSHOT1, DATA_PLAYERSHOT2, DATA_PLAYERSPECIAL, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, SHOTPOOL_PLAYER, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';

@@ -1,10 +1,5 @@
 import Phaser from 'phaser';
-import { IEntity, collisionGroups, collisionCategories, Entity } from '../entities/Entity';
-
-export interface PPoint{
-    pos: Phaser.Math.Vector2;
-    theta: number;
-}
+import { IEntity, collisionGroups, VPoint, collisionCategories, Entity } from '../entities/Entity';
 
 export interface ProjectileData{
     entData: IEntity,
@@ -40,9 +35,7 @@ export class Projectile extends Entity{
         }
     }
 
-    updateTransform(point: PPoint){
-        this.setPosition(point.pos.x, point.pos.y);
-        this.setRotation(point.theta);
-        this.setStatus(true);
-    }
+    // updateTransform(point: VPoint){
+    //     super.updateTransform(point);
+    // }
 }

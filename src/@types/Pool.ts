@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
-import { IEntity } from '../entities/Entity';
-import { PPoint } from '../objects/Projectile';
+import { IEntity, VPoint } from '../entities/Entity';
 
 export class PoolGroup extends Phaser.GameObjects.Group{
     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
@@ -15,7 +14,7 @@ export class PoolGroup extends Phaser.GameObjects.Group{
         });
     }
 
-    getInstance(point : PPoint){
+    getInstance(point : VPoint){
         const projectile = this.getFirstDead(false);
 
         if(projectile){
@@ -40,7 +39,7 @@ export class PoolManager extends Phaser.Physics.Matter.Factory{
             this.pList.set(name, new PoolGroup(this.scene, name, type, quantity));
     }
 
-    spawnInstance(name:string, point : PPoint){
+    spawnInstance(name:string, point : VPoint){
         const group = this.pList.get(name);
 
         if(group){

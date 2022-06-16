@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { collisionGroups, collisionCategories } from '../entities/Entity';
 import { Player } from '../entities/Player';
-import { Projectile, PPoint, ProjectileData } from './Projectile';
+import { Projectile, ProjectileData } from './Projectile';
+import { VPoint } from '../entities/Entity';
 
 export const Data_ShotBlue : ProjectileData = {
     entData: {
@@ -30,7 +31,7 @@ class EnemyProjectile extends Projectile{
         super(scene, data);
     }
 
-    protected move(point: PPoint, speed: number){
+    protected move(point: VPoint, speed: number){
         let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(speed);
         this.setVelocity(velocity.x, velocity.y);
 
@@ -44,7 +45,7 @@ export class EnemyShotBlue extends EnemyProjectile{
         super(scene, Data_ShotRed);
     }
 
-    updateTransform(point: PPoint) {
+    updateTransform(point: VPoint) {
         super.updateTransform(point);
         this.move(point, Data_ShotRed.speed);
     }
@@ -55,7 +56,7 @@ export class EnemyShotRed extends EnemyProjectile{
         super(scene, Data_ShotBlue);
     }
 
-    updateTransform(point: PPoint) {
+    updateTransform(point: VPoint) {
         super.updateTransform(point);
         this.move(point, Data_ShotBlue.speed);
     }

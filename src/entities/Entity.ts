@@ -1,5 +1,10 @@
 import Phaser from 'phaser';
 
+export interface VPoint{
+    pos: Phaser.Math.Vector2;
+    theta: number;
+}
+
 export enum collisionGroups{
 	PLAYER = -1,
 	ENEMY = -2,
@@ -55,6 +60,11 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
         
     }
 
+    updateTransform(point: VPoint){
+        this.setPosition(point.pos.x, point.pos.y);
+        this.setRotation(point.theta);
+        this.setStatus(true);
+    }
 
     getBody(){
         return this.body as MatterJS.BodyType

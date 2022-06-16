@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import { collisionGroups, collisionCategories } from '../entities/Entity';
 import { Player } from '../entities/Player';
-import { Projectile, PPoint, ProjectileData } from './Projectile';
+import { Projectile, ProjectileData } from './Projectile';
+import { VPoint } from '../entities/Entity';
 
 export interface ShootPoints{
-    point_1: PPoint,
-    point_2: PPoint,
-    point_3: PPoint,
-    point_4: PPoint,
+    point_1: VPoint,
+    point_2: VPoint,
+    point_3: VPoint,
+    point_4: VPoint,
 }
 
 export const SHOT_DELAY = 50;
@@ -62,7 +63,7 @@ class PlayerPorjectile extends Projectile{
         super(scene, data);
     }
 
-    protected move(point: PPoint, speed: number){
+    protected move(point: VPoint, speed: number){
         let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(speed);
         this.setVelocity(velocity.x, velocity.y);
 
@@ -76,7 +77,7 @@ export class PlayerShot1 extends PlayerPorjectile{
         super(scene, DATA_PLAYERSHOT1);
     }
 
-    updateTransform(point: PPoint) {
+    updateTransform(point: VPoint) {
         super.updateTransform(point);
         this.move(point, DATA_PLAYERSHOT1.speed);
     }
@@ -87,7 +88,7 @@ export class PlayerShot2 extends PlayerPorjectile{
         super(scene, DATA_PLAYERSHOT2);
     }
 
-    updateTransform(point: PPoint) {
+    updateTransform(point: VPoint) {
         super.updateTransform(point);
         this.move(point, DATA_PLAYERSHOT2.speed);
     }
