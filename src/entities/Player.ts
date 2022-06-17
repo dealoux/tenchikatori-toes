@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
-import {IEntity, VPoint, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
+import {IEntity, IVectorPoint, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
-import { ShootPoints, DATA_PLAYERSHOT1, DATA_PLAYERSHOT2, DATA_PLAYERSPECIAL, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, SHOTPOOL_PLAYER, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
+import { IShootPoints, DATA_PLAYERSHOT1, DATA_PLAYERSHOT2, DATA_PLAYERSPECIAL, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, SHOTPOOL_PLAYER, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
 import { Character, Characters } from './Character';
 
 interface functionDelegate{
@@ -29,7 +29,7 @@ export class Player extends Character{
     actionDelegate : functionDelegate;
 
     graze: MatterJS.BodyType; // graze hitbox
-    currShootPoints : ShootPoints;
+    currShootPoints : IShootPoints;
     shots : Function[];
     shotCounts : number;
     

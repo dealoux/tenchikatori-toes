@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { PoolManager } from '../@types/Pool';
 import { Enemy } from './Enemy';
-import { IEntity, VPoint } from './Entity';
+import { IEntity, IVectorPoint } from './Entity';
 import { Characters } from './Character';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy' 
 
@@ -13,7 +13,7 @@ export enum Yousei1Anims{
 const TEST_SHOT_DELAY = 500;
 
 export class Yousei1 extends Enemy{
-    shootPoint: VPoint;
+    shootPoint: IVectorPoint;
 
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
         super(scene, { pos, texture, frame, offset }, 1, 3, new PoolManager(scene, Yousei1));
@@ -34,7 +34,7 @@ export class Yousei1 extends Enemy{
     update() {
         super.update();
 
-        this.anims.play('yousei1_idle');
+        this.anims.play(Yousei1Anims.idle);
 
         if(this.time() > this.lastShotTime){
             this.shoot();

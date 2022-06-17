@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-export interface VPoint{
+export interface IVectorPoint{
     pos: Phaser.Math.Vector2;
     theta: number;
 }
@@ -60,7 +60,7 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
         
     }
 
-    updateTransform(point: VPoint){
+    updateTransform(point: IVectorPoint){
         this.setPosition(point.pos.x, point.pos.y);
         this.setRotation(point.theta);
         this.setStatus(true);

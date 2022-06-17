@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
-import { IEntity, COLLISION_GROUPS, VPoint, COLLISION_CATEGORIES, Entity } from '../entities/Entity';
+import { IEntity, COLLISION_GROUPS, IVectorPoint, COLLISION_CATEGORIES, Entity } from '../entities/Entity';
 
-export interface ProjectileData{
+export interface IProjectileData{
     entData: IEntity,
     speed: number,
 }
 
 export class Projectile extends Entity{
-    constructor(scene: Phaser.Scene, data: ProjectileData){
+    constructor(scene: Phaser.Scene, data: IProjectileData){
         super(scene, { pos: data.entData.pos, texture: data.entData.texture, collisionGroup: data.entData.collisionGroup, hitRadius: data.entData.hitRadius, frame: data.entData.frame, offset: data.entData.offset });
 
         //this.setCollidesWith([collisionCategories.blue, collisionCategories.red]);

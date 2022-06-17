@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import {IEntity, VPoint, COLLISION_GROUPS } from './Entity';
+import {IEntity, IVectorPoint, COLLISION_GROUPS } from './Entity';
 import { PoolGroup, PoolManager } from '../@types/Pool';
-import { Projectile, ProjectileData } from '../objects/Projectile';
+import { Projectile, IProjectileData } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
 import { SHOTPOOL_ENEMY, EnemyShotBlue, EnemyShotRed, DATA_SHOTBLUE as DATA_SHOTBLUE, DATA_SHOTRED as DATA_SHOTRED } from '../objects/Projectile_Enemy';
 import { Character, Characters } from './Character';
@@ -81,7 +81,7 @@ export class EnemyGroup extends Phaser.GameObjects.Group{
         });
     }
 
-    getProjectile(point : VPoint){
+    getProjectile(point : IVectorPoint){
         const projectile = this.getFirstDead(false);
 
         if(projectile){
@@ -101,7 +101,7 @@ export class EnemyManager extends Phaser.Physics.Matter.Factory{
         this.owner = owner;
     }
 
-    getP(name:string, point : VPoint){
+    getP(name:string, point : IVectorPoint){
         const group = this.pList.get(name);
 
         if(group){

@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
-import { IEntity, Entity, VPoint, COLLISION_CATEGORIES } from './Entity';
+import { IEntity, Entity, IVectorPoint, COLLISION_CATEGORIES } from './Entity';
 
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
-import { ShootPoints } from '../objects/Projectile_Player';
+import { IShootPoints } from '../objects/Projectile_Player';
 
 export enum CharacterState{
     ALIVE,
@@ -61,7 +61,7 @@ export class Character extends Entity{
         return this.scene.game.getTime();
     }
 
-    protected spawnProjectile(name: string, point: VPoint){
+    protected spawnProjectile(name: string, point: IVectorPoint){
         this.projectileManager?.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
     }
 

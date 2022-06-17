@@ -1,15 +1,3 @@
-export enum INPUTSTRINGS{
-    Up = 'Up',
-    Down = 'Down',
-    Left = 'Left',
-    Right = 'Right',
-    Shot = 'Shot', // interact
-    Special = 'Special', // cancel
-    Switch = 'Switch',
-    Focus = 'Focus',
-    Pause = 'Pause' // escape
-}
-
 export interface IInputPoll{
     Up: boolean,
 	Down: boolean,
@@ -22,6 +10,19 @@ export interface IInputPoll{
     Pause: boolean,
     [key: string]: boolean,
 }
+
+export enum INPUTSTRINGS{
+    Up = 'Up',
+    Down = 'Down',
+    Left = 'Left',
+    Right = 'Right',
+    Shot = 'Shot', // interact
+    Special = 'Special', // cancel
+    Switch = 'Switch',
+    Focus = 'Focus',
+    Pause = 'Pause' // escape
+}
+
 
 export class InputHandler{
     private static instance: InputHandler;
