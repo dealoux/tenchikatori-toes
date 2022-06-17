@@ -71,8 +71,8 @@ export class InputHandler{
     private inputEvents(){
         for(let [inputKey, keyRows] of this.keys){
             for(let key of keyRows){
-                key.on('down', () => this.inputs[inputKey] = true);
-                key.on('up', () => this.inputs[inputKey] = false);
+                key.on(Phaser.Input.Keyboard.Events.DOWN, () => this.inputs[inputKey] = true);
+                key.on(Phaser.Input.Keyboard.Events.UP, () => this.inputs[inputKey] = false);
             }
         }
     }
