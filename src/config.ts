@@ -6,6 +6,7 @@ export const DefaultConfig = {
   type: Phaser.AUTO,
   parent: 'Tenchikatori-ToES',
   //backgroundColor: '#33A5E7',
+  pixelArt: true,
 
   scale: {
     width: WINDOW_WIDTH,
@@ -18,7 +19,7 @@ export const DefaultConfig = {
     default: 'matter',
     matter: {
       debug: true,
-      setBounds: true,
+      //setBounds: true,
       gravity: { x: 0, y: 0 },
     },
   },

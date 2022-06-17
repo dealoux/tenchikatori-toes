@@ -1,6 +1,15 @@
 import Phaser, { Scene } from 'phaser';
 import { InputHandler, INPUTSTRINGS } from '../plugins/InputHandler';
 import eventsCenter from '../plugins/EventsCentre';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
+import { HUDScene } from './Gameplay';
+
+export enum SCENE_NAMES {
+	GameManager = 'GameManager',
+	MainMenu = 'MainMenu',
+	HUD = 'HUD',
+	Stage1_Gameplay = 'Stage1_Gameplay',
+}
 
 export default class GameManager extends Scene {
 	constructor() {
@@ -10,13 +19,21 @@ export default class GameManager extends Scene {
 
 	preload() {
 		this.load.image('empty', 'assets/sprites/empty.png');
+		this.load.image('godseesall', 'assets/sprites/godseesall.png');
+		this.load.audio('2huseesall', 'assets/bgm/god_sees_all/touhou_sees_all.ogg');
 	}
 
 	create() {
 		InputHandler.Instance().create(this);
-		this.scene.run('MainMenu');
+		this.scene.run(SCENE_NAMES.MainMenu);
+		this.scene.add(SCENE_NAMES.HUD, HUDScene);
 
-		eventsCenter.on('stage1_starts', () => console.log('stage 1 starts'));
+		eventsCenter.on('stage1_starts', () => {
+			this.scene.run(SCENE_NAMES.HUD);
+			console.log('stage 1 starts');
+		});
+
+		this.add.image(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'godseesall').setScale(1.5).setAlpha(.2);
 
 		this.game.events.on(Phaser.Core.Events.BLUR, () => this.pause());
 		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.resume());

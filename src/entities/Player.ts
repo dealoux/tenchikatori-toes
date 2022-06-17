@@ -27,6 +27,7 @@ const GRAZE_HITBOX = 40;
 
 export class Player extends Character{
     actionDelegate : functionDelegate;
+    inputHandlingDelegate: functionDelegate;
 
     graze: MatterJS.BodyType; // graze hitbox
     currShootPoints : IShootPoints;
@@ -40,6 +41,7 @@ export class Player extends Character{
         super(scene, { pos, texture, collisionGroup: COLLISION_GROUPS.PLAYER, hitRadius: HITBOX, frame, offset }, 3, SPEED_NORMAL, new PoolManager(scene, Player));
         
         this.actionDelegate = this.shoot;
+        this.inputHandlingDelegate = this.inputHandling;
         
         this.graze = scene.matter.add.circle(pos.x, pos.y, GRAZE_HITBOX,{
             label: 'graze',
@@ -108,8 +110,14 @@ export class Player extends Character{
 
     update(){
         //super.update();
-        this.inputHandling();
+        this.inputHandlingDelegate();
     }
+
+    public handlingInput(value: boolean = true){
+        this.inputHandlingDelegate = value ? this.inputHandling : this.emptyFunction;
+    }
+
+    private emptyFunction(){ }
 
     private inputHandling(){
         const {inputs} = InputHandler.Instance();
