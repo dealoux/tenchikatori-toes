@@ -1,30 +1,33 @@
 import Phaser from 'phaser';
-import { collisionGroups, collisionCategories } from '../entities/Entity';
+import { COLLISION_GROUPS, COLLISION_CATEGORIES } from '../entities/Entity';
 import { Player } from '../entities/Player';
 import { Projectile, ProjectileData } from './Projectile';
 import { VPoint } from '../entities/Entity';
 
-export const Data_ShotBlue : ProjectileData = {
+export const ENEMY_PROJECTILE_HITBOX = 4;
+export const SHOTPOOL_ENEMY = 150;
+
+export const DATA_SHOTBLUE : ProjectileData = {
     entData: {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'shotBlue',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: collisionGroups.ENEMY,
+        collisionGroup: COLLISION_GROUPS.ENEMY,
+        hitRadius: ENEMY_PROJECTILE_HITBOX,
     },
     speed: 10,
 }
 
-export const Data_ShotRed : ProjectileData = {
+export const DATA_SHOTRED : ProjectileData = {
     entData: {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'shotRed',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: collisionGroups.ENEMY,
+        collisionGroup: COLLISION_GROUPS.ENEMY,
+        hitRadius: ENEMY_PROJECTILE_HITBOX,
     },
     speed: 10,
 }
-
-export const SHOTPOOL_ENEMY = 150;
 
 class EnemyProjectile extends Projectile{
     constructor(scene: Phaser.Scene, data: ProjectileData){
@@ -42,22 +45,24 @@ class EnemyProjectile extends Projectile{
 
 export class EnemyShotBlue extends EnemyProjectile{
     constructor(scene: Phaser.Scene){
-        super(scene, Data_ShotRed);
+        super(scene, DATA_SHOTBLUE);
+        this.setCollidesWith([COLLISION_CATEGORIES.blue]);
     }
 
     updateTransform(point: VPoint) {
         super.updateTransform(point);
-        this.move(point, Data_ShotRed.speed);
+        this.move(point, DATA_SHOTBLUE.speed);
     }
 }
 
 export class EnemyShotRed extends EnemyProjectile{
     constructor(scene: Phaser.Scene){
-        super(scene, Data_ShotBlue);
+        super(scene, DATA_SHOTRED);
+        this.setCollidesWith([COLLISION_CATEGORIES.red]);
     }
 
     updateTransform(point: VPoint) {
         super.updateTransform(point);
-        this.move(point, Data_ShotBlue.speed);
+        this.move(point, DATA_SHOTRED.speed);
     }
 }

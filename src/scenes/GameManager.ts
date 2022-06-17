@@ -1,11 +1,11 @@
 import Phaser, { Scene } from 'phaser';
-import { InputHandler, InputStrings } from '../plugins/InputHandler';
+import { InputHandler, INPUTSTRINGS } from '../plugins/InputHandler';
 import eventsCenter from '../plugins/EventsCentre';
 
 export default class GameManager extends Scene {
 	constructor() {
 		super('GameManager');
-		new InputHandler(this);
+		new InputHandler();
 	}
 
 	preload() {
@@ -24,13 +24,13 @@ export default class GameManager extends Scene {
 
 	private pause(){
 		InputHandler.Instance().reset();
+		this.game.loop.sleep();
 	}
 
 	private resume(){
-		//InputHandler.Instance().reset();
+		this.game.loop.wake();
 	}
 
 	update() {
-		InputHandler.Instance().update(this);
 	}
 }

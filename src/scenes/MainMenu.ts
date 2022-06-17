@@ -4,7 +4,7 @@ import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
 import { Player } from '../entities/Player';
 import { IEntity } from '../entities/Entity';
-import { InputHandler, InputStrings } from '../plugins/InputHandler';
+import { InputHandler, INPUTSTRINGS } from '../plugins/InputHandler';
 import eventsCenter from '../plugins/EventsCentre';
 import GameplayStage1 from './stages/GameplayStage1';
 

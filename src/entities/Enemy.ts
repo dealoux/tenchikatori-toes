@@ -1,14 +1,14 @@
 import Phaser from 'phaser';
-import {IEntity, VPoint, collisionGroups } from './Entity';
+import {IEntity, VPoint, COLLISION_GROUPS } from './Entity';
 import { PoolGroup, PoolManager } from '../@types/Pool';
 import { Projectile, ProjectileData } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
-import { SHOTPOOL_ENEMY, EnemyShotBlue, EnemyShotRed, Data_ShotBlue as DATA_SHOTBLUE, Data_ShotRed as DATA_SHOTRED } from '../objects/Projectile_Enemy';
+import { SHOTPOOL_ENEMY, EnemyShotBlue, EnemyShotRed, DATA_SHOTBLUE as DATA_SHOTBLUE, DATA_SHOTRED as DATA_SHOTRED } from '../objects/Projectile_Enemy';
 import { Character, Characters } from './Character';
 
 export class Enemy extends Character{
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity, hp: number, speed: number, projectileManager: PoolManager){
-        super(scene, { pos, texture, collisionGroup: collisionGroups.ENEMY, hitRadius: 0, frame, offset }, hp, speed, projectileManager);
+        super(scene, { pos, texture, collisionGroup: COLLISION_GROUPS.ENEMY, hitRadius: 0, frame, offset }, hp, speed, projectileManager);
 
         this.projectileManager?.addPGroup(DATA_SHOTBLUE.entData.texture, EnemyShotBlue, SHOTPOOL_ENEMY);
         this.projectileManager?.addPGroup(DATA_SHOTRED.entData.texture, EnemyShotRed, SHOTPOOL_ENEMY);

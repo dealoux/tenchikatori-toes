@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { collisionGroups, collisionCategories } from '../entities/Entity';
+import { COLLISION_GROUPS, COLLISION_CATEGORIES } from '../entities/Entity';
 import { Player } from '../entities/Player';
 import { Projectile, ProjectileData } from './Projectile';
 import { VPoint } from '../entities/Entity';
@@ -19,7 +19,7 @@ export const DATA_PLAYERSHOT1 : ProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'card1',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: collisionGroups.PLAYER,
+        collisionGroup: COLLISION_GROUPS.PLAYER,
     },
     speed: 24,
 }
@@ -29,7 +29,7 @@ export const DATA_PLAYERSHOT2 : ProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'card2',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: collisionGroups.PLAYER,
+        collisionGroup: COLLISION_GROUPS.PLAYER,
     },
     speed: 22,
 }
@@ -39,7 +39,7 @@ export const DATA_PLAYERSPECIAL : ProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'moon',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: collisionGroups.PLAYER,
+        collisionGroup: COLLISION_GROUPS.PLAYER,
     },
     speed: 15,
 }
@@ -61,6 +61,8 @@ export const SHOOTPOINTS_FOCUSED : ShootPoints = {
 class PlayerPorjectile extends Projectile{
     constructor(scene: Phaser.Scene, data: ProjectileData){
         super(scene, data);
+
+        this.setCollidesWith([COLLISION_CATEGORIES.blue, COLLISION_CATEGORIES.red]);
     }
 
     protected move(point: VPoint, speed: number){

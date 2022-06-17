@@ -1,33 +1,49 @@
-export enum InputStrings{
+export enum INPUTSTRINGS{
     Up = 'Up',
     Down = 'Down',
     Left = 'Left',
     Right = 'Right',
     Shot = 'Shot', // interact
     Special = 'Special', // cancel
-    Focus = 'Shift',
+    Switch = 'Switch',
+    Focus = 'Focus',
     Pause = 'Pause' // escape
+}
+
+export interface IInputPoll{
+    Up: boolean,
+	Down: boolean,
+	Left: boolean,
+	Right: boolean,
+	Shot: boolean,
+	Special: boolean,
+    Switch: boolean,
+    Focus: boolean,
+    Pause: boolean,
+    [key: string]: boolean,
 }
 
 export class InputHandler{
     private static instance: InputHandler;
 
     keys: Map<string, Phaser.Input.Keyboard.Key[]>;
+    inputs: IInputPoll;
 
-    inputs = {
-		up: false,
-		down: false,
-		left: false,
-		right: false,
-		shot: false,
-		special: false,
-        focus: false,
-        pause: false,
-    }
-
-    constructor (scene: Phaser.Scene, pluginManager?: Phaser.Plugins.PluginManager) {
-        //super(scene, pluginManager, 'InputHandler');
+    constructor() {        
         this.keys = new Map();
+
+        this.inputs = {
+            Up: false,
+            Down: false,
+            Left: false,
+            Right: false,
+            Shot: false,
+            Special: false,
+            Switch: false,
+            Focus: false,
+            Pause: false,
+        }
+
         InputHandler.instance = this;
     }
 
@@ -39,68 +55,32 @@ export class InputHandler{
         const { KeyCodes } = Phaser.Input.Keyboard;
         const { keyboard } = scene.input;
 
-        this.keys.set(InputStrings.Up, [keyboard.addKey(KeyCodes.UP), keyboard.addKey(KeyCodes.W)]);
-        this.keys.set(InputStrings.Down, [keyboard.addKey(KeyCodes.DOWN), keyboard.addKey(KeyCodes.S)]);
-        this.keys.set(InputStrings.Left, [keyboard.addKey(KeyCodes.LEFT), keyboard.addKey(KeyCodes.A)]);
-        this.keys.set(InputStrings.Right, [keyboard.addKey(KeyCodes.RIGHT), keyboard.addKey(KeyCodes.D)]);
-        this.keys.set(InputStrings.Shot, [keyboard.addKey(KeyCodes.Z), keyboard.addKey(KeyCodes.J), keyboard.addKey(KeyCodes.ENTER)]);
-        this.keys.set(InputStrings.Special, [keyboard.addKey(KeyCodes.X), keyboard.addKey(KeyCodes.K), keyboard.addKey(KeyCodes.SPACE)]);
-        this.keys.set(InputStrings.Focus, [keyboard.addKey(KeyCodes.SHIFT)]);
-        this.keys.set(InputStrings.Pause, [keyboard.addKey(KeyCodes.ESC)]);
+        this.keys.set(INPUTSTRINGS.Up, [keyboard.addKey(KeyCodes.UP), keyboard.addKey(KeyCodes.W)]);
+        this.keys.set(INPUTSTRINGS.Down, [keyboard.addKey(KeyCodes.DOWN), keyboard.addKey(KeyCodes.S)]);
+        this.keys.set(INPUTSTRINGS.Left, [keyboard.addKey(KeyCodes.LEFT), keyboard.addKey(KeyCodes.A)]);
+        this.keys.set(INPUTSTRINGS.Right, [keyboard.addKey(KeyCodes.RIGHT), keyboard.addKey(KeyCodes.D)]);
+        this.keys.set(INPUTSTRINGS.Shot, [keyboard.addKey(KeyCodes.Z), keyboard.addKey(KeyCodes.J), keyboard.addKey(KeyCodes.ENTER)]);
+        this.keys.set(INPUTSTRINGS.Special, [keyboard.addKey(KeyCodes.X), keyboard.addKey(KeyCodes.K), keyboard.addKey(KeyCodes.SPACE)]);
+        this.keys.set(INPUTSTRINGS.Switch, [keyboard.addKey(KeyCodes.C), keyboard.addKey(KeyCodes.L)]);
+        this.keys.set(INPUTSTRINGS.Focus, [keyboard.addKey(KeyCodes.SHIFT)]);
+        this.keys.set(INPUTSTRINGS.Pause, [keyboard.addKey(KeyCodes.ESC)]);
+
+        this.inputEvents();
     }
 
-    private getInput(inputKey: string) : boolean{
-        let result = false;
-        let keysRow = this.keys.get(inputKey);
-
-        if(keysRow){
-            for(let key of keysRow){
-                if(key.isDown){
-                    result = true;
-                    break;
-                }
+    private inputEvents(){
+        for(let [inputKey, keyRows] of this.keys){
+            for(let key of keyRows){
+                key.on('down', () => this.inputs[inputKey] = true);
+                key.on('up', () => this.inputs[inputKey] = false);
             }
         }
-
-        return result;
     }
 
     reset(){
-        this.inputs = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-            shot: false,
-            special: false,
-            focus: false,
-            pause: false,
+        let index: keyof typeof this.inputs;
+        for(index in this.inputs){
+            this.inputs[index] = false;
         }
     }
-
-    update (scene: Phaser.Scene) {
-        this.inputs.up = this.getInput(InputStrings.Up);
-		this.inputs.down = this.getInput(InputStrings.Down);
-		this.inputs.left = this.getInput(InputStrings.Left);
-		this.inputs.right = this.getInput(InputStrings.Right);
-        this.inputs.shot = this.getInput(InputStrings.Shot);
-        this.inputs.special = this.getInput(InputStrings.Special);
-		this.inputs.focus = this.getInput(InputStrings.Focus);
-        this.inputs.pause = this.getInput(InputStrings.Pause);
-
-        // for(let keysRow of this.keys){
-        //     this.emitKeyEvent(scene, keysRow[0], keysRow[1]);
-        // }
-    }
-
-    // emitKeyEvent (scene: Phaser.Scene, eventName: string, keys?: Phaser.Input.Keyboard.Key[]) {
-    //     if(keys){
-    //         for(let key of keys){
-    //             if (Phaser.Input.Keyboard.JustDown(key)){
-    //                 scene.events.emit(eventName, scene);
-    //             }
-    //             else{}
-    //         }
-    //     }
-    // }
 }

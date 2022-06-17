@@ -5,13 +5,13 @@ export interface VPoint{
     theta: number;
 }
 
-export enum collisionGroups{
+export enum COLLISION_GROUPS{
 	PLAYER = -1,
 	ENEMY = -2,
     OTHER = -3,
 }
 
-export enum collisionCategories{
+export enum COLLISION_CATEGORIES{
 	red = 2,
 	blue = 4,
 }
@@ -20,7 +20,7 @@ export interface IEntity{
     pos: Phaser.Math.Vector2;
     texture: string;
     frame?: string | number;
-    collisionGroup?: collisionGroups;
+    collisionGroup?: COLLISION_GROUPS;
     hitRadius?: number;
     offset?: Phaser.Math.Vector2;
 }

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { IEntity, Entity, VPoint } from './Entity';
+import { IEntity, Entity, VPoint, COLLISION_CATEGORIES } from './Entity';
 
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
@@ -19,6 +19,8 @@ export class Character extends Entity{
     state: CharacterState;
     hp: number;
     speed: number;
+    lastShotTime: number;
+    collisionCategory?: number;
     projectileManager?: PoolManager;
 
     constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
@@ -27,7 +29,8 @@ export class Character extends Entity{
         this.hp = hp;
         this.speed = speed;
         this.state = CharacterState.ALIVE;
-        this.projectileManager = projectileManager
+        this.lastShotTime = 0;
+        this.projectileManager = projectileManager;
     }
 
     // protected preUpdate(time: number, delta: number){
@@ -60,5 +63,10 @@ export class Character extends Entity{
 
     protected spawnProjectile(name: string, point: VPoint){
         this.projectileManager?.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
+    }
+
+    protected setMode(mode: number){
+        this.collisionCategory = mode;
+        this.setCollisionCategory(mode);
     }
 }

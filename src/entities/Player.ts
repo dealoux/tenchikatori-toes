@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import {IEntity, VPoint, collisionGroups } from './Entity';
+import {IEntity, VPoint, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
 import { InputHandler } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
@@ -33,12 +33,11 @@ export class Player extends Character{
     shots : Function[];
     shotCounts : number;
     
-    lastShotTime: number;
     specials: number;
     castingSpecial: boolean;
 
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
-        super(scene, { pos, texture, collisionGroup: collisionGroups.PLAYER, hitRadius: HITBOX, frame, offset }, 3, SPEED_NORMAL, new PoolManager(scene, Player));
+        super(scene, { pos, texture, collisionGroup: COLLISION_GROUPS.PLAYER, hitRadius: HITBOX, frame, offset }, 3, SPEED_NORMAL, new PoolManager(scene, Player));
         
         this.actionDelegate = this.shoot;
         
@@ -48,13 +47,14 @@ export class Player extends Character{
             isSensor: true,
             friction: 0,
             frictionAir: 0,
-            collisionFilter: { group: collisionGroups.PLAYER }
+            collisionFilter: { group: COLLISION_GROUPS.PLAYER }
         });
         this.getBody().parts.splice(0, 0, this.graze);
+        
+        this.setMode(COLLISION_CATEGORIES.red);
         //console.log(this.getBody().parts);
 
         this.currShootPoints = SHOOTPOINTS_NORMAL;
-        this.lastShotTime = 0;
         this.specials = 3;
         this.castingSpecial = false;
         this.projectileManager?.addPGroup(DATA_PLAYERSHOT1.entData.texture, PlayerShot1, SHOTPOOL_PLAYER);
@@ -115,21 +115,21 @@ export class Player extends Character{
         const {inputs} = InputHandler.Instance();
 
         // directional movements
-        if (inputs.up) {
+        if (inputs.Up) {
             this.moveVertically(-this.speed);
         }
-        if (inputs.down) {
+        if (inputs.Down) {
             this.moveVertically(this.speed)
         }
-        if (inputs.left) {
+        if (inputs.Left) {
             this.moveHorizontally(-this.speed);
         }
-        if (inputs.right) {
+        if (inputs.Right) {
             this.moveHorizontally(this.speed);
         }
 
         // focus mode
-        if(inputs.focus){
+        if(inputs.Focus){
             this.speed = SPEED_FOCUSED;
             this.currShootPoints = SHOOTPOINTS_FOCUSED;
         }
@@ -138,14 +138,32 @@ export class Player extends Character{
             this.currShootPoints = SHOOTPOINTS_NORMAL;
         }
 
+        // switch mode
+        if(inputs.Switch){
+            this.switchMode();
+            inputs.Switch = false;
+        }
+
         // actions
         if(!this.castingSpecial){
-            if(inputs.shot && this.time() > this.lastShotTime){
+            if(inputs.Shot && this.time() > this.lastShotTime){
                 this.shoot();
             }
-            if(inputs.special && this.specials > 0){
+            if(inputs.Special && this.specials > 0){
                 this.special();
             }
+        }
+    }
+
+    private switchMode(){
+        if(this.collisionCategory == COLLISION_CATEGORIES.blue){
+            this.setMode(COLLISION_CATEGORIES.red);
+            console.log('switched to red');
+        }
+
+        else if(this.collisionCategory == COLLISION_CATEGORIES.red){
+            this.setMode(COLLISION_CATEGORIES.blue);
+            console.log('switched to blue');
         }
     }
 

@@ -3,15 +3,13 @@ import { Dialog, DialogUpdateAction } from '../objects/Dialog';
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
 import { Player } from '../entities/Player';
-import { IEntity, collisionGroups, collisionCategories } from '../entities/Entity';
-import { Characters } from '../entities/Character';
+import { IEntity, COLLISION_GROUPS, COLLISION_CATEGORIES } from '../entities/Entity';
 import { Enemy } from '../entities/Enemy';
-import { Yousei1 } from '../entities/Enemy_Specific';
+import { Characters } from '../entities/Character';
 
 export class GameplayScene extends Scene {
 	dialog?: IDialog;
 	player?: Player;
-	yousei1?: Yousei1;
 
 	constructor(name: string) {
 		super(name);
@@ -29,15 +27,13 @@ export class GameplayScene extends Scene {
 		});
 
 		this.player = new Player(this, { pos: new Phaser.Math.Vector2(WINDOW_WIDTH/2, WINDOW_HEIGHT/2), texture: Characters.PLAYER } );
-		this.yousei1 = new Yousei1(this, { pos: new Phaser.Math.Vector2(WINDOW_WIDTH/2, WINDOW_HEIGHT/2-500), texture: Characters.YOUSEIS });
 
-		this.eventSub();
+		//this.eventSub();
 	}
 
 	update() {
 		this.dialog?.update(this, {});
 		this.player?.update();
-		this.yousei1?.update();
 	}
 	
 	private eventSub(){
@@ -53,7 +49,7 @@ export class GameplayScene extends Scene {
             isSensor: true,
             friction: 0,
             frictionAir: 0,
-            collisionFilter: { group: collisionGroups.ENEMY, category: collisionCategories.blue }
+            collisionFilter: { group: COLLISION_GROUPS.ENEMY, category: COLLISION_CATEGORIES.blue }
 		});
 
 		this.matter.world.on('collisionstart', (event :  Phaser.Physics.Matter.Events.CollisionStartEvent ) => {
