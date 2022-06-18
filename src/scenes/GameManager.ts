@@ -1,5 +1,5 @@
 import Phaser, { Scene } from 'phaser';
-import { InputHandler, INPUTSTRINGS } from '../plugins/InputHandler';
+import { InputHandler, INPUT_STRINGS } from '../plugins/InputHandler';
 import eventsCenter from '../plugins/EventsCentre';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
 import { HUDScene } from './Gameplay';

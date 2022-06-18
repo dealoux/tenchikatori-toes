@@ -41,7 +41,7 @@ export default class GameplayStage1 extends GameplayScene {
 			text: chant,
 		});
 
-		let bgm = this.sound.add('2huseesall');
+		let bgm = this.sound.add('2huseesall', { volume: .2 });
 		bgm.play({loop: true});
 
 		this.yousei1 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), texture: Characters.YOUSEIS });

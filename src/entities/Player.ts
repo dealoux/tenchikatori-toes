@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {IEntity, IVectorPoint, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
-import { InputHandler } from '../plugins/InputHandler';
+import { InputHandler, INPUT_EVENTS } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
 import { IShootPoints, DATA_PLAYERSHOT1, DATA_PLAYERSHOT2, DATA_PLAYERSPECIAL, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, SHOTPOOL_PLAYER, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
@@ -30,6 +30,8 @@ export class Player extends Character{
     inputHandlingDelegate: functionDelegate;
 
     graze: MatterJS.BodyType; // graze hitbox
+    //visibleHitbox: Phaser.GameObjects.Graphics;
+    visibleHitbox: Phaser.GameObjects.Arc;
     currShootPoints : IShootPoints;
     shots : Function[];
     shotCounts : number;
@@ -55,6 +57,10 @@ export class Player extends Character{
         
         this.setMode(COLLISION_CATEGORIES.red);
         //console.log(this.getBody().parts);
+
+        this.visibleHitbox = scene.add.circle(pos.x, pos.y, HITBOX, 0x202A44).setVisible(false);
+        // this.visibleHitbox = this.scene.add.graphics().setActive(false);
+        // this.scene.matter.world.renderBody(this.getBody(), this.visibleHitbox, false, 0x202A44, 1, 1, 0x202A44);
 
         this.currShootPoints = SHOOTPOINTS_NORMAL;
         this.specials = 3;
@@ -106,11 +112,24 @@ export class Player extends Character{
 
     create(){
         super.create();
+
+        eventsCenter.on(INPUT_EVENTS.Focus_down, () => {
+            this.speed = SPEED_FOCUSED;
+            this.currShootPoints = SHOOTPOINTS_FOCUSED;
+            this.visibleHitbox.setVisible(true);
+		});
+
+        eventsCenter.on(INPUT_EVENTS.Focus_up, () => {
+            this.speed = SPEED_NORMAL;
+            this.currShootPoints = SHOOTPOINTS_NORMAL;
+            this.visibleHitbox.setVisible(false);
+		});
     }
 
     update(){
         //super.update();
         this.inputHandlingDelegate();
+        this.visibleHitbox.setPosition(this.x, this.y);
     }
 
     public handlingInput(value: boolean = true){
@@ -134,16 +153,6 @@ export class Player extends Character{
         }
         if (inputs.Right) {
             this.moveHorizontally(this.speed);
-        }
-
-        // focus mode
-        if(inputs.Focus){
-            this.speed = SPEED_FOCUSED;
-            this.currShootPoints = SHOOTPOINTS_FOCUSED;
-        }
-        else{
-            this.speed = SPEED_NORMAL;
-            this.currShootPoints = SHOOTPOINTS_NORMAL;
         }
 
         // switch mode

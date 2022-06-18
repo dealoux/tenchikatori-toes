@@ -91,6 +91,16 @@ const HUDOFFSET = {
 	y: GAMEPLAY_OFFSET,
 };
 
+enum HUD_TEXT {
+	HighScore = 'High Score',
+	Score = 'Score',
+	Lives = 'Lives',
+	Special = 'Special',
+	Power = 'Power',
+	ExtraPoint = 'Extra Points',
+	Graze = 'Graze'
+}
+
 export class HUDScene extends Scene{
 	dialog?: IDialog;
 
