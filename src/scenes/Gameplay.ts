@@ -41,7 +41,7 @@ export class GameplayScene extends Scene {
 		//this.eventSub();
 
 		this.cameras.main.setViewport(GAMEPLAY_OFFSET, GAMEPLAY_OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
-		this.matter.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
+		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 	}
 
 	update() {
@@ -55,29 +55,6 @@ export class GameplayScene extends Scene {
 		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.scene.resume(this.scene.key));
 	}
 
-	// test
-	private collideEvent(){
-		let ball = this.matter.add.circle(WINDOW_WIDTH/2, WINDOW_HEIGHT/2-500, 40,{
-			label: 'box',
-            //isStatic: true,
-            isSensor: true,
-            friction: 0,
-            frictionAir: 0,
-            collisionFilter: { group: COLLISION_GROUPS.ENEMY, category: COLLISION_CATEGORIES.blue }
-		});
-
-		this.matter.world.on('collisionstart', (event :  Phaser.Physics.Matter.Events.CollisionStartEvent ) => {
-			for (const pair of event.pairs) {
-				const bodyA = pair.bodyA;
-				const bodyB = pair.bodyB;
-				console.log(pair);
-				if (bodyA.isSensor && bodyB.isSensor) 
-					continue;
-				const sensor = bodyA.isSensor ? bodyA : bodyB;
-				console.log(`sensor ${sensor.label} is hit`);
-			}
-		});
-	}
 //#endregion
 }
 

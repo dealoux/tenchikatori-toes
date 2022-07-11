@@ -20,29 +20,30 @@ export interface IEntity{
     pos: Phaser.Math.Vector2;
     texture: string;
     frame?: string | number;
-    collisionGroup?: COLLISION_GROUPS;
     hitRadius?: number;
     offset?: Phaser.Math.Vector2;
 }
 
-export class Entity extends Phaser.Physics.Matter.Sprite{
-    constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity, active?: boolean | false){
-        super(scene.matter.world, pos.x, pos.y, texture, frame,{
-            label: texture,
-            //isStatic: true,
-            isSensor: true,
-            friction: 0,
-            frictionAir: 0,
-            circleRadius: hitRadius,
-            collisionFilter: { group: collisionGroup }
-        });
+type MyMatterBodyConfig = Phaser.Types.Physics.Matter.MatterBodyConfig & {
+    shape?: string | Phaser.Types.Physics.Matter.MatterSetBodyConfig;
+};
 
-        this.scene.add.existing(this);
+export class Entity extends Phaser.Physics.Arcade.Sprite{
+    constructor(scene: Phaser.Scene, { pos, texture, hitRadius = 0, frame }: IEntity, active?: boolean | false){
+        super(scene, pos.x, pos.y, texture, frame);
 
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+
+        //this.getBody().setCircle(hitRadius);
+        this.getBody().setSize(hitRadius, hitRadius, true);
+        this.getBody().setFriction(0, 0);
+        this.getBody().setBounce(0, 0);
+        this.setOrigin(.5, .5);
+        
         // only active entities are updated
         if(!active){
             this.removeInteractive();
-            this.world.remove(this.getBody());
         }
 
         this.create();
@@ -53,7 +54,8 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
     }
 
     create(){
-        this.setOnCollide(this.handleCollision);
+        //this.setOnCollide(this.handleCollision);
+        console.log('bruh');
     }
 
     update() {
@@ -67,24 +69,28 @@ export class Entity extends Phaser.Physics.Matter.Sprite{
     }
 
     getBody(){
-        return this.body as MatterJS.BodyType
+        return this.body as Phaser.Physics.Arcade.Body;
     }
 
     protected handleCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData){
         console.dir(data);
     }
 
+    protected inCameraView(){
+        return this.scene.cameras.main.worldView.contains(this.x, this.y);
+    }
+
     protected setStatus(status: boolean | false){
         this.setActive(status);
         this.setVisible(status);
 
-        if(status == true){
-            this.world.add(this.getBody());
+        if(status == false){
         }
             
         else{
             this.removeInteractive();
-            this.world.remove(this.getBody());
         }
+
+        //this.disableBody(!status, !status);
     }
 }

@@ -1,9 +1,9 @@
-import Phaser from 'phaser';
+import Phaser, { Physics } from 'phaser';
 import { IEntity, IVectorPoint } from '../entities/Entity';
 
 export class PoolGroup extends Phaser.GameObjects.Group{
     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
-        super(scene);
+        super(scene, undefined, { enable: false } as Phaser.Types.Physics.Arcade.PhysicsGroupConfig);
 
         this.createMultiple({
             key: name,
@@ -23,12 +23,12 @@ export class PoolGroup extends Phaser.GameObjects.Group{
     }
 }
 
-export class PoolManager extends Phaser.Physics.Matter.Factory{
+export class PoolManager extends Phaser.Physics.Arcade.Factory{
     pList : Map<string, PoolGroup>;
     owner: Function;
 
     constructor(scene: Phaser.Scene, owner: Function){
-        super(scene.matter.world);
+        super(scene.physics.world);
 
         this.pList = new Map;
         this.owner = owner;

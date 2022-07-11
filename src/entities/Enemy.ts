@@ -8,7 +8,7 @@ import { Character, Characters } from './Character';
 
 export class Enemy extends Character{
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity, hp: number, speed: number, projectileManager: PoolManager){
-        super(scene, { pos, texture, collisionGroup: COLLISION_GROUPS.ENEMY, hitRadius: 0, frame, offset }, hp, speed, projectileManager);
+        super(scene, { pos, texture, hitRadius: 0, frame, offset }, hp, speed, projectileManager);
 
         this.projectileManager?.addPGroup(DATA_SHOTBLUE.entData.texture, EnemyShotBlue, SHOTPOOL_ENEMY);
         this.projectileManager?.addPGroup(DATA_SHOTRED.entData.texture, EnemyShotRed, SHOTPOOL_ENEMY);

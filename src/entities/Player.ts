@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser, { Physics } from 'phaser';
 import {IEntity, IVectorPoint, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
 import { InputHandler, INPUT_EVENTS } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
@@ -22,16 +22,14 @@ export enum PlayerEvents{
     special = 'special',
 }
 
-const HITBOX = 6;
+const HITBOX = 8;
 const GRAZE_HITBOX = 40;
 
 export class Player extends Character{
     actionDelegate : functionDelegate;
     inputHandlingDelegate: functionDelegate;
 
-    graze: MatterJS.BodyType; // graze hitbox
-    //visibleHitbox: Phaser.GameObjects.Graphics;
-    visibleHitbox: Phaser.GameObjects.Arc;
+    hitbox: Phaser.GameObjects.Rectangle;
     currShootPoints : IShootPoints;
     shots : Function[];
     shotCounts : number;
@@ -40,27 +38,18 @@ export class Player extends Character{
     castingSpecial: boolean;
 
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
-        super(scene, { pos, texture, collisionGroup: COLLISION_GROUPS.PLAYER, hitRadius: HITBOX, frame, offset }, 3, SPEED_NORMAL, new PoolManager(scene, Player));
+        let shapes = scene.game.cache.json.get('shapes');
+        
+        super(scene, { pos, texture, hitRadius: GRAZE_HITBOX, frame, offset }, 3, SPEED_NORMAL, new PoolManager(scene, Player));
         
         this.actionDelegate = this.shoot;
         this.inputHandlingDelegate = this.inputHandling;
         
-        this.graze = scene.matter.add.circle(pos.x, pos.y, GRAZE_HITBOX,{
-            label: 'graze',
-            isStatic: true,
-            isSensor: true,
-            friction: 0,
-            frictionAir: 0,
-            collisionFilter: { group: COLLISION_GROUPS.PLAYER }
-        });
-        this.getBody().parts.splice(0, 0, this.graze);
-        
+        //console.dir(this.getBody());
         this.setMode(COLLISION_CATEGORIES.red);
-        //console.log(this.getBody().parts);
 
-        this.visibleHitbox = scene.add.circle(pos.x, pos.y, HITBOX, 0x202A44).setVisible(false);
-        // this.visibleHitbox = this.scene.add.graphics().setActive(false);
-        // this.scene.matter.world.renderBody(this.getBody(), this.visibleHitbox, false, 0x202A44, 1, 1, 0x202A44);
+        this.hitbox = scene.add.rectangle(pos.x, pos.y, HITBOX, HITBOX, 0x202A44).setVisible(false);
+        scene.physics.add.existing(this.hitbox);
 
         this.currShootPoints = SHOOTPOINTS_NORMAL;
         this.specials = 3;
@@ -77,6 +66,8 @@ export class Player extends Character{
         ]
 
         this.shotCounts = 4;
+
+        this.setCollideWorldBounds(true);
     }
 
     static preload(scene: Phaser.Scene) {
@@ -116,24 +107,34 @@ export class Player extends Character{
         eventsCenter.on(INPUT_EVENTS.Focus_down, () => {
             this.speed = SPEED_FOCUSED;
             this.currShootPoints = SHOOTPOINTS_FOCUSED;
-            this.visibleHitbox.setVisible(true);
+            this.hitbox.setVisible(true);
 		});
 
         eventsCenter.on(INPUT_EVENTS.Focus_up, () => {
             this.speed = SPEED_NORMAL;
             this.currShootPoints = SHOOTPOINTS_NORMAL;
-            this.visibleHitbox.setVisible(false);
+            this.hitbox.setVisible(false);
 		});
     }
 
     update(){
         //super.update();
         this.inputHandlingDelegate();
-        this.visibleHitbox.setPosition(this.x, this.y);
+        // this.hitbox.setPosition(this.x, this.y);
     }
 
     public handlingInput(value: boolean = true){
         this.inputHandlingDelegate = value ? this.inputHandling : this.emptyFunction;
+    }
+
+    protected moveVertically(y: number){
+        super.moveVertically(y);
+        this.hitbox.y = this.y;
+    }
+
+    protected moveHorizontally(x: number){
+        super.moveHorizontally(x);
+        this.hitbox.x = this.x;
     }
 
     private emptyFunction(){ }

@@ -21,6 +21,7 @@ export default class GameManager extends Scene {
 		this.load.image('empty', 'assets/sprites/empty.png');
 		this.load.image('godseesall', 'assets/sprites/godseesall.png');
 		this.load.audio('2huseesall', 'assets/bgm/god_sees_all/touhou_sees_all.ogg');
+		this.load.json('shapes', 'assets/sprites/spriteshapes.json');
 	}
 
 	create() {
@@ -28,12 +29,12 @@ export default class GameManager extends Scene {
 		this.scene.run(SCENE_NAMES.MainMenu);
 		this.scene.add(SCENE_NAMES.HUD, HUDScene);
 
+		this.add.image(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'godseesall').setScale(1.5).setAlpha(.2).setDepth(1);
+
 		eventsCenter.on('stage1_starts', () => {
 			this.scene.run(SCENE_NAMES.HUD);
 			console.log('stage 1 starts');
 		});
-
-		this.add.image(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'godseesall').setScale(1.5).setAlpha(.2);
 
 		this.game.events.on(Phaser.Core.Events.BLUR, () => this.pause());
 		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.resume());

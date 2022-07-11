@@ -23,8 +23,8 @@ export class Character extends Entity{
     collisionCategory?: number;
     projectileManager?: PoolManager;
 
-    constructor(scene: Phaser.Scene, { pos, texture, collisionGroup, hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
-        super(scene, { pos, texture, collisionGroup, hitRadius, frame }, true);
+    constructor(scene: Phaser.Scene, { pos, texture, hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
+        super(scene, { pos, texture, hitRadius, frame }, true);
 
         this.hp = hp;
         this.speed = speed;
@@ -49,24 +49,27 @@ export class Character extends Entity{
     //     super.handleCollision(data);
     // }
 
-    protected moveVertically(y: number){
-        this.y += y;
+    protected moveVertically(speed: number){
+        this.y += speed;
+        //this.setVelocityY(speed);
     }
 
-    protected moveHorizontally(x: number){
-        this.x += x;
+    protected moveHorizontally(speed: number){
+        this.x += speed;
+       // this.setVelocityX(speed);
     }
 
     protected time(){
+        //return this.scene.time.now;
         return this.scene.game.getTime();
     }
 
     protected spawnProjectile(name: string, point: IVectorPoint){
-        this.projectileManager?.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.body.position.x + point.pos.x, this.body.position.y + point.pos.y), theta: point.theta });
+        this.projectileManager?.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.x + point.pos.x, this.y + point.pos.y), theta: point.theta });
     }
 
     protected setMode(mode: number){
         this.collisionCategory = mode;
-        this.setCollisionCategory(mode);
+        //this.setCollisionCategory(mode);
     }
 }

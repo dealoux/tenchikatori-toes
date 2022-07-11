@@ -16,16 +16,15 @@ export const DefaultConfig = {
   },
 
   physics: {
-    default: 'matter',
-    matter: {
+    default: 'Arcade',
+    arcade: {
       debug: true,
-      //setBounds: true,
-      gravity: { x: 0, y: 0 },
+      gravity: 0,
     },
   },
 
   render: {
     antialiasGL: false,
-    pixelArt: true,
+    //pixelArt: true,
   },
 }

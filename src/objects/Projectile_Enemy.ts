@@ -12,10 +12,9 @@ export const DATA_SHOTBLUE : IProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'shotBlue',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: COLLISION_GROUPS.ENEMY,
         hitRadius: ENEMY_PROJECTILE_HITBOX,
     },
-    speed: 10,
+    speed: 300,
 }
 
 export const DATA_SHOTRED : IProjectileData = {
@@ -23,10 +22,9 @@ export const DATA_SHOTRED : IProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'shotRed',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: COLLISION_GROUPS.ENEMY,
         hitRadius: ENEMY_PROJECTILE_HITBOX,
     },
-    speed: 10,
+    speed: 300,
 }
 
 class EnemyProjectile extends Projectile{
@@ -46,7 +44,8 @@ class EnemyProjectile extends Projectile{
 export class EnemyShotBlue extends EnemyProjectile{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_SHOTBLUE);
-        this.setCollidesWith([COLLISION_CATEGORIES.blue]);
+
+        //this.setCollidesWith([COLLISION_CATEGORIES.blue]);
     }
 
     updateTransform(point: IVectorPoint) {
@@ -58,7 +57,8 @@ export class EnemyShotBlue extends EnemyProjectile{
 export class EnemyShotRed extends EnemyProjectile{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_SHOTRED);
-        this.setCollidesWith([COLLISION_CATEGORIES.red]);
+
+        //this.setCollidesWith([COLLISION_CATEGORIES.red]);
     }
 
     updateTransform(point: IVectorPoint) {

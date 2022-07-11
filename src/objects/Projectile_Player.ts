@@ -11,7 +11,7 @@ export interface IShootPoints{
     point_4: IVectorPoint,
 }
 
-export const SHOT_DELAY = 50;
+export const SHOT_DELAY = 60;
 export const SHOTPOOL_PLAYER = 40;
 
 export const DATA_PLAYERSHOT1 : IProjectileData = {
@@ -19,9 +19,8 @@ export const DATA_PLAYERSHOT1 : IProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'card1',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: COLLISION_GROUPS.PLAYER,
     },
-    speed: 24,
+    speed: 600,
 }
 
 export const DATA_PLAYERSHOT2 : IProjectileData = {
@@ -29,9 +28,8 @@ export const DATA_PLAYERSHOT2 : IProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'card2',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: COLLISION_GROUPS.PLAYER,
     },
-    speed: 22,
+    speed: 600,
 }
 
 export const DATA_PLAYERSPECIAL : IProjectileData = {
@@ -39,9 +37,8 @@ export const DATA_PLAYERSPECIAL : IProjectileData = {
         pos: new Phaser.Math.Vector2(0, 0),
         texture: 'moon',
         offset: new Phaser.Math.Vector2(0, 0),
-        collisionGroup: COLLISION_GROUPS.PLAYER,
     },
-    speed: 15,
+    speed: 600,
 }
 
 export const SHOOTPOINTS_NORMAL : IShootPoints = {
@@ -61,16 +58,13 @@ export const SHOOTPOINTS_FOCUSED : IShootPoints = {
 class PlayerPorjectile extends Projectile{
     constructor(scene: Phaser.Scene, data: IProjectileData){
         super(scene, data);
-
-        this.setCollidesWith([COLLISION_CATEGORIES.blue, COLLISION_CATEGORIES.red]);
     }
 
     protected move(point: IVectorPoint, speed: number){
+        //this.scene.physics.velocityFromRotation(point.theta, speed, this.body.velocity);
         let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(speed);
         this.setVelocity(velocity.x, velocity.y);
-
-        //this.y += speed;
-        //this.scene.physics.velocityFromRotation(point.theta, speed, this.body.velocity);
+        this.setRotation(point.theta);
     }
 }
 

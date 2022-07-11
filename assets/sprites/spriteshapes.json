@@ -1,0 +1,89 @@
+{
+	"generator_info": "Shape definitions generated with PhysicsEditor. Visit https://www.codeandweb.com/physicseditor",
+	"touhouenna": {
+		"type": "fromPhysicsEditor",
+		"label": "enna",
+		"isStatic": false,
+		"density": 0.1,
+		"restitution": 0,
+		"friction": 0,
+		"frictionAir": 0,
+		"frictionStatic": 0,
+		"collisionFilter": {
+			"group": -1,
+			"category": 2,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "enna",
+				"isSensor": true,
+				"circle": {
+					"x": 30,
+					"y": 30,
+					"radius": 6
+				}
+			},
+			{
+				"label": "graze",
+				"circle": {
+					"x": 30,
+					"y": 30,
+					"radius": 40
+				}
+			}
+		]
+	},
+	"shotBlue": {
+		"type": "fromPhysicsEditor",
+		"label": "shotBlue",
+		"isStatic": false,
+		"density": 0.1,
+		"restitution": 0,
+		"friction": 0,
+		"frictionAir": 0,
+		"frictionStatic": 0,
+		"collisionFilter": {
+			"group": -2,
+			"category": 1,
+			"mask": 2
+		},
+		"fixtures": [
+			{
+				"label": "shotBlue",
+				"isSensor": true,
+				"circle": {
+					"x": 16,
+					"y": 16,
+					"radius": 6
+				}
+			}
+		]
+	},
+	"shotRed": {
+		"type": "fromPhysicsEditor",
+		"label": "shotRed",
+		"isStatic": false,
+		"density": 0.1,
+		"restitution": 0,
+		"friction": 0,
+		"frictionAir": 0,
+		"frictionStatic": 0,
+		"collisionFilter": {
+			"group": -2,
+			"category": 1,
+			"mask": 2
+		},
+		"fixtures": [
+			{
+				"label": "shotRed",
+				"isSensor": true,
+				"circle": {
+					"x": 16,
+					"y": 16,
+					"radius": 6
+				}
+			}
+		]
+	}
+}
