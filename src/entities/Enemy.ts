@@ -3,15 +3,21 @@ import {IEntity, IVectorPoint, COLLISION_GROUPS } from './Entity';
 import { PoolGroup, PoolManager } from '../@types/Pool';
 import { Projectile, IProjectileData } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
-import { SHOTPOOL_ENEMY, EnemyShotBlue, EnemyShotRed, DATA_SHOTBLUE as DATA_SHOTBLUE, DATA_SHOTRED as DATA_SHOTRED } from '../objects/Projectile_Enemy';
+import { SHOTPOOL_ENEMY, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE as DATA_SHOTBLUE, DATA_SHOTRED as DATA_SHOTRED } from '../objects/Projectile_Enemy';
 import { Character, Characters } from './Character';
 
 export class Enemy extends Character{
-    constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity, hp: number, speed: number, projectileManager: PoolManager){
-        super(scene, { pos, texture, hitRadius: 0, frame, offset }, hp, speed, projectileManager);
+    static bluePManager : PoolManager;
+    static redPManager : PoolManager;
 
-        this.projectileManager?.addPGroup(DATA_SHOTBLUE.entData.texture, EnemyShotBlue, SHOTPOOL_ENEMY);
-        this.projectileManager?.addPGroup(DATA_SHOTRED.entData.texture, EnemyShotRed, SHOTPOOL_ENEMY);
+    constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity, hp: number, speed: number){
+        super(scene, { pos, texture, hitRadius: 0, frame, offset }, hp, speed);
+
+        Enemy.bluePManager = new PoolManager(scene, Enemy);
+        Enemy.redPManager = new PoolManager(scene, Enemy);
+
+        Enemy.bluePManager.addPGroup(DATA_SHOTBLUE.entData.texture, EnemyPBlue, SHOTPOOL_ENEMY);
+        Enemy.redPManager.addPGroup(DATA_SHOTRED.entData.texture, EnemyPRed, SHOTPOOL_ENEMY);
         //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
     }
 
@@ -47,6 +53,10 @@ export class Enemy extends Character{
     update(){
         //super.update();
         this.actionHandling();
+    }
+
+    public handleCollision() {
+        this.setStatus(false);
     }
 
     protected actionHandling(){

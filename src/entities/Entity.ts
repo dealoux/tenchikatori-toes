@@ -5,6 +5,19 @@ export interface IVectorPoint{
     theta: number;
 }
 
+export interface IEntity{
+    pos: Phaser.Math.Vector2;
+    texture: string;
+    frame?: string | number;
+    hitRadius?: number;
+    offset?: Phaser.Math.Vector2;
+}
+
+export interface IFunctionDelegate{
+    () : void;
+}
+
+
 export enum COLLISION_GROUPS{
 	PLAYER = -1,
 	ENEMY = -2,
@@ -15,18 +28,6 @@ export enum COLLISION_CATEGORIES{
 	red = 2,
 	blue = 4,
 }
-
-export interface IEntity{
-    pos: Phaser.Math.Vector2;
-    texture: string;
-    frame?: string | number;
-    hitRadius?: number;
-    offset?: Phaser.Math.Vector2;
-}
-
-type MyMatterBodyConfig = Phaser.Types.Physics.Matter.MatterBodyConfig & {
-    shape?: string | Phaser.Types.Physics.Matter.MatterSetBodyConfig;
-};
 
 export class Entity extends Phaser.Physics.Arcade.Sprite{
     constructor(scene: Phaser.Scene, { pos, texture, hitRadius = 0, frame }: IEntity, active?: boolean | false){
@@ -55,7 +56,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
 
     create(){
         //this.setOnCollide(this.handleCollision);
-        console.log('bruh');
+        //console.log('bruh');
     }
 
     update() {
@@ -72,25 +73,20 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         return this.body as Phaser.Physics.Arcade.Body;
     }
 
-    protected handleCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData){
-        console.dir(data);
+    public handleCollision(){
     }
 
     protected inCameraView(){
         return this.scene.cameras.main.worldView.contains(this.x, this.y);
     }
 
-    protected setStatus(status: boolean | false){
+    public setStatus(status: boolean | false){
         this.setActive(status);
         this.setVisible(status);
 
         if(status == false){
-        }
-            
-        else{
             this.removeInteractive();
+            //this.disableBody(!status, !status);
         }
-
-        //this.disableBody(!status, !status);
     }
 }

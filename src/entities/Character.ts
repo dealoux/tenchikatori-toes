@@ -21,7 +21,6 @@ export class Character extends Entity{
     speed: number;
     lastShotTime: number;
     collisionCategory?: number;
-    projectileManager?: PoolManager;
 
     constructor(scene: Phaser.Scene, { pos, texture, hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
         super(scene, { pos, texture, hitRadius, frame }, true);
@@ -30,7 +29,6 @@ export class Character extends Entity{
         this.speed = speed;
         this.state = CharacterState.ALIVE;
         this.lastShotTime = 0;
-        this.projectileManager = projectileManager;
     }
 
     // protected preUpdate(time: number, delta: number){
@@ -59,13 +57,13 @@ export class Character extends Entity{
        // this.setVelocityX(speed);
     }
 
-    protected time(){
+    public time(){
         //return this.scene.time.now;
         return this.scene.game.getTime();
     }
 
-    protected spawnProjectile(name: string, point: IVectorPoint){
-        this.projectileManager?.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.x + point.pos.x, this.y + point.pos.y), theta: point.theta });
+    protected spawnProjectile(manager: PoolManager, name: string, point: IVectorPoint){
+        return manager.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.x + point.pos.x, this.y + point.pos.y), theta: point.theta });
     }
 
     protected setMode(mode: number){

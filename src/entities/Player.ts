@@ -1,14 +1,10 @@
 import Phaser, { Physics } from 'phaser';
-import {IEntity, IVectorPoint, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
+import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
 import { InputHandler, INPUT_EVENTS } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
 import { IShootPoints, DATA_PLAYERSHOT1, DATA_PLAYERSHOT2, DATA_PLAYERSPECIAL, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, SHOTPOOL_PLAYER, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
 import { Character, Characters } from './Character';
-
-interface functionDelegate{
-    () : void;
-}
 
 const SPEED_NORMAL = 4;
 const SPEED_FOCUSED = SPEED_NORMAL*.5;
@@ -26,10 +22,11 @@ const HITBOX = 8;
 const GRAZE_HITBOX = 40;
 
 export class Player extends Character{
-    actionDelegate : functionDelegate;
-    inputHandlingDelegate: functionDelegate;
+    actionDelegate : IFunctionDelegate;
+    inputHandlingDelegate: IFunctionDelegate;
 
     hitbox: Phaser.GameObjects.Rectangle;
+    projectileManager: PoolManager;
     currShootPoints : IShootPoints;
     shots : Function[];
     shotCounts : number;
@@ -40,7 +37,7 @@ export class Player extends Character{
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
         let shapes = scene.game.cache.json.get('shapes');
         
-        super(scene, { pos, texture, hitRadius: GRAZE_HITBOX, frame, offset }, 3, SPEED_NORMAL, new PoolManager(scene, Player));
+        super(scene, { pos, texture, hitRadius: GRAZE_HITBOX, frame, offset }, 3, SPEED_NORMAL);
         
         this.actionDelegate = this.shoot;
         this.inputHandlingDelegate = this.inputHandling;
@@ -54,15 +51,16 @@ export class Player extends Character{
         this.currShootPoints = SHOOTPOINTS_NORMAL;
         this.specials = 3;
         this.castingSpecial = false;
-        this.projectileManager?.addPGroup(DATA_PLAYERSHOT1.entData.texture, PlayerShot1, SHOTPOOL_PLAYER);
-        this.projectileManager?.addPGroup(DATA_PLAYERSHOT2.entData.texture, PlayerShot2, SHOTPOOL_PLAYER);
+        this.projectileManager = new PoolManager(scene, Player);
+        this.projectileManager.addPGroup(DATA_PLAYERSHOT1.entData.texture, PlayerShot1, SHOTPOOL_PLAYER);
+        this.projectileManager.addPGroup(DATA_PLAYERSHOT2.entData.texture, PlayerShot2, SHOTPOOL_PLAYER);
         //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
 
         this.shots = [
-            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_1); },
-            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_2); },
-            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_3); },
-            function(player: Player) { player.spawnProjectile(DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_4); },
+            function(player: Player) { player.spawnProjectile(player.projectileManager, DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_1); },
+            function(player: Player) { player.spawnProjectile(player.projectileManager, DATA_PLAYERSHOT1.entData.texture, player.currShootPoints.point_2); },
+            function(player: Player) { player.spawnProjectile(player.projectileManager, DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_3); },
+            function(player: Player) { player.spawnProjectile(player.projectileManager, DATA_PLAYERSHOT2.entData.texture, player.currShootPoints.point_4); },
         ]
 
         this.shotCounts = 4;

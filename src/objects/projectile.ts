@@ -1,9 +1,23 @@
-import Phaser from 'phaser';
-import { IEntity, COLLISION_GROUPS, IVectorPoint, COLLISION_CATEGORIES, Entity } from '../entities/Entity';
+import Phaser, { Physics } from 'phaser';
+import { PoolGroup } from '../@types/Pool';
+import { Character } from '../entities/Character';
+import { IEntity, COLLISION_GROUPS, IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate } from '../entities/Entity';
 
 export interface IProjectileData{
     entData: IEntity,
     speed: number,
+}
+
+export interface IFireArgs{
+    x: number,
+    y: number,
+    angle?: number | 0,
+    speed: number,
+    gx?: number | 0,
+    gy: number | 0,
+    tracking: boolean | false,
+    scaleSpeed: number | 0,
+    target: Entity | undefined, 
 }
 
 export class Projectile extends Entity{
@@ -25,30 +39,24 @@ export class Projectile extends Entity{
         super.create();
     }
 
-    // protected handleCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData){
-    //     super.handleCollision(data);
+    public handleCollision(){
+        this.setStatus(false);
+    }
 
-    //     // const {bodyA, bodyB} = data;
-    //     // switch(bodyB.gameObject){
-
-    //     // }
-    // }
-
-    // fire({x, y, angle = 0, speed, gx = 0, gy = 0, tracking = false, texture = 'bullet5', scaleSpeed = 0, target = null}) {
-    //     this.scene.shootSFX.play();
-    //         this.enableBody(true, x, y, true, true);   
-    //     this.setTexture(texture).setSize()
-    //     this.setScale(1)
-    //     this.tracking = tracking;
-    //     this.scaleSpeed = scaleSpeed;
-    //     this.angle = angle;
-    //     if (target) {
-    //       this.scene.physics.moveToObject(this, this.scene.player, speed)
-    //     } else {
-    //       this.scene.physics.velocityFromAngle(angle, speed, this.body.velocity);    
-    //     }
-    //     this.body.gravity.set(gx, gy); // apply gravity to the physics body
-    // }
+    fire({x, y, angle = 0, speed, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target = undefined} : IFireArgs) {
+        //this.scene.shootSFX.play();
+        this.enableBody(true, x, y, true, true);   
+        this.setScale(1);
+        this.tracking = tracking;
+        this.scaleSpeed = scaleSpeed;
+        this.angle = angle;
+        if (target) {
+          this.scene.physics.moveToObject(this, target, speed)
+        } else {
+          this.scene.physics.velocityFromRotation(angle, speed, this.body.velocity);    
+        }
+        this.body.gravity.set(gx, gy); // apply gravity to the physics body
+    }
 
     preUpdate(time: number, delta: number): void {
         super.preUpdate(time, delta);
@@ -59,7 +67,65 @@ export class Projectile extends Entity{
         }
     }
 
-    // updateTransform(point: VPoint){
+    // updateTransform(point: IVectorPoint){
     //     super.updateTransform(point);
     // }
+}
+
+export interface IPPatternData{
+    nextFire: number;
+    fireRate: number;
+    pSpeed: number;
+}
+
+export interface IWavePatternData extends IPPatternData{
+    wave: Array<number>;
+    waveIndex: number;
+}
+
+export abstract class PPattern{
+    parent: Character;
+    projectile: PoolGroup | undefined;
+    pPoint: IVectorPoint;
+    updatePattern: IFunctionDelegate;
+
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined){
+        this.parent = parent;
+        this.pPoint = pPoint;
+        this.projectile = p;
+        this.updatePattern = function() {};
+    }
+}
+
+export class PPatternWave extends PPattern{
+    pData: IWavePatternData;
+
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IWavePatternData){
+        super(parent, pPoint, p);
+        this.pData = pData;
+        
+        this.updatePattern = Math.abs(pPoint.theta) == 90 ? this.waveVertical : this.waveHorizontal;
+    }
+
+    private waveBase(gx = 0, gy = 0){
+        if(this.parent.time() < this.pData.nextFire) { return; }
+
+        const x = this.parent.x + this.pPoint.pos.x;
+        const y = this.parent.y + this.pPoint.pos.y;
+        this.projectile?.getFirstDead(false).fire({x: x, y: y, angle: this.pPoint.theta, speed : this.pData.pSpeed, gx: gx, gy: gy});
+        this.pData.waveIndex++;
+        if (this.pData.waveIndex === this.pData.wave.length) {
+            this.pData.waveIndex = 0;
+        }
+
+        this.pData.nextFire = this.parent.time() + this.pData.fireRate;
+    }
+
+    waveVertical() {
+        this.waveBase(0, this.pData.wave[this.pData.waveIndex]);
+    }
+
+    waveHorizontal() {
+        this.waveBase(this.pData.wave[this.pData.waveIndex]);
+    }
 }

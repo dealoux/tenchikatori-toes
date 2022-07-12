@@ -35,13 +35,10 @@ class EnemyProjectile extends Projectile{
     protected move(point: IVectorPoint, speed: number){
         let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(speed);
         this.setVelocity(velocity.x, velocity.y);
-
-        //this.y += speed;
-        //this.scene.physics.velocityFromRotation(point.theta, speed, this.body.velocity);
     }
 }
 
-export class EnemyShotBlue extends EnemyProjectile{
+export class EnemyPBlue extends EnemyProjectile{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_SHOTBLUE);
 
@@ -54,7 +51,7 @@ export class EnemyShotBlue extends EnemyProjectile{
     }
 }
 
-export class EnemyShotRed extends EnemyProjectile{
+export class EnemyPRed extends EnemyProjectile{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_SHOTRED);
 
