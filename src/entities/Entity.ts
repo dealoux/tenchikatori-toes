@@ -18,11 +18,11 @@ export interface IFunctionDelegate{
 }
 
 
-export enum COLLISION_GROUPS{
-	PLAYER = -1,
-	ENEMY = -2,
-    OTHER = -3,
-}
+// export enum COLLISION_GROUPS{
+// 	PLAYER = -1,
+// 	ENEMY = -2,
+//     OTHER = -3,
+// }
 
 export enum COLLISION_CATEGORIES{
 	red = 2,
@@ -66,7 +66,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     updateTransform(point: IVectorPoint){
         this.setPosition(point.pos.x, point.pos.y);
         this.setRotation(point.theta);
-        this.setStatus(true);
+        this.enableEntity(point.pos);
     }
 
     getBody(){
@@ -80,13 +80,20 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         return this.scene.cameras.main.worldView.contains(this.x, this.y);
     }
 
-    public setStatus(status: boolean | false){
+    public enableEntity(pos: Phaser.Math.Vector2){
+        this.setStatus(true);
+        this.enableBody(true, pos.x, pos.y, true, true);
+    }
+
+    public disableEntity(){
+        this.setStatus(false);
+
+        //this.removeInteractive();
+        this.disableBody(true, true);
+    }
+
+    protected setStatus(status: boolean | false){
         this.setActive(status);
         this.setVisible(status);
-
-        if(status == false){
-            this.removeInteractive();
-            //this.disableBody(!status, !status);
-        }
     }
 }

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { COLLISION_GROUPS, COLLISION_CATEGORIES } from '../entities/Entity';
+import { COLLISION_CATEGORIES } from '../entities/Entity';
 import { Player } from '../entities/Player';
 import { Projectile, IProjectileData } from './Projectile';
 import { IVectorPoint } from '../entities/Entity';

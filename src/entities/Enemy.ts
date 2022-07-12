@@ -1,10 +1,9 @@
 import Phaser from 'phaser';
-import {IEntity, IVectorPoint, COLLISION_GROUPS } from './Entity';
-import { PoolGroup, PoolManager } from '../@types/Pool';
-import { Projectile, IProjectileData } from '../objects/Projectile';
-import eventsCenter from '../plugins/EventsCentre';
+import {IEntity, IVectorPoint } from './Entity';
+import { PoolManager } from '../@types/Pool';
 import { SHOTPOOL_ENEMY, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy';
 import { Character, Characters } from './Character';
+import eventsCenter from '../plugins/EventsCentre';
 
 export class Enemy extends Character{
     static bluePManager : PoolManager;

@@ -3,24 +3,18 @@ import { Dialog, DialogUpdateAction } from '../objects/Dialog';
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
 import { Player } from '../entities/Player';
-import { IEntity, COLLISION_GROUPS, COLLISION_CATEGORIES } from '../entities/Entity';
 import { Enemy } from '../entities/Enemy';
 import { Characters } from '../entities/Character';
-import { PoolManager } from '../@types/Pool';
 
 export const GAMEPLAY_SIZE = {
 	WIDTH: WINDOW_WIDTH * .7,
 	HEIGHT: WINDOW_HEIGHT * .9,
+	OFFSET: 50,
 }
-
-const GAMEPLAY_OFFSET = 50;
 
 export class GameplayScene extends Scene {
 	dialog?: IDialog;
 	player?: Player;
-
-	bluePManager?: PoolManager;
-    redPManager?: PoolManager;
 
 	constructor(name: string) {
 		super(name);
@@ -46,7 +40,7 @@ export class GameplayScene extends Scene {
 
 		Enemy.initPManager(this);
 
-		this.cameras.main.setViewport(GAMEPLAY_OFFSET, GAMEPLAY_OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
+		this.cameras.main.setViewport(GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 	}
 
@@ -65,13 +59,9 @@ export class GameplayScene extends Scene {
 }
 
 export const HUD_SIZE = {
-	WIDTH: WINDOW_WIDTH-GAMEPLAY_OFFSET-GAMEPLAY_SIZE.WIDTH,
+	WIDTH: WINDOW_WIDTH-GAMEPLAY_SIZE.OFFSET-GAMEPLAY_SIZE.WIDTH,
 	HEIGHT: WINDOW_HEIGHT * .9,
-};
-
-const HUDOFFSET = {
-	x: GAMEPLAY_SIZE.WIDTH + GAMEPLAY_OFFSET + 30,
-	y: GAMEPLAY_OFFSET,
+	OFFSET: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH + GAMEPLAY_SIZE.OFFSET + 30, GAMEPLAY_SIZE.OFFSET),
 };
 
 enum HUD_TEXT {
@@ -95,7 +85,7 @@ export class HUDScene extends Scene{
 	}
 
 	create() {
-		this.cameras.main.setViewport(HUDOFFSET.x, HUDOFFSET.y, HUD_SIZE.WIDTH, HUD_SIZE.HEIGHT);
+		this.cameras.main.setViewport(HUD_SIZE.OFFSET.x, HUD_SIZE.OFFSET.y, HUD_SIZE.WIDTH, HUD_SIZE.HEIGHT);
 
 		this.input.on('pointerdown', () => {
 			this.dialog?.update(this, { dialogUpdate: DialogUpdateAction.PROGRESS });

@@ -1,5 +1,5 @@
 import Phaser, { Physics } from 'phaser';
-import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_GROUPS, COLLISION_CATEGORIES } from './Entity';
+import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES } from './Entity';
 import { InputHandler, INPUT_EVENTS } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
@@ -43,7 +43,6 @@ export class Player extends Character{
         this.inputHandlingDelegate = this.inputHandling;
         
         //console.dir(this.getBody());
-        this.setMode(COLLISION_CATEGORIES.red);
 
         this.hitbox = scene.add.rectangle(pos.x, pos.y, HITBOX, HITBOX, 0x202A44).setVisible(false);
         scene.physics.add.existing(this.hitbox);

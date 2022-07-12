@@ -22,7 +22,6 @@ After running `npm run build`, the files you need for production will be on the 
 ## Important Links
 
 - Game Engine: [Phaser 3](https://newdocs.phaser.io/docs/) 
-- Physics Engine: [Matter.js](https://brm.io/matter-js/), 
 - Examples: [Phaser 3 examples](http://labs.phaser.io/index.html).
 
 A product of [EnnaCord](https://discord.gg/enna).

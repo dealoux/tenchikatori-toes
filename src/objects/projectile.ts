@@ -1,7 +1,7 @@
 import Phaser, { Physics } from 'phaser';
 import { PoolGroup } from '../@types/Pool';
 import { Character } from '../entities/Character';
-import { IEntity, COLLISION_GROUPS, IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate } from '../entities/Entity';
+import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate } from '../entities/Entity';
 
 export interface IProjectileData{
     entData: IEntity,
@@ -40,12 +40,13 @@ export class Projectile extends Entity{
     }
 
     public handleCollision(){
-        this.setStatus(false);
+        this.disableEntity();
     }
 
     fire({x, y, angle = 0, speed, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target = undefined} : IFireArgs) {
         //this.scene.shootSFX.play();
-        this.enableBody(true, x, y, true, true);
+        // this.enableBody(true, x, y, true, true);
+        this.enableEntity(new Phaser.Math.Vector2(x, y));
         this.setScale(1);
         this.tracking = tracking;
         this.scaleSpeed = scaleSpeed;
@@ -63,13 +64,9 @@ export class Projectile extends Entity{
 
         // out of view check
         if(!this.inCameraView()){
-            this.setStatus(false);
+            this.disableEntity();
         }
     }
-
-    // updateTransform(point: IVectorPoint){
-    //     super.updateTransform(point);
-    // }
 }
 
 export interface IPPatternData{
