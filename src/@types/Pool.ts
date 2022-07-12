@@ -13,7 +13,7 @@ export class PoolGroup extends Phaser.GameObjects.Group{
             visible: false,
         });
 
-        this.children.each((bullet) => bullet.removeInteractive());
+        //this.children.each((c) => c.removeInteractive());
     }
 
     getInstance(point : IVectorPoint){
@@ -38,12 +38,12 @@ export class PoolManager extends Phaser.Physics.Arcade.Factory{
         this.owner = owner;
     }
 
-    addPGroup(name: string, type: Function, quantity: number = 1){
+    addGroup(name: string, type: Function, quantity: number = 1){
         if(!this.pList.has(name))
             this.pList.set(name, new PoolGroup(this.scene, name, type, quantity));
     }
 
-    getPGroup(name: string){
+    getGroup(name: string){
         return this.pList.get(name);
     }
 

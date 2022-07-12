@@ -54,11 +54,10 @@ export default class GameplayStage1 extends GameplayScene {
 		this.mobManager = new PoolManager(this, GameplayScene);
 		this.handleYousei1();
 
-		// this.physics.add.overlap(this.player as Player, Enemy.bluePManager.getPGroup(DATA_SHOTBLUE.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
-		// this.physics.add.overlap(this.player as Player, Enemy.redPManager.getPGroup(DATA_SHOTRED.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, Enemy.redPManager.getGroup(DATA_SHOTRED.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
 
-		this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, Enemy.bluePManager.getPGroup(DATA_SHOTBLUE.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, Enemy.redPManager.getPGroup(DATA_SHOTRED.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
+		//this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, this.yousei1 as Enemy, this.hitPlayer, undefined, this);
 	}
 
 	update() {
@@ -92,9 +91,8 @@ export default class GameplayStage1 extends GameplayScene {
 	protected hitPlayer(playerHitbox: any, p: any) {
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
 		p.handleCollision();
-		//p.setStatus(false);
 
-		console.log(typeof playerHitbox + " " + typeof p);
+		// console.log(typeof playerHitbox + " " + typeof p);
 		
 		// this.explosion
 		//   .setSpeedX(0.2 * bullet.body.velocity.x)

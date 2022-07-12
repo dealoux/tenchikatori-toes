@@ -3,7 +3,7 @@ import {IEntity, IVectorPoint, COLLISION_GROUPS } from './Entity';
 import { PoolGroup, PoolManager } from '../@types/Pool';
 import { Projectile, IProjectileData } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
-import { SHOTPOOL_ENEMY, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE as DATA_SHOTBLUE, DATA_SHOTRED as DATA_SHOTRED } from '../objects/Projectile_Enemy';
+import { SHOTPOOL_ENEMY, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy';
 import { Character, Characters } from './Character';
 
 export class Enemy extends Character{
@@ -12,13 +12,6 @@ export class Enemy extends Character{
 
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity, hp: number, speed: number){
         super(scene, { pos, texture, hitRadius: 0, frame, offset }, hp, speed);
-
-        Enemy.bluePManager = new PoolManager(scene, Enemy);
-        Enemy.redPManager = new PoolManager(scene, Enemy);
-
-        Enemy.bluePManager.addPGroup(DATA_SHOTBLUE.entData.texture, EnemyPBlue, SHOTPOOL_ENEMY);
-        Enemy.redPManager.addPGroup(DATA_SHOTRED.entData.texture, EnemyPRed, SHOTPOOL_ENEMY);
-        //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
     }
 
     static preload(scene: Phaser.Scene) {
@@ -26,6 +19,14 @@ export class Enemy extends Character{
         scene.load.image(DATA_SHOTRED.entData.texture, 'assets/sprites/touhou_test/shotRed.png');
         scene.load.atlas(Characters.YOUSEIS, 'assets/sprites/touhou_test/youseis.png', 'assets/sprites/touhou_test/youseis.json');
 	}
+
+    static initPManager(scene: Phaser.Scene){
+        Enemy.bluePManager = new PoolManager(scene, Enemy);
+        Enemy.redPManager = new PoolManager(scene, Enemy);
+
+        Enemy.bluePManager.addGroup(DATA_SHOTBLUE.entData.texture, EnemyPBlue, SHOTPOOL_ENEMY);
+        Enemy.redPManager.addGroup(DATA_SHOTRED.entData.texture, EnemyPRed, SHOTPOOL_ENEMY);
+    }
     
     getDamage(value?: number): void {
         this.scene.tweens.add({

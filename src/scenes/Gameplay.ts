@@ -6,6 +6,7 @@ import { Player } from '../entities/Player';
 import { IEntity, COLLISION_GROUPS, COLLISION_CATEGORIES } from '../entities/Entity';
 import { Enemy } from '../entities/Enemy';
 import { Characters } from '../entities/Character';
+import { PoolManager } from '../@types/Pool';
 
 export const GAMEPLAY_SIZE = {
 	WIDTH: WINDOW_WIDTH * .7,
@@ -17,6 +18,9 @@ const GAMEPLAY_OFFSET = 50;
 export class GameplayScene extends Scene {
 	dialog?: IDialog;
 	player?: Player;
+
+	bluePManager?: PoolManager;
+    redPManager?: PoolManager;
 
 	constructor(name: string) {
 		super(name);
@@ -39,6 +43,8 @@ export class GameplayScene extends Scene {
 		//this.player.handlingInput(false);
 		
 		//this.eventSub();
+
+		Enemy.initPManager(this);
 
 		this.cameras.main.setViewport(GAMEPLAY_OFFSET, GAMEPLAY_OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);

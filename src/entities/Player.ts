@@ -52,8 +52,8 @@ export class Player extends Character{
         this.specials = 3;
         this.castingSpecial = false;
         this.projectileManager = new PoolManager(scene, Player);
-        this.projectileManager.addPGroup(DATA_PLAYERSHOT1.entData.texture, PlayerShot1, SHOTPOOL_PLAYER);
-        this.projectileManager.addPGroup(DATA_PLAYERSHOT2.entData.texture, PlayerShot2, SHOTPOOL_PLAYER);
+        this.projectileManager.addGroup(DATA_PLAYERSHOT1.entData.texture, PlayerShot1, SHOTPOOL_PLAYER);
+        this.projectileManager.addGroup(DATA_PLAYERSHOT2.entData.texture, PlayerShot2, SHOTPOOL_PLAYER);
         //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
 
         this.shots = [

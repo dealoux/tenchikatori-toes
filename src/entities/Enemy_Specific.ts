@@ -10,7 +10,6 @@ export enum Enemies{
     yousei1 = 'yousei1',
 }
 
-
 export enum Yousei1Anims{
     idle = 'yousei1_idle',
     run = 'yousei1_run',
@@ -38,7 +37,7 @@ export class Yousei1 extends Enemy{
             pos: new Phaser.Math.Vector2(0, 30), theta: Phaser.Math.DegToRad(90),
         }
 
-        this.wavePattern = new PPatternWave(this, this.shootPoint, Enemy.redPManager.getPGroup(DATA_SHOTRED.entData.texture), Yousei1WaveData);
+        this.wavePattern = new PPatternWave(this, this.shootPoint, Enemy.redPManager.getGroup(DATA_SHOTRED.entData.texture), Yousei1WaveData);
     }
 
     create(){

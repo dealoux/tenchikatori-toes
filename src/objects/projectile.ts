@@ -45,7 +45,7 @@ export class Projectile extends Entity{
 
     fire({x, y, angle = 0, speed, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target = undefined} : IFireArgs) {
         //this.scene.shootSFX.play();
-        this.enableBody(true, x, y, true, true);   
+        this.enableBody(true, x, y, true, true);
         this.setScale(1);
         this.tracking = tracking;
         this.scaleSpeed = scaleSpeed;
