@@ -48,13 +48,13 @@ export class Character extends Entity{
     // }
 
     protected moveVertically(speed: number){
-        this.y += speed;
-        //this.setVelocityY(speed);
+        //this.y += speed;
+        this.setVelocityY(speed);
     }
 
     protected moveHorizontally(speed: number){
-        this.x += speed;
-       // this.setVelocityX(speed);
+        //this.x += speed;
+        this.setVelocityX(speed);
     }
 
     public time(){

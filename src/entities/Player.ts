@@ -6,7 +6,7 @@ import eventsCenter from '../plugins/EventsCentre';
 import { IShootPoints, DATA_PLAYERSHOT1, DATA_PLAYERSHOT2, DATA_PLAYERSPECIAL, SHOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, SHOTPOOL_PLAYER, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
 import { Character, Characters } from './Character';
 
-const SPEED_NORMAL = 4;
+const SPEED_NORMAL = 250;
 const SPEED_FOCUSED = SPEED_NORMAL*.5;
 
 export enum PlayerState{
@@ -126,12 +126,12 @@ export class Player extends Character{
 
     protected moveVertically(y: number){
         super.moveVertically(y);
-        this.hitbox.y = this.y;
+        this.hitbox.body.velocity.y = this.body.velocity.y;
     }
 
     protected moveHorizontally(x: number){
         super.moveHorizontally(x);
-        this.hitbox.x = this.x;
+        this.hitbox.body.velocity.x = this.body.velocity.x;
     }
 
     private emptyFunction(){ }
@@ -143,14 +143,21 @@ export class Player extends Character{
         if (inputs.Up) {
             this.moveVertically(-this.speed);
         }
-        if (inputs.Down) {
-            this.moveVertically(this.speed)
+        else if (inputs.Down) {
+            this.moveVertically(this.speed);
         }
+        else{
+            this.moveVertically(0);
+        }
+
         if (inputs.Left) {
             this.moveHorizontally(-this.speed);
         }
-        if (inputs.Right) {
+        else if (inputs.Right) {
             this.moveHorizontally(this.speed);
+        }
+        else{
+            this.moveHorizontally(0);
         }
 
         // switch mode
