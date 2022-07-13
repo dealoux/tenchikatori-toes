@@ -1,11 +1,11 @@
-import Phaser, { Physics } from 'phaser';
+import Phaser from 'phaser';
 import { PoolGroup } from '../@types/Pool';
 import { Character } from '../entities/Character';
 import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate } from '../entities/Entity';
 
-export interface IProjectileData{
-    entData: IEntity,
+export interface IProjectileData extends IEntity{
     speed: number,
+    damage?: number,
 }
 
 export interface IFireArgs{
@@ -24,13 +24,15 @@ export class Projectile extends Entity{
     scene: Phaser.Scene;
     tracking: boolean;
     scaleSpeed: integer;
+    damage: number;
 
     constructor(scene: Phaser.Scene, data: IProjectileData, tracking = false, scaleSpeed = 0){
-        super(scene, { pos: data.entData.pos, texture: data.entData.texture, hitRadius: data.entData.hitRadius, frame: data.entData.frame });
+        super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame });
         
         this.scene = scene;
         this.tracking = tracking;
         this.scaleSpeed = scaleSpeed;
+        this.damage = data.damage || 0;
 
         //this.setCollidesWith([COLLISION_CATEGORIES.blue, COLLISION_CATEGORIES.red]);
     }

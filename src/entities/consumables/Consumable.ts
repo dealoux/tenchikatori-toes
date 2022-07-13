@@ -1,36 +1,42 @@
-import Phaser, { Physics } from 'phaser';
-import { IProjectileData } from '../../objects/Projectile';
+import Phaser from 'phaser';
+import { IProjectileData, Projectile } from '../../objects/Projectile';
 import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate } from '../Entity';
 
-export class Consumable extends Entity{
-    scene: Phaser.Scene;
-    tracking: boolean;
-    scaleSpeed: integer;
+export const DATA_POWER_ITEM : IProjectileData = {
+    pos: Phaser.Math.Vector2.ZERO,
+    texture: { key: 'powerItem', path: 'assets/sprites/touhou_test/powerItem.png' },
+    speed: 100,
+}
 
-    constructor(scene: Phaser.Scene, data: IProjectileData, tracking = false, scaleSpeed = 0){
-        super(scene, { pos: data.entData.pos, texture: data.entData.texture, hitRadius: data.entData.hitRadius, frame: data.entData.frame });
-        
-        this.scene = scene;
-        this.tracking = tracking;
-        this.scaleSpeed = scaleSpeed;
+export const DATA_SCORE_ITEM : IProjectileData = {
+    pos: Phaser.Math.Vector2.ZERO,
+    texture: { key: 'scoreItem', path: 'assets/sprites/touhou_test/scoreItem.png' },
+    speed: 100,
+}
 
-        //this.setCollidesWith([COLLISION_CATEGORIES.blue, COLLISION_CATEGORIES.red]);
+export const ITEM_POOL = 40;
+
+export class Consumable extends Projectile{
+    constructor(scene: Phaser.Scene, data: IProjectileData){
+        super(scene, data);
     }
 
-    create(){
-        super.create();
+    protected move(point: IVectorPoint, speed: number){
+        //this.scene.physics.velocityFromRotation(point.theta, speed, this.body.velocity);
+        let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(speed);
+        this.setVelocity(velocity.x, velocity.y);
+        this.setRotation(point.theta);
     }
+}
 
-    public handleCollision(){
-        this.disableEntity();
+export class PowerItem extends Consumable{
+    constructor(scene: Phaser.Scene){
+        super(scene, DATA_POWER_ITEM);
     }
+}
 
-    preUpdate(time: number, delta: number): void {
-        super.preUpdate(time, delta);
-
-        // out of view check
-        if(!this.inCameraView()){
-            this.disableEntity();
-        }
+export class ScoreItem extends Consumable{
+    constructor(scene: Phaser.Scene){
+        super(scene, DATA_SCORE_ITEM);
     }
 }

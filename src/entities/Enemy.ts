@@ -1,30 +1,41 @@
 import Phaser from 'phaser';
-import {Entity, IEntity, IVectorPoint } from './Entity';
+import { Entity, IEntity, ITexture, IVectorPoint } from './Entity';
 import { PoolManager } from '../@types/Pool';
-import { SHOTPOOL_ENEMY, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy';
-import { Character, Characters } from './Character';
+import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy';
+import { Character } from './Character';
+import { Projectile } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM, ITEM_POOL, PowerItem, ScoreItem } from './consumables/Consumable';
+
+export const YOUSEI1_TEXTURE : ITexture = {
+    key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json'
+}
 
 export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
+    static itemManager : PoolManager;
 
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity, hp: number, speed: number){
-        super(scene, { pos, texture, hitRadius: 0, frame, offset }, hp, speed);
+        super(scene, { pos, texture, frame, offset }, hp, speed);
     }
 
     static preload(scene: Phaser.Scene) {
-        scene.load.image(DATA_SHOTBLUE.entData.texture, 'assets/sprites/touhou_test/shotBlue.png');
-        scene.load.image(DATA_SHOTRED.entData.texture, 'assets/sprites/touhou_test/shotRed.png');
-        scene.load.atlas(Characters.YOUSEIS, 'assets/sprites/touhou_test/youseis.png', 'assets/sprites/touhou_test/youseis.json');
+        scene.load.image(DATA_SHOTBLUE.texture.key, DATA_SHOTBLUE.texture.path);
+        scene.load.image(DATA_SHOTRED.texture.key, DATA_SHOTRED.texture.path);
+        scene.load.atlas(YOUSEI1_TEXTURE.key, YOUSEI1_TEXTURE.path, YOUSEI1_TEXTURE.json);
 	}
 
-    static initPManager(scene: Phaser.Scene){
+    static initPManagers(scene: Phaser.Scene){
         Enemy.bluePManager = new PoolManager(scene, Enemy);
         Enemy.redPManager = new PoolManager(scene, Enemy);
 
-        Enemy.bluePManager.addGroup(DATA_SHOTBLUE.entData.texture, EnemyPBlue, SHOTPOOL_ENEMY);
-        Enemy.redPManager.addGroup(DATA_SHOTRED.entData.texture, EnemyPRed, SHOTPOOL_ENEMY);
+        Enemy.itemManager = new PoolManager(scene, Enemy);
+
+        Enemy.bluePManager.addGroup(DATA_SHOTBLUE.texture.key, EnemyPBlue, ENEMY_PROJECTILE_POOL);
+        Enemy.redPManager.addGroup(DATA_SHOTRED.texture.key, EnemyPRed, ENEMY_PROJECTILE_POOL);
+        Enemy.itemManager.addGroup(DATA_POWER_ITEM.texture.key, PowerItem, ITEM_POOL);
+        Enemy.itemManager.addGroup(DATA_SCORE_ITEM.texture.key, ScoreItem, ITEM_POOL);
     }
     
     getDamage(value?: number): void {
@@ -55,8 +66,18 @@ export class Enemy extends Character{
         this.actionHandling();
     }
 
+    public handlePCollision(p: Projectile){
+        this.hp -= p.damage;
+
+        if(this.hp <= 0){
+            this.disableEntity();
+        }
+        
+        console.log(this.hp);
+    }
+
     public handleCollision(entity: Entity) {
-        this.setStatus(false);
+        this.disableEntity();
     }
 
     protected actionHandling(){

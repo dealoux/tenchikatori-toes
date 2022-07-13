@@ -1,18 +1,11 @@
 import Phaser from 'phaser';
-import { IEntity, Entity, IVectorPoint, COLLISION_CATEGORIES } from './Entity';
-
+import { IEntity, Entity, IVectorPoint, COLLISION_CATEGORIES, ITexture } from './Entity';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
-import { IShootPoints } from '../objects/Projectile_Player';
 
 export enum CharacterState{
     ALIVE,
     DEAD
-}
-
-export enum Characters{
-    PLAYER = 'enna',
-    YOUSEIS = 'youseis'
 }
 
 export class Character extends Entity{
@@ -21,8 +14,8 @@ export class Character extends Entity{
     speed: number;
     lastShotTime: number;
 
-    constructor(scene: Phaser.Scene, { pos, texture, hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
-        super(scene, { pos, texture, hitRadius, frame }, true);
+    constructor(scene: Phaser.Scene, { pos, texture, hitSize: hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
+        super(scene, { pos, texture, hitSize: hitRadius, frame }, true);
 
         this.hp = hp;
         this.speed = speed;

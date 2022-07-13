@@ -25,6 +25,6 @@ export const DefaultConfig = {
 
   render: {
     antialiasGL: false,
-    //pixelArt: true,
+    pixelArt: true,
   },
 }

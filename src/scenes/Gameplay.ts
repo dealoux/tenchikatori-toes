@@ -2,9 +2,8 @@ import Phaser, { Scene } from 'phaser';
 import { Dialog, DialogUpdateAction } from '../objects/Dialog';
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
-import { Player } from '../entities/Player';
+import { Player, PLAYER_TEXTURE } from '../entities/Player';
 import { Enemy } from '../entities/Enemy';
-import { Characters } from '../entities/Character';
 
 export const GAMEPLAY_SIZE = {
 	WIDTH: WINDOW_WIDTH * .7,
@@ -32,13 +31,13 @@ export class GameplayScene extends Scene {
 		});
 
 		//this.add.image(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2, 'godseesall').setScale(1.5).setAlpha(.2);
-		this.player = new Player(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2), texture: Characters.PLAYER } );
+		this.player = new Player(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2), texture: PLAYER_TEXTURE } );
 
 		//this.player.handlingInput(false);
 		
 		//this.eventSub();
 
-		Enemy.initPManager(this);
+		Enemy.initPManagers(this);
 
 		this.cameras.main.setViewport(GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);

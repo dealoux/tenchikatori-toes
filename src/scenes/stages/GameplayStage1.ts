@@ -1,15 +1,13 @@
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../../objects/DialogLine';
 import { GameplayScene } from '../Gameplay';
-import { Enemies, Yousei1, Yousei1Anims } from '../../entities/Enemy_Specific';
-import { Characters } from '../../entities/Character';
+import { Yousei1 } from '../../entities/Enemy_Specific';
 import { GAMEPLAY_SIZE } from '../Gameplay';
 import { SCENE_NAMES } from '../GameManager';
-import { Player } from '../../entities/Player';
-import { Enemy } from '../../entities/Enemy';
+import { Enemy, YOUSEI1_TEXTURE } from '../../entities/Enemy';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../objects/Projectile_Enemy';
 import { PoolGroup, PoolManager } from '../../@types/Pool';
-import { Projectile } from '../../objects/Projectile';
 import { Entity } from '../../entities/Entity';
+import { BGM, playAudio } from '../../@types/Audio';
 
 //#region Dialogues
 const chant = [
@@ -32,6 +30,7 @@ export default class GameplayStage1 extends GameplayScene {
 	yousei1?: Yousei1;
 	yousei2?: Yousei1;
 	mobManager?: PoolManager;
+	bgm?: Phaser.Sound.BaseSound;
 	
 	constructor() {
 		super(SCENE_NAMES.Stage1_Gameplay);
@@ -49,14 +48,13 @@ export default class GameplayStage1 extends GameplayScene {
 			text: chant,
 		});
 
-		let bgm = this.sound.add('2huseesall', { volume: .2 });
-		bgm.play({loop: true});
+		this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, true, .2);
 
 		this.mobManager = new PoolManager(this, GameplayScene);
 		this.handleYousei1();
 
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.hitPlayer, undefined, this);
 
 		//this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, this.yousei1 as Enemy, this.hitPlayer, undefined, this);
 	}
@@ -68,8 +66,8 @@ export default class GameplayStage1 extends GameplayScene {
 	}
 
 	private handleYousei1(){
-		this.yousei1 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), texture: Characters.YOUSEIS });
-		this.yousei2 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), texture: Characters.YOUSEIS });
+		this.yousei1 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), texture: YOUSEI1_TEXTURE });
+		this.yousei2 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), texture: YOUSEI1_TEXTURE });
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.physics.add.overlap(this.yousei1 as Yousei1, pGroup, this.hitEnemyMob, undefined, this);
@@ -93,7 +91,7 @@ export default class GameplayStage1 extends GameplayScene {
 		//playerHitbox.handleCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
 		p.handleCollision(playerHitbox);
-		console.dir(playerHitbox)
+		// console.dir(playerHitbox)
 
 		// console.log(typeof playerHitbox + " " + typeof p);
 		
@@ -107,7 +105,7 @@ export default class GameplayStage1 extends GameplayScene {
 	protected hitEnemyMob(enemy: any, p: any) {
 		// this.score += enemy.points;
 		// this.scoreText.setText("SCORE:"+Phaser.Utils.String.Pad(this.score, 6, '0', 1));
-		enemy.handleCollision(p);
+		enemy.handlePCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
 		p.handleCollision(enemy);
 		

@@ -1,16 +1,11 @@
 import Phaser from 'phaser';
 import { PoolManager } from '../@types/Pool';
-import { Enemy } from './Enemy';
+import { Enemy, YOUSEI1_TEXTURE } from './Enemy';
 import { IEntity, IVectorPoint } from './Entity';
-import { Characters } from './Character';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy' 
 import { IWavePatternData, PPatternWave } from '../objects/Projectile';
 
-export enum Enemies{
-    yousei1 = 'yousei1',
-}
-
-export enum Yousei1Anims{
+export enum YOUSEI1_ANIMS{
     idle = 'yousei1_idle',
     run = 'yousei1_run',
 }
@@ -30,27 +25,27 @@ export class Yousei1 extends Enemy{
     wavePattern: PPatternWave;
 
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
-        super(scene, { pos, texture, frame, offset }, 1, 3);
+        super(scene, { pos, texture, frame, offset }, 3, 3);
         this.setScale(2);
 
         this.shootPoint = {
             pos: new Phaser.Math.Vector2(0, 30), theta: Phaser.Math.DegToRad(90),
         }
 
-        this.wavePattern = new PPatternWave(this, this.shootPoint, Enemy.redPManager.getGroup(DATA_SHOTRED.entData.texture), Yousei1WaveData);
+        this.wavePattern = new PPatternWave(this, this.shootPoint, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key), Yousei1WaveData);
     }
 
     create(){
         super.create();
 
-        this.anims.create({ key: Yousei1Anims.idle, frames: this.anims.generateFrameNames(Characters.YOUSEIS, { prefix: Yousei1Anims.idle, end: 2, zeroPad: 4}), repeat: -1});
-        this.anims.create({ key: Yousei1Anims.run, frames: this.anims.generateFrameNames(Characters.YOUSEIS, { prefix: Yousei1Anims.run, end: 3, zeroPad: 4}), repeat: -1});
+        this.anims.create({ key: YOUSEI1_ANIMS.idle, frames: this.anims.generateFrameNames(YOUSEI1_TEXTURE.key, { prefix: YOUSEI1_ANIMS.idle, end: 2, zeroPad: 4}), repeat: -1});
+        this.anims.create({ key: YOUSEI1_ANIMS.run, frames: this.anims.generateFrameNames(YOUSEI1_TEXTURE.key, { prefix: YOUSEI1_ANIMS.run, end: 3, zeroPad: 4}), repeat: -1});
     }
 
     update() {
         super.update();
 
-        this.anims.play(Yousei1Anims.idle);
+        this.anims.play(YOUSEI1_ANIMS.idle);
 
         // if(this.time() > this.lastShotTime){
         //     this.shoot();
@@ -59,7 +54,7 @@ export class Yousei1 extends Enemy{
     }
 
     protected shoot() {
-        //this.spawnProjectile(DATA_SHOTRED.entData.texture, this.shootPoint);
+        //this.spawnProjectile(DATA_SHOTRED.texture.key, this.shootPoint);
         this.wavePattern.updatePattern();
         this.lastShotTime = this.time() + TEST_SHOT_DELAY;
     }

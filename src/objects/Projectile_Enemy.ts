@@ -4,27 +4,24 @@ import { Player } from '../entities/Player';
 import { Projectile, IProjectileData } from './Projectile';
 import { IVectorPoint } from '../entities/Entity';
 
-export const ENEMY_PROJECTILE_HITBOX = 6;
-export const SHOTPOOL_ENEMY = 150;
+export const ENEMY_PROJECTILE_HITBOX = new Phaser.Math.Vector2(6, 6);
+export const ENEMY_PROJECTILE_POOL = 150;
 
 export const DATA_SHOTBLUE : IProjectileData = {
-    entData: {
-        pos: new Phaser.Math.Vector2(0, 0),
-        texture: 'shotBlue',
-        offset: new Phaser.Math.Vector2(0, 0),
-        hitRadius: ENEMY_PROJECTILE_HITBOX,
-    },
+    pos: Phaser.Math.Vector2.ZERO,
+    texture: { key: 'shotBlue', path: 'assets/sprites/touhou_test/shotBlue.png' },
+    hitSize: ENEMY_PROJECTILE_HITBOX,
     speed: 300,
+    damage: 1,
 }
 
 export const DATA_SHOTRED : IProjectileData = {
-    entData: {
-        pos: new Phaser.Math.Vector2(0, 0),
-        texture: 'shotRed',
-        offset: new Phaser.Math.Vector2(0, 0),
-        hitRadius: ENEMY_PROJECTILE_HITBOX,
-    },
+    pos: Phaser.Math.Vector2.ZERO,
+    texture: { key: 'shotRed', path: 'assets/sprites/touhou_test/shotRed.png' },
+    offset: Phaser.Math.Vector2.ZERO,
+    hitSize: ENEMY_PROJECTILE_HITBOX,
     speed: 300,
+    damage: 1,
 }
 
 class EnemyProjectile extends Projectile{
