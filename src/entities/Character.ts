@@ -20,7 +20,6 @@ export class Character extends Entity{
     hp: number;
     speed: number;
     lastShotTime: number;
-    collisionCategory?: number;
 
     constructor(scene: Phaser.Scene, { pos, texture, hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
         super(scene, { pos, texture, hitRadius, frame }, true);
@@ -64,10 +63,5 @@ export class Character extends Entity{
 
     protected spawnProjectile(manager: PoolManager, name: string, point: IVectorPoint){
         return manager.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.x + point.pos.x, this.y + point.pos.y), theta: point.theta });
-    }
-
-    protected setMode(mode: number){
-        this.collisionCategory = mode;
-        //this.setCollisionCategory(mode);
     }
 }

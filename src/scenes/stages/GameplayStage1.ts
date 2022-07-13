@@ -9,6 +9,7 @@ import { Enemy } from '../../entities/Enemy';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../objects/Projectile_Enemy';
 import { PoolGroup, PoolManager } from '../../@types/Pool';
 import { Projectile } from '../../objects/Projectile';
+import { Entity } from '../../entities/Entity';
 
 //#region Dialogues
 const chant = [
@@ -54,8 +55,8 @@ export default class GameplayStage1 extends GameplayScene {
 		this.mobManager = new PoolManager(this, GameplayScene);
 		this.handleYousei1();
 
-		this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, Enemy.redPManager.getGroup(DATA_SHOTRED.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.entData.texture) as PoolGroup, this.hitPlayer, undefined, this);
 
 		//this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, this.yousei1 as Enemy, this.hitPlayer, undefined, this);
 	}
@@ -89,8 +90,10 @@ export default class GameplayStage1 extends GameplayScene {
 	}
 
 	protected hitPlayer(playerHitbox: any, p: any) {
+		//playerHitbox.handleCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
-		p.handleCollision();
+		p.handleCollision(playerHitbox);
+		console.dir(playerHitbox)
 
 		// console.log(typeof playerHitbox + " " + typeof p);
 		
@@ -104,9 +107,9 @@ export default class GameplayStage1 extends GameplayScene {
 	protected hitEnemyMob(enemy: any, p: any) {
 		// this.score += enemy.points;
 		// this.scoreText.setText("SCORE:"+Phaser.Utils.String.Pad(this.score, 6, '0', 1));
-		enemy.handleCollision();
+		enemy.handleCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
-		p.handleCollision();
+		p.handleCollision(enemy);
 		
 		// this.explosion
 		//   .setSpeedX(0.2 * bullet.body.velocity.x)

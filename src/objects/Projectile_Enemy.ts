@@ -4,7 +4,7 @@ import { Player } from '../entities/Player';
 import { Projectile, IProjectileData } from './Projectile';
 import { IVectorPoint } from '../entities/Entity';
 
-export const ENEMY_PROJECTILE_HITBOX = 4;
+export const ENEMY_PROJECTILE_HITBOX = 6;
 export const SHOTPOOL_ENEMY = 150;
 
 export const DATA_SHOTBLUE : IProjectileData = {

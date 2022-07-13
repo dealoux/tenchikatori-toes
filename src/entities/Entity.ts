@@ -17,7 +17,6 @@ export interface IFunctionDelegate{
     () : void;
 }
 
-
 // export enum COLLISION_GROUPS{
 // 	PLAYER = -1,
 // 	ENEMY = -2,
@@ -30,23 +29,22 @@ export enum COLLISION_CATEGORIES{
 }
 
 export class Entity extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene: Phaser.Scene, { pos, texture, hitRadius = 0, frame }: IEntity, active?: boolean | false){
+    collisionCategory?: number;
+
+    constructor(scene: Phaser.Scene, { pos, texture, hitRadius = 0, frame }: IEntity, active = false, scale = 1){
         super(scene, pos.x, pos.y, texture, frame);
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        //this.getBody().setCircle(hitRadius);
+        // this.getBody().setCircle(hitRadius/2);
         this.getBody().setSize(hitRadius, hitRadius, true);
         this.getBody().setFriction(0, 0);
         this.getBody().setBounce(0, 0);
         this.setOrigin(.5, .5);
         
-        // only active entities are updated
-        if(!active){
-            this.removeInteractive();
-        }
-
+        this.setStatus(active);
+        
         this.create();
     }
 
@@ -73,7 +71,8 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         return this.body as Phaser.Physics.Arcade.Body;
     }
 
-    public handleCollision(){
+    public handleCollision(entity: Entity){
+        console.log(entity);
     }
 
     protected inCameraView(){
@@ -95,5 +94,9 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     protected setStatus(status: boolean | false){
         this.setActive(status);
         this.setVisible(status);
+    }
+
+    public setMode(mode: number){
+        this.collisionCategory = mode;
     }
 }

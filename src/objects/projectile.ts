@@ -39,18 +39,17 @@ export class Projectile extends Entity{
         super.create();
     }
 
-    public handleCollision(){
+    public handleCollision(entity: Entity){
         this.disableEntity();
     }
 
     fire({x, y, angle = 0, speed, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target = undefined} : IFireArgs) {
         //this.scene.shootSFX.play();
-        // this.enableBody(true, x, y, true, true);
         this.enableEntity(new Phaser.Math.Vector2(x, y));
         this.setScale(1);
         this.tracking = tracking;
         this.scaleSpeed = scaleSpeed;
-        this.angle = angle;
+        this.setRotation(this.angle);
         if (target) {
           this.scene.physics.moveToObject(this, target, speed)
         } else {
