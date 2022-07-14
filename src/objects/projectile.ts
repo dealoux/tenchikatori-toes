@@ -11,58 +11,71 @@ export interface IProjectileData extends IEntity{
 export interface IFireArgs{
     x: number,
     y: number,
-    angle?: number | 0,
     speed: number,
-    gx?: number | 0,
-    gy: number | 0,
-    tracking: boolean | false,
-    scaleSpeed: number | 0,
-    target: Entity | undefined, 
+    angle?: number,
+    angularVelocity?: number,
+    angularDrag?: number,
+    gx?: number,
+    gy?: number,
+    tracking?: boolean,
+    scaleSpeed?: number,
+    target?: Entity, 
 }
 
 export class Projectile extends Entity{
     scene: Phaser.Scene;
-    tracking: boolean;
     scaleSpeed: integer;
     damage: number;
+    tracking?: boolean;
 
-    constructor(scene: Phaser.Scene, data: IProjectileData, tracking = false, scaleSpeed = 0){
+    constructor(scene: Phaser.Scene, data: IProjectileData, scaleSpeed = 0){
         super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame });
         
         this.scene = scene;
-        this.tracking = tracking;
         this.scaleSpeed = scaleSpeed;
         this.damage = data.damage || 0;
-
-        //this.setCollidesWith([COLLISION_CATEGORIES.blue, COLLISION_CATEGORIES.red]);
     }
 
     create(){
         super.create();
     }
 
-    public handleCollision(entity: Entity){
+    public handleCollision(char: Character){
         this.disableEntity();
     }
 
-    fire({x, y, angle = 0, speed, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target = undefined} : IFireArgs) {
+    fire({x, y, speed, angle = 0, angularVelocity = 0, angularDrag = 0, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target} : IFireArgs) {
         //this.scene.shootSFX.play();
         this.enableEntity(new Phaser.Math.Vector2(x, y));
+
         this.setScale(1);
+        this.setRotation(this.angle);
+        this.setAngularVelocity(angularVelocity);
+        this.setAngularDrag(angularDrag);
+
         this.tracking = tracking;
         this.scaleSpeed = scaleSpeed;
-        this.setRotation(this.angle);
-        if (target) {
-          this.scene.physics.moveToObject(this, target, speed)
-        } else {
-          this.scene.physics.velocityFromRotation(angle, speed, this.body.velocity);    
-        }
         this.body.gravity.set(gx, gy); // apply gravity to the physics body
+
+        if(target) {
+            this.scene.physics.moveToObject(this, target, speed)
+        } 
+        else {
+            this.scene.physics.velocityFromRotation(angle, speed, this.body.velocity);    
+        }
     }
 
     preUpdate(time: number, delta: number): void {
         super.preUpdate(time, delta);
 
+        if (this.tracking) {      
+            this.rotation = this.body.velocity.angle();
+        }    
+        if (this.scaleSpeed > 0) {
+            this.scaleX += this.scaleSpeed;
+            this.scaleY += this.scaleSpeed;
+        }
+      
         // out of view check
         if(!this.inCameraView()){
             this.disableEntity();
@@ -110,7 +123,7 @@ export class PPatternWave extends PPattern{
 
         const x = this.parent.x + this.pPoint.pos.x;
         const y = this.parent.y + this.pPoint.pos.y;
-        this.projectile?.getFirstDead(false).fire({x: x, y: y, angle: this.pPoint.theta, speed : this.pData.pSpeed, gx: gx, gy: gy});
+        this.projectile?.getFirstDead(false).fire({x: x, y: y, speed : this.pData.pSpeed, angle: this.pPoint.theta, gx: gx, gy: gy});
         this.pData.waveIndex++;
         if (this.pData.waveIndex === this.pData.wave.length) {
             this.pData.waveIndex = 0;
@@ -125,5 +138,10 @@ export class PPatternWave extends PPattern{
 
     waveHorizontal() {
         this.waveBase(this.pData.wave[this.pData.waveIndex]);
+    }
+
+    static generateWaveArray(gravity: number, stepHalf : number){
+        const s = gravity/stepHalf;
+        return Phaser.Utils.Array.NumberArrayStep(-gravity, gravity, s).concat(Phaser.Utils.Array.NumberArrayStep(gravity, -gravity, -s));
     }
 }

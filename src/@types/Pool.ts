@@ -1,5 +1,5 @@
-import Phaser, { Physics } from 'phaser';
-import { IEntity, IVectorPoint } from '../entities/Entity';
+import Phaser from 'phaser';
+import { IVectorPoint } from '../entities/Entity';
 
 export class PoolGroup extends Phaser.GameObjects.Group{
     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
@@ -13,7 +13,7 @@ export class PoolGroup extends Phaser.GameObjects.Group{
             visible: false,
         });
 
-        //this.children.each((c) => c.removeInteractive());
+        // this.children.each((c : any) => c.disableEntity());
     }
 
     getInstance(point : IVectorPoint){
@@ -29,13 +29,11 @@ export class PoolGroup extends Phaser.GameObjects.Group{
 
 export class PoolManager extends Phaser.Physics.Arcade.Factory{
     pList : Map<string, PoolGroup>;
-    owner: Function;
 
-    constructor(scene: Phaser.Scene, owner: Function){
+    constructor(scene: Phaser.Scene, ){
         super(scene.physics.world);
 
         this.pList = new Map;
-        this.owner = owner;
     }
 
     addGroup(name: string, type: Function, quantity: number = 1){

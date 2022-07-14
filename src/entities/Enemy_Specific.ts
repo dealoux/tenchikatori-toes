@@ -15,8 +15,8 @@ const TEST_SHOT_DELAY = 500;
 const Yousei1WaveData : IWavePatternData = {
     nextFire : 0,
     pSpeed : 250,
-    fireRate : 40,
-    wave: Phaser.Utils.Array.NumberArrayStep(-800, 800, 200).concat(Phaser.Utils.Array.NumberArrayStep(800, -800, -200)),
+    fireRate : 30,
+    wave: PPatternWave.generateWaveArray(400, 8),
     waveIndex: 0,
 }
 

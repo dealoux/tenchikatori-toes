@@ -79,7 +79,7 @@ export class Player extends Character{
         this.currShootPoints = SHOOTPOINTS_NORMAL;
         this.specials = 3;
         this.castingSpecial = false;
-        this.projectileManager = new PoolManager(scene, Player);
+        this.projectileManager = new PoolManager(scene);
         this.projectileManager.addGroup(DATA_PLAYER_P1.texture.key, PlayerShot1, PLAYER_PROJECTILE_POOL);
         this.projectileManager.addGroup(DATA_PLAYER_P2.texture.key, PlayerShot2, PLAYER_PROJECTILE_POOL);
         //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));

@@ -51,13 +51,23 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         this.setScale(scale);
         this.setOrigin(.5, .5);
         
-        this.setStatus(active);
+        if(!active)
+            this.disableEntity();
         
         this.create();
     }
 
     protected preUpdate(time: number, delta: number){
        
+    }
+
+    protected inCameraView(){
+        return this.scene.cameras.main.worldView.contains(this.x, this.y);
+    }
+
+    protected setStatus(status: boolean | false){
+        this.setActive(status);
+        this.setVisible(status);
     }
 
     create(){
@@ -79,32 +89,24 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         return this.body as Phaser.Physics.Arcade.Body;
     }
 
-    public handleCollision(entity: Entity){
+    handleCollision(entity: Entity){
         console.log(entity);
     }
 
-    protected inCameraView(){
-        return this.scene.cameras.main.worldView.contains(this.x, this.y);
-    }
 
-    public enableEntity(pos: Phaser.Math.Vector2){
+    enableEntity(pos: Phaser.Math.Vector2){
         this.setStatus(true);
         this.enableBody(true, pos.x, pos.y, true, true);
     }
 
-    public disableEntity(){
+    disableEntity(){
         this.setStatus(false);
 
         //this.removeInteractive();
         this.disableBody(true, true);
     }
 
-    protected setStatus(status: boolean | false){
-        this.setActive(status);
-        this.setVisible(status);
-    }
-
-    public setMode(mode: number){
+    setMode(mode: number){
         this.collisionCategory = mode;
     }
 }

@@ -5,7 +5,7 @@ import { Projectile, IProjectileData } from './Projectile';
 import { IVectorPoint } from '../entities/Entity';
 
 export const ENEMY_PROJECTILE_HITBOX = new Phaser.Math.Vector2(6, 6);
-export const ENEMY_PROJECTILE_POOL = 150;
+export const ENEMY_PROJECTILE_POOL = 1000;
 
 export const DATA_SHOTBLUE : IProjectileData = {
     pos: Phaser.Math.Vector2.ZERO,

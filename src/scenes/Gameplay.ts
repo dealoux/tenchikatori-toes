@@ -4,6 +4,7 @@ import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
 import { Player, PLAYER_TEXTURE } from '../entities/Player';
 import { Enemy } from '../entities/Enemy';
+import { Character } from '../entities/Character';
 
 export const GAMEPLAY_SIZE = {
 	WIDTH: WINDOW_WIDTH * .7,
@@ -38,6 +39,7 @@ export class GameplayScene extends Scene {
 		//this.eventSub();
 
 		Enemy.initPManagers(this);
+		Character.initManager(this);
 
 		this.cameras.main.setViewport(GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);

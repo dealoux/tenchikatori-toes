@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { IEntity, Entity, IVectorPoint, COLLISION_CATEGORIES, ITexture } from './Entity';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM, ITEM_POOL, PowerItem, ScoreItem } from './consumables/Consumable';
+import { Projectile } from '../objects/Projectile';
 
 export enum CharacterState{
     ALIVE,
@@ -13,14 +15,26 @@ export class Character extends Entity{
     hp: number;
     speed: number;
     lastShotTime: number;
+    static itemManager: PoolManager;
 
-    constructor(scene: Phaser.Scene, { pos, texture, hitSize: hitRadius, frame }: IEntity,  hp: number, speed: number, projectileManager?: PoolManager | undefined){
+    constructor(scene: Phaser.Scene, { pos, texture, hitSize: hitRadius, frame }: IEntity,  hp: number, speed: number){
         super(scene, { pos, texture, hitSize: hitRadius, frame }, true);
 
         this.hp = hp;
         this.speed = speed;
         this.state = CharacterState.ALIVE;
         this.lastShotTime = 0;
+    }
+
+    time(){
+        //return this.scene.time.now;
+        return this.scene.game.getTime();
+    }
+
+    static initManager(scene: Phaser.Scene){
+        Character.itemManager = new PoolManager(scene);
+        Character.itemManager.addGroup(DATA_POWER_ITEM.texture.key, PowerItem, ITEM_POOL);
+        Character.itemManager.addGroup(DATA_SCORE_ITEM.texture.key, ScoreItem, ITEM_POOL);
     }
 
     // protected preUpdate(time: number, delta: number){
@@ -35,9 +49,11 @@ export class Character extends Entity{
     //     super.update();
     // }
 
-    // protected handleCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData){
-    //     super.handleCollision(data);
-    // }
+    handleCollision(p: Projectile){
+        super.handleCollision(p);
+    }
+
+    handleCollisionChar(char: Character){}
 
     protected moveVertically(speed: number){
         //this.y += speed;
@@ -47,11 +63,6 @@ export class Character extends Entity{
     protected moveHorizontally(speed: number){
         //this.x += speed;
         this.setVelocityX(speed);
-    }
-
-    public time(){
-        //return this.scene.time.now;
-        return this.scene.game.getTime();
     }
 
     protected spawnProjectile(manager: PoolManager, name: string, point: IVectorPoint){

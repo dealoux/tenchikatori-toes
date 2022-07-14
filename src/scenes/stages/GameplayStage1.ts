@@ -50,7 +50,7 @@ export default class GameplayStage1 extends GameplayScene {
 
 		this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, true, .2);
 
-		this.mobManager = new PoolManager(this, GameplayScene);
+		this.mobManager = new PoolManager(this);
 		this.handleYousei1();
 
 		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.hitPlayer, undefined, this);
@@ -105,7 +105,7 @@ export default class GameplayStage1 extends GameplayScene {
 	protected hitEnemyMob(enemy: any, p: any) {
 		// this.score += enemy.points;
 		// this.scoreText.setText("SCORE:"+Phaser.Utils.String.Pad(this.score, 6, '0', 1));
-		enemy.handlePCollision(p);
+		enemy.handleCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
 		p.handleCollision(enemy);
 		
