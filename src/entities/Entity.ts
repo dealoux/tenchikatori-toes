@@ -87,10 +87,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         const offset = new Phaser.Math.Vector2(worldView.width * .125, worldView.height * .125);
 
         Entity.worldsEdge = new Phaser.Geom.Rectangle(worldView.x - offset.x, worldView.y - offset.y, worldView.width * 1.25, worldView.height * 1.25);
-
-        console.log(worldView);
-        console.log(Entity.worldsEdge);
-        console.log(Entity.worldsEdge.contains(2399, 1349));
     }
 
     create(){
