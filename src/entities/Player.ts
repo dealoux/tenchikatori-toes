@@ -1,10 +1,15 @@
-import Phaser, { Physics } from 'phaser';
+import Phaser from 'phaser';
 import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES, Entity, ITexture } from './Entity';
 import { InputHandler, INPUT_EVENTS } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
 import { Character } from './Character';
+import { Projectile } from '../objects/Projectile';
+
+interface IHandlingPCollisionDelegate{
+    (p: Projectile) : void;
+}
 
 export enum PLAYER_STATE{
     NORMAL,
@@ -19,19 +24,21 @@ export const PLAYER_TEXTURE : ITexture = {
     key: 'enna', path: 'assets/sprites/touhouenna.png',
 };
 
-const SPEED_NORMAL = 250;
-const SPEED_FOCUSED = SPEED_NORMAL*.5;
+export const PLAYER_SPEED_NORMAL = 250;
+const SPEED_FOCUSED = PLAYER_SPEED_NORMAL*.5;
 
 const HITBOX_TEXTURE: ITexture = {
     key: 'hitbox', path: 'assets/sprites/hitbox.png',
 };
 const HITBOX_SIZE = 8;
-const HITBOX_OFFSET = -HITBOX_SIZE/4;
+const HITBOX_OFFSET = -HITBOX_SIZE/2;
 
 const GRAZEHB_SIZE = 60;
 
 const MODE_IDICATOR_SIZE = 20;
 const MODE_IDICATOR_OFFSET = new Phaser.Math.Vector2(-MODE_IDICATOR_SIZE/2, GRAZEHB_SIZE + 10 -MODE_IDICATOR_SIZE/2);
+
+const MAX_POWER = 4;
 
 const BLUE_MODE: ITexture = {
     key: 'bluemode', path: 'assets/sprites/bluemode.png',
@@ -43,6 +50,7 @@ const RED_MODE: ITexture = {
 export class Player extends Character{
     actionDelegate : IFunctionDelegate;
     inputHandlingDelegate: IFunctionDelegate;
+    handlingPowerItemCollisionDelegate: IHandlingPCollisionDelegate;
 
     bodyOffset: Phaser.Math.Vector2;
 
@@ -52,18 +60,21 @@ export class Player extends Character{
     projectileManager: PoolManager;
     currShootPoints : IShootPoints;
     shots : Function[];
-    shotCounts : number;
     
     specials: number;
     castingSpecial: boolean;
 
+    currPower: number;
+    currScore: number;
+
     constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
-        let shapes = scene.game.cache.json.get('shapes');
-        
-        super(scene, { pos, texture, hitSize: new Phaser.Math.Vector2(GRAZEHB_SIZE, GRAZEHB_SIZE) , frame, offset }, 3, SPEED_NORMAL);
+        // let shapes = scene.game.cache.json.get('shapes');        
+        super(scene, { pos, texture, hitSize: new Phaser.Math.Vector2(GRAZEHB_SIZE, GRAZEHB_SIZE) , frame, offset }, 3, PLAYER_SPEED_NORMAL);
+        this.setCollideWorldBounds(true);
         
         this.actionDelegate = this.shoot;
         this.inputHandlingDelegate = this.inputHandling;
+        this.handlingPowerItemCollisionDelegate = this.handlingPowerUp;
 
         this.bodyOffset = new Phaser.Math.Vector2(this.x - this.body.x, this.y - this.body.y);
         
@@ -91,9 +102,8 @@ export class Player extends Character{
             function(player: Player) { player.spawnProjectile(player.projectileManager, DATA_PLAYER_P2.texture.key, player.currShootPoints.point_4); },
         ]
 
-        this.shotCounts = 4;
-
-        this.setCollideWorldBounds(true);
+        this.currPower = 1;
+        this.currScore = 0;
     }
 
     static preload(scene: Phaser.Scene) {
@@ -142,28 +152,34 @@ export class Player extends Character{
 		});
 
         eventsCenter.on(INPUT_EVENTS.Focus_up, () => {
-            this.speed = SPEED_NORMAL;
+            this.speed = PLAYER_SPEED_NORMAL;
             this.currShootPoints = SHOOTPOINTS_NORMAL;
             this.hitbox.setVisible(false);
 		});
     }
 
-    preUpdate(time: number, delta: number){
+    protected preUpdateHere(time: number, delta: number){
+        super.preUpdateHere(time, delta);
         // this.hitbox.setPosition(this.x, this.y);
         // this.modeIndicator.setPosition(this.x + MODE_IDICATOR_OFFSET.x, this.y + MODE_IDICATOR_OFFSET.y);
     }
 
-    update(){
-        //super.update();
+    protected updateHere(){
+        super.updateHere();
         this.inputHandlingDelegate();
     }
 
-    public handleCollision(entity: Entity) {
+    handleCollision(entity: Entity) {
         console.dir(entity);
     }
 
-    public handlingInput(value: boolean = true){
+    handlingInput(value: boolean = true){
         this.inputHandlingDelegate = value ? this.inputHandling : this.emptyFunction;
+    }
+
+    setMode(mode: number) {
+        super.setMode(mode);
+        this.hitbox.setMode(mode);
     }
 
     protected moveHorizontally(x: number){
@@ -187,8 +203,6 @@ export class Player extends Character{
         this.hitbox.body.y = baseY + HITBOX_OFFSET;
         this.modeIndicator.body.y = baseY + MODE_IDICATOR_OFFSET.y;
     }
-
-    private emptyFunction(){ }
 
     private inputHandling(){
         const {inputs} = InputHandler.Instance();
@@ -231,11 +245,6 @@ export class Player extends Character{
         }
     }
 
-    public setMode(mode: number) {
-        super.setMode(mode);
-        this.hitbox.setMode(mode);
-    }
-
     private setModeBlue(){
         this.setMode(COLLISION_CATEGORIES.blue);
         this.modeIndicator.setTexture(BLUE_MODE.key);
@@ -257,7 +266,7 @@ export class Player extends Character{
     }
 
     private shoot(){
-        for(let i = 0; i<this.shotCounts; i++){
+        for(let i = 0; i< Phaser.Math.FloorTo(this.currPower); i++){
             this.shots[i](this);
         }
 
@@ -273,5 +282,19 @@ export class Player extends Character{
         //     shot.getProjectile(this.getBody().x, this.getBody().y);
         //     this.specials--; 
         // }
+    }
+
+    private handlingPowerUp(p: Projectile){
+        this.currPower += p.entData.value;
+
+        console.log(this.currPower);
+
+        if(this.currPower >= MAX_POWER)
+            this.handlingPowerItemCollisionDelegate = this.emptyFunction;
+    }
+
+    handlingScoreItem(p: Projectile){
+        this.currScore += p.entData.value;
+        console.log(this.currScore);
     }
 }

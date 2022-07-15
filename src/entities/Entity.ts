@@ -23,6 +23,9 @@ export interface IFunctionDelegate{
     () : void;
 }
 
+export interface IPreUpdateDelegate{
+    (time: number, delta: number) : void;
+}
 
 // export enum COLLISION_GROUPS{
 // 	PLAYER = -1,
@@ -36,10 +39,17 @@ export enum COLLISION_CATEGORIES{
 }
 
 export class Entity extends Phaser.Physics.Arcade.Sprite{
+    updateDelegate: IFunctionDelegate;
+    preUpdateDelegate: IPreUpdateDelegate;
+    entData?: IEntity;
+
     collisionCategory?: number;
 
     constructor(scene: Phaser.Scene, { pos, texture, hitSize: hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
         super(scene, pos.x, pos.y, texture.key, frame);
+
+        this.updateDelegate = this.updateHere;
+        this.preUpdateDelegate = this.preUpdateHere;
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -57,9 +67,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         this.create();
     }
 
-    protected preUpdate(time: number, delta: number){
-       
-    }
+    protected emptyFunction() {}
 
     protected inCameraView(){
         return this.scene.cameras.main.worldView.contains(this.x, this.y);
@@ -70,13 +78,20 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         this.setVisible(status);
     }
 
+    protected updateHere(){ }
+    protected preUpdateHere(time: number, delta: number) {}
+
     create(){
         //this.setOnCollide(this.handleCollision);
         //console.log('bruh');
     }
 
+    preUpdate(time: number, delta: number){
+        this.preUpdateDelegate(time, delta);
+    } 
+
     update() {
-        
+        this.updateDelegate();
     }
 
     updateTransform(point: IVectorPoint){
@@ -97,13 +112,17 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     enableEntity(pos: Phaser.Math.Vector2){
         this.setStatus(true);
         this.enableBody(true, pos.x, pos.y, true, true);
+        this.updateDelegate = this.updateHere;
+        this.preUpdateDelegate = this.preUpdateHere;
+
     }
 
     disableEntity(){
         this.setStatus(false);
-
-        //this.removeInteractive();
         this.disableBody(true, true);
+        this.updateDelegate = this.emptyFunction;
+        this.preUpdateDelegate = this.emptyFunction;
+        //this.removeInteractive();
     }
 
     setMode(mode: number){

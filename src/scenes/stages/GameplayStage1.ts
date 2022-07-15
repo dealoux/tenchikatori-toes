@@ -8,6 +8,9 @@ import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../objects/Projectile_Enemy';
 import { PoolGroup, PoolManager } from '../../@types/Pool';
 import { Entity } from '../../entities/Entity';
 import { BGM, playAudio } from '../../@types/Audio';
+import { Player } from '../../entities/Player';
+import { Character } from '../../entities/Character';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM } from '../../entities/items/Item';
 
 //#region Dialogues
 const chant = [
@@ -53,41 +56,43 @@ export default class GameplayStage1 extends GameplayScene {
 		this.mobManager = new PoolManager(this);
 		this.handleYousei1();
 
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.hitPlayer, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.hitPlayerEnemyProjectile, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.hitPlayerEnemyProjectile, undefined, this);
 
-		//this.physics.add.overlap(this.player?.hitbox as Phaser.GameObjects.Rectangle, this.yousei1 as Enemy, this.hitPlayer, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.hitPlayerPowerItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.hitPlayerScoreItem, undefined, this);
 	}
 
 	update() {
 		super.update();
-
-		this.yousei1?.update();
+		// this.yousei1?.update();
 	}
 
 	private handleYousei1(){
-		this.yousei1 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), texture: YOUSEI1_TEXTURE });
-		this.yousei2 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), texture: YOUSEI1_TEXTURE });
-
-		this.player?.projectileManager.pList.forEach(pGroup => {
-			this.physics.add.overlap(this.yousei1 as Yousei1, pGroup, this.hitEnemyMob, undefined, this);
-			this.physics.add.overlap(this.yousei2 as Yousei1, pGroup, this.hitEnemyMob, undefined, this);
-		});
-
-
-		// this.mobManager?.addPGroup(Enemies.yousei1, Yousei1, 4);
-
-		// this.yousei1 = this.mobManager?.spawnInstance(Enemies.yousei1, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
-		// this.yousei2 = this.mobManager?.spawnInstance(Enemies.yousei1, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
+		// this.yousei1 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), texture: YOUSEI1_TEXTURE });
+		// this.yousei2 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), texture: YOUSEI1_TEXTURE });
 
 		// this.player?.projectileManager.pList.forEach(pGroup => {
-		// 	this.mobManager?.pList.forEach(eGroup => {
-		// 		this.physics.add.overlap(eGroup, pGroup, this.hitEnemyMob, undefined, this);
-		// 	})
+		// 	this.physics.add.overlap(this.yousei1 as Yousei1, pGroup, this.hitEnemyMob, undefined, this);
+		// 	this.physics.add.overlap(this.yousei2 as Yousei1, pGroup, this.hitEnemyMob, undefined, this);
 		// });
+
+
+		this.mobManager?.addGroup(YOUSEI1_TEXTURE.key, Yousei1, 4);
+
+		this.yousei1 = this.mobManager?.spawnInstance(YOUSEI1_TEXTURE.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
+		this.yousei2 = this.mobManager?.spawnInstance(YOUSEI1_TEXTURE.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
+
+		this.player?.projectileManager.pList.forEach(pGroup => {
+			this.mobManager?.pList.forEach(eGroup => {
+				this.physics.add.overlap(eGroup, pGroup, this.hitEnemyMob, undefined, this);
+			})
+		});
 	}
 
-	protected hitPlayer(playerHitbox: any, p: any) {
+	protected hitPlayerEnemyProjectile(playerHitbox: any, p: any) {
 		//playerHitbox.handleCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
 		p.handleCollision(playerHitbox);
@@ -114,5 +119,19 @@ export default class GameplayStage1 extends GameplayScene {
 		//   .setSpeedY(0.2 * bullet.body.velocity.y)
 		//   .emitParticleAt(x, y);
 		// this.explodeSFX.play();
+	}
+
+	protected hitGrazeItem(player: any, i: any){
+		i.handlingGrazeHBCollision(player);
+	}
+
+	protected hitPlayerPowerItem(playerHitbox: any, i: any){
+		this.player?.handlingPowerItemCollisionDelegate(i);
+		i.handleCollision(playerHitbox);
+	}
+
+	protected hitPlayerScoreItem(playerHitbox: any, i: any){
+		this.player?.handlingScoreItem(i);
+		i.handleCollision(playerHitbox);
 	}
 }

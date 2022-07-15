@@ -13,6 +13,9 @@ export class PoolGroup extends Phaser.GameObjects.Group{
             visible: false,
         });
 
+        this.runChildUpdate = true;
+        scene.add.existing(this);
+
         // this.children.each((c : any) => c.disableEntity());
     }
 
@@ -30,7 +33,7 @@ export class PoolGroup extends Phaser.GameObjects.Group{
 export class PoolManager extends Phaser.Physics.Arcade.Factory{
     pList : Map<string, PoolGroup>;
 
-    constructor(scene: Phaser.Scene, ){
+    constructor(scene: Phaser.Scene){
         super(scene.physics.world);
 
         this.pList = new Map;

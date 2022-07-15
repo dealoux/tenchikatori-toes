@@ -5,6 +5,7 @@ import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
 import { Player, PLAYER_TEXTURE } from '../entities/Player';
 import { Enemy } from '../entities/Enemy';
 import { Character } from '../entities/Character';
+import { Item } from '../entities/items/Item';
 
 export const GAMEPLAY_SIZE = {
 	WIDTH: WINDOW_WIDTH * .7,
@@ -22,6 +23,7 @@ export class GameplayScene extends Scene {
 
 	preload() {
 		Dialog.preload(this);
+		Item.preload(this);
 		Player.preload(this);
 		Enemy.preload(this);
 	}

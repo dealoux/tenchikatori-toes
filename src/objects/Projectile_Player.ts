@@ -18,35 +18,35 @@ export const DATA_PLAYER_P1 : IProjectileData = {
     pos: Phaser.Math.Vector2.ZERO,
     texture: { key: 'card1', path: 'assets/sprites/touhou_test/card1.png' },
     speed: 600,
-    damage: 1,
+    value: 1,
 }
 
 export const DATA_PLAYER_P2 : IProjectileData = {
     pos: Phaser.Math.Vector2.ZERO,
     texture: { key: 'card2', path: 'assets/sprites/touhou_test/card2.png' },
     speed: 600,
-    damage: 1,
+    value: 1,
 }
 
 export const DATA_PLAYER_PMOON : IProjectileData = {
     pos: Phaser.Math.Vector2.ZERO,
     texture: { key: 'moon', path: 'assets/sprites/touhou_test/moon.png' },
     speed: 600,
-    damage: 3,
+    value: 3,
 }
 
 export const SHOOTPOINTS_NORMAL : IShootPoints = {
-    point_1: { pos: new Phaser.Math.Vector2(-20, -60), theta: Phaser.Math.DegToRad(0) },
-    point_2: { pos: new Phaser.Math.Vector2(20, -60), theta: Phaser.Math.DegToRad(0) },
-    point_3: { pos: new Phaser.Math.Vector2(60, -40), theta: Phaser.Math.DegToRad(15) },
-    point_4: { pos: new Phaser.Math.Vector2(-60, -40), theta: Phaser.Math.DegToRad(-15) },
+    point_1: { pos: new Phaser.Math.Vector2(-20, -60), theta: 0 },
+    point_2: { pos: new Phaser.Math.Vector2(20, -60), theta: 0 },
+    point_3: { pos: new Phaser.Math.Vector2(60, -40), theta: 15 },
+    point_4: { pos: new Phaser.Math.Vector2(-60, -40), theta: -15 },
 }
 
 export const SHOOTPOINTS_FOCUSED : IShootPoints = {
-    point_1: { pos: new Phaser.Math.Vector2(-12, -60), theta: Phaser.Math.DegToRad(0) },
-    point_2: { pos: new Phaser.Math.Vector2(12, -60), theta: Phaser.Math.DegToRad(0) },
-    point_3: { pos: new Phaser.Math.Vector2(36, -50), theta: Phaser.Math.DegToRad(0) },
-    point_4: { pos: new Phaser.Math.Vector2(-36, -50), theta: Phaser.Math.DegToRad(0) },
+    point_1: { pos: new Phaser.Math.Vector2(-12, -60), theta: 0 },
+    point_2: { pos: new Phaser.Math.Vector2(12, -60), theta: 0 },
+    point_3: { pos: new Phaser.Math.Vector2(36, -50), theta: 0 },
+    point_4: { pos: new Phaser.Math.Vector2(-36, -50), theta: 0 },
 }
 
 class PlayerPorjectile extends Projectile{
@@ -56,9 +56,10 @@ class PlayerPorjectile extends Projectile{
 
     protected move(point: IVectorPoint, speed: number){
         //this.scene.physics.velocityFromRotation(point.theta, speed, this.body.velocity);
-        let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(speed);
+        let thetaRad = Phaser.Math.DegToRad(point.theta);
+        let velocity = new Phaser.Math.Vector2(Math.sin(thetaRad), -Math.cos(thetaRad)).normalize().scale(speed);
         this.setVelocity(velocity.x, velocity.y);
-        this.setRotation(point.theta);
+        this.setAngle(point.theta);
     }
 }
 

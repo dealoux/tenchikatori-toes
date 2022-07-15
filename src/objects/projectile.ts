@@ -5,13 +5,13 @@ import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate 
 
 export interface IProjectileData extends IEntity{
     speed: number,
-    damage?: number,
+    value: number,
 }
 
-export interface IFireArgs{
+export interface IUpdateArgs{
     x: number,
     y: number,
-    speed: number,
+    speed?: number,
     angle?: number,
     angularVelocity?: number,
     angularDrag?: number,
@@ -24,32 +24,39 @@ export interface IFireArgs{
 
 export class Projectile extends Entity{
     scene: Phaser.Scene;
-    scaleSpeed: integer;
-    damage: number;
-    tracking?: boolean;
+    entData: IProjectileData;
 
-    constructor(scene: Phaser.Scene, data: IProjectileData, scaleSpeed = 0){
+    scaleSpeed: integer;
+    tracking?: boolean;
+    target?: Entity;
+    tagertingSpeed?: number;
+
+    constructor(scene: Phaser.Scene, data: IProjectileData){
         super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame });
         
         this.scene = scene;
-        this.scaleSpeed = scaleSpeed;
-        this.damage = data.damage || 0;
+        this.entData = data;
+        this.scaleSpeed = 0;
     }
 
     create(){
         super.create();
     }
 
-    public handleCollision(char: Character){
+    handleCollision(char: Character){
+        this.resetProperties();
         this.disableEntity();
     }
 
-    fire({x, y, speed, angle = 0, angularVelocity = 0, angularDrag = 0, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target} : IFireArgs) {
+    updateProjectileE({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, tracking, scaleSpeed, target} : IUpdateArgs) {
         //this.scene.shootSFX.play();
         this.enableEntity(new Phaser.Math.Vector2(x, y));
+        return this.updateProjectile({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, tracking, scaleSpeed, target});
+    }
 
+    updateProjectile({x = this.x, y = this.y, speed = this.entData.speed, angle = 0, angularVelocity = 0, angularDrag = 0, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target} : IUpdateArgs) {
         this.setScale(1);
-        this.setRotation(this.angle);
+        this.setAngle(this.angle);
         this.setAngularVelocity(angularVelocity);
         this.setAngularDrag(angularDrag);
 
@@ -58,15 +65,25 @@ export class Projectile extends Entity{
         this.body.gravity.set(gx, gy); // apply gravity to the physics body
 
         if(target) {
-            this.scene.physics.moveToObject(this, target, speed)
+            this.target = target;
+            this.tagertingSpeed = speed;
         } 
         else {
-            this.scene.physics.velocityFromRotation(angle, speed, this.body.velocity);    
+            this.scene.physics.velocityFromAngle(angle, speed, this.body.velocity);    
         }
+
+        return this;
     }
 
-    preUpdate(time: number, delta: number): void {
-        super.preUpdate(time, delta);
+    protected resetProperties(){
+        this.scaleSpeed = 0;
+        this.tracking = false;
+        this.target = undefined;
+        this.tagertingSpeed = 0;
+    }
+
+    protected preUpdateHere(time: number, delta: number): void {
+        super.preUpdateHere(time, delta);
 
         if (this.tracking) {      
             this.rotation = this.body.velocity.angle();
@@ -80,6 +97,15 @@ export class Projectile extends Entity{
         if(!this.inCameraView()){
             this.disableEntity();
         }
+    }
+
+    protected updateHere() {
+        super.updateHere();
+
+        if(this.target) {
+            this.scene.physics.moveToObject(this, this.target, this.tagertingSpeed);
+        } 
+
     }
 }
 
@@ -123,7 +149,7 @@ export class PPatternWave extends PPattern{
 
         const x = this.parent.x + this.pPoint.pos.x;
         const y = this.parent.y + this.pPoint.pos.y;
-        this.projectile?.getFirstDead(false).fire({x: x, y: y, speed : this.pData.pSpeed, angle: this.pPoint.theta, gx: gx, gy: gy});
+        this.projectile?.getFirstDead(false).updateProjectileE({ x: x, y: y, speed : this.pData.pSpeed, angle: this.pPoint.theta, gx: gx, gy: gy });
         this.pData.waveIndex++;
         if (this.pData.waveIndex === this.pData.wave.length) {
             this.pData.waveIndex = 0;
@@ -133,15 +159,15 @@ export class PPatternWave extends PPattern{
     }
 
     waveVertical() {
-        this.waveBase(0, this.pData.wave[this.pData.waveIndex]);
-    }
-
-    waveHorizontal() {
         this.waveBase(this.pData.wave[this.pData.waveIndex]);
     }
 
-    static generateWaveArray(gravity: number, stepHalf : number){
-        const s = gravity/stepHalf;
-        return Phaser.Utils.Array.NumberArrayStep(-gravity, gravity, s).concat(Phaser.Utils.Array.NumberArrayStep(gravity, -gravity, -s));
+    waveHorizontal() {
+        this.waveBase(0, this.pData.wave[this.pData.waveIndex]);
+    }
+
+    static generateWaveArray(value: number, step : number){
+        const s = value/step*2;
+        return Phaser.Utils.Array.NumberArrayStep(-value, value, s).concat(Phaser.Utils.Array.NumberArrayStep(value, -value, -s));
     }
 }

@@ -3,9 +3,9 @@ import { Entity, IEntity, ITexture, IVectorPoint } from './Entity';
 import { PoolManager } from '../@types/Pool';
 import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy';
 import { Character } from './Character';
-import { IFireArgs, Projectile } from '../objects/Projectile';
+import { IUpdateArgs, PPatternWave, Projectile } from '../objects/Projectile';
 import eventsCenter from '../plugins/EventsCentre';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM } from './consumables/Consumable';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM } from './items/Item';
 
 export const YOUSEI1_TEXTURE : ITexture = {
     key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json'
@@ -15,7 +15,7 @@ export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
     
-    constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity, hp: number, speed: number){
+    constructor(scene: Phaser.Scene, { pos = Phaser.Math.Vector2.ZERO, texture, frame, offset = Phaser.Math.Vector2.ZERO }: IEntity, hp: number, speed: number){
         super(scene, { pos, texture, frame, offset }, hp, speed);
     }
 
@@ -51,33 +51,24 @@ export class Enemy extends Character{
         });
     }
 
-    // create(){
-    //     super.create();
-
-    // }
-
-    update(){
-        //super.update();
+    protected updateHere (){
+        //super.updateHere();
         this.actionHandling();
     }
 
     handleCollision(p: Projectile) {
-        this.hp -= p.damage;
+        this.hp -= p.entData.value || 0;
 
         if(this.hp <= 0){
+            Character.itemManager.emitItems(this.x, this.y);
             this.disableEntity();
-            this.emitItems();
         }
         
-        console.log(this.hp);
+        // console.log(this.hp);
     }
 
     handleCollisionChar(char: Character){
         super.handleCollisionChar(char);
-    }
-
-    protected emitItems(){
-        Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key)?.getFirstDead(false).drop({ x: this.x, y: this.y } as IFireArgs);
     }
 
     protected actionHandling(){
@@ -98,50 +89,3 @@ export class Enemy extends Character{
         // }
     }
 }
-
-// export class EnemyGroup extends Phaser.GameObjects.Group{
-//     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
-//         super(scene);
-
-//         this.createMultiple({
-//             key: name,
-//             classType: type,
-//             frameQuantity: quantity,
-//             active: false,
-//             visible: false,
-//         });
-//     }
-
-//     getProjectile(point : IVectorPoint){
-//         const projectile = this.getFirstDead(false);
-
-//         if(projectile){
-//             projectile.updateTransform(point);
-//         }
-//     }
-// }
-
-// export class EnemyManager extends Phaser.Physics.Matter.Factory{
-//     pList : Map<string, EnemyGroup>;
-//     owner: Function;
-
-//     constructor(scene: Phaser.Scene, owner: Function){
-//         super(scene.matter.world);
-
-//         this.pList = new Map;
-//         this.owner = owner;
-//     }
-
-//     getP(name:string, point : IVectorPoint){
-//         const group = this.pList.get(name);
-
-//         if(group){
-//             group.getProjectile(point);
-//         }
-//     }
-
-//     addPGroup(name: string, type: Function, quantity: number = 1){
-//         if(!this.pList.has(name))
-//             this.pList.set(name, new EnemyGroup(this.scene, name, type, quantity));
-//     }
-// }

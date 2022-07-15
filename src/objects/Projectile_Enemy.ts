@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { COLLISION_CATEGORIES } from '../entities/Entity';
-import { Player } from '../entities/Player';
 import { Projectile, IProjectileData } from './Projectile';
 import { IVectorPoint } from '../entities/Entity';
 
@@ -12,7 +11,7 @@ export const DATA_SHOTBLUE : IProjectileData = {
     texture: { key: 'shotBlue', path: 'assets/sprites/touhou_test/shotBlue.png' },
     hitSize: ENEMY_PROJECTILE_HITBOX,
     speed: 300,
-    damage: 1,
+    value: 1,
 }
 
 export const DATA_SHOTRED : IProjectileData = {
@@ -21,7 +20,7 @@ export const DATA_SHOTRED : IProjectileData = {
     offset: Phaser.Math.Vector2.ZERO,
     hitSize: ENEMY_PROJECTILE_HITBOX,
     speed: 300,
-    damage: 1,
+    value: 1,
 }
 
 class EnemyProjectile extends Projectile{
