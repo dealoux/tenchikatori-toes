@@ -3,9 +3,9 @@ import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES, Entity, 
 import { InputHandler, INPUT_EVENTS } from '../plugins/InputHandler';
 import { PoolManager } from '../@types/Pool';
 import eventsCenter from '../plugins/EventsCentre';
-import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2 } from '../objects/Projectile_Player';
+import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../objects/Projectile_Player';
 import { Character } from './Character';
-import { Projectile } from '../objects/Projectile';
+import { IScalePatternData, PPatternScale, Projectile } from '../objects/Projectile';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
@@ -26,6 +26,12 @@ export const PLAYER_TEXTURE : ITexture = {
 
 export const PLAYER_SPEED_NORMAL = 250;
 const SPEED_FOCUSED = PLAYER_SPEED_NORMAL*.5;
+
+const SPECIAL_DATA : IScalePatternData = {
+    pSpeed : DATA_PLAYER_PMOON.speed,
+    fireRate : 30,
+    scaleSpeed: 0.25,
+}
 
 const HITBOX_TEXTURE: ITexture = {
     key: 'hitbox', path: 'assets/sprites/hitbox.png',
@@ -63,6 +69,7 @@ export class Player extends Character{
     
     specials: number;
     castingSpecial: boolean;
+    specialPattern: PPatternScale;
 
     currPower: number;
     currScore: number;
@@ -93,7 +100,8 @@ export class Player extends Character{
         this.projectileManager = new PoolManager(scene);
         this.projectileManager.addGroup(DATA_PLAYER_P1.texture.key, PlayerShot1, PLAYER_PROJECTILE_POOL);
         this.projectileManager.addGroup(DATA_PLAYER_P2.texture.key, PlayerShot2, PLAYER_PROJECTILE_POOL);
-        //this.projectileManager.pList.set(PlayersProjectileType.special, new ProjectileGroup(scene, PlayersProjectileType.special, 2));
+        this.projectileManager.addGroup(DATA_PLAYER_PMOON.texture.key, PlayerSpecialMoon, 4);
+        this.specialPattern = new PPatternScale(this, {pos: new Phaser.Math.Vector2(0, 30), theta: -90,} as IVectorPoint, this.projectileManager.getGroup(DATA_PLAYER_PMOON.texture.key), SPECIAL_DATA);
 
         this.shots = [
             function(player: Player) { player.spawnProjectile(player.projectileManager, DATA_PLAYER_P1.texture.key, player.currShootPoints.point_1); },
@@ -274,6 +282,10 @@ export class Player extends Character{
     }
 
     private special(){
+        this.specialPattern.updatePattern();
+        InputHandler.Instance().inputs.Special = false;
+        this.specials--;
+
         // const shot = this.projectileManager.pList.get(PlayersProjectileType.special);
 
         // if(shot){

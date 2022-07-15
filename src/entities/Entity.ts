@@ -42,8 +42,8 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     updateDelegate: IFunctionDelegate;
     preUpdateDelegate: IPreUpdateDelegate;
     entData?: IEntity;
-
     collisionCategory?: number;
+    static worldsEdge: Phaser.Geom.Rectangle;
 
     constructor(scene: Phaser.Scene, { pos, texture, hitSize: hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
         super(scene, pos.x, pos.y, texture.key, frame);
@@ -70,7 +70,8 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     protected emptyFunction() {}
 
     protected inCameraView(){
-        return this.scene.cameras.main.worldView.contains(this.x, this.y);
+        // return this.scene.cameras.main.worldView.contains(this.x, this.y);
+        return Entity.worldsEdge.contains(this.x, this.y);
     }
 
     protected setStatus(status: boolean | false){
@@ -80,6 +81,17 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
 
     protected updateHere(){ }
     protected preUpdateHere(time: number, delta: number) {}
+
+    static setWorldsEdge(scene: Phaser.Scene){
+        const { worldView } = scene.cameras.main;
+        const offset = new Phaser.Math.Vector2(worldView.width * .125, worldView.height * .125);
+
+        Entity.worldsEdge = new Phaser.Geom.Rectangle(worldView.x - offset.x, worldView.y - offset.y, worldView.width * 1.25, worldView.height * 1.25);
+
+        console.log(worldView);
+        console.log(Entity.worldsEdge);
+        console.log(Entity.worldsEdge.contains(2399, 1349));
+    }
 
     create(){
         //this.setOnCollide(this.handleCollision);
@@ -107,7 +119,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     handleCollision(entity: Entity){
         console.log(entity);
     }
-
 
     enableEntity(pos: Phaser.Math.Vector2){
         this.setStatus(true);

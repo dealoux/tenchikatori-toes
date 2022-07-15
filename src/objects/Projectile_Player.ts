@@ -3,6 +3,7 @@ import { COLLISION_CATEGORIES } from '../entities/Entity';
 import { Player } from '../entities/Player';
 import { Projectile, IProjectileData } from './Projectile';
 import { IVectorPoint, ITexture } from '../entities/Entity';
+import { Character } from '../entities/Character';
 
 export interface IShootPoints{
     point_1: IVectorPoint,
@@ -83,4 +84,12 @@ export class PlayerShot2 extends PlayerPorjectile{
         super.updateTransform(point);
         this.move(point, DATA_PLAYER_P2.speed);
     }
+}
+
+export class PlayerSpecialMoon extends PlayerPorjectile{
+    constructor(scene: Phaser.Scene){
+        super(scene, DATA_PLAYER_PMOON);
+    }
+
+    handleCollision(char: Character): void { }
 }

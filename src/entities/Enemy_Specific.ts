@@ -13,7 +13,6 @@ export enum YOUSEI1_ANIMS{
 const TEST_SHOT_DELAY = 500;
 
 const Yousei1WaveData : IWavePatternData = {
-    nextFire : 0,
     pSpeed : 250,
     fireRate : 30,
     wave: PPatternWave.generateWaveArray(400, 16),

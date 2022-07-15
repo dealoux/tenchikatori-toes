@@ -6,6 +6,7 @@ import { Player, PLAYER_TEXTURE } from '../entities/Player';
 import { Enemy } from '../entities/Enemy';
 import { Character } from '../entities/Character';
 import { Item } from '../entities/items/Item';
+import { Entity } from '../entities/Entity';
 
 export const GAMEPLAY_SIZE = {
 	WIDTH: WINDOW_WIDTH * .7,
@@ -42,6 +43,7 @@ export class GameplayScene extends Scene {
 
 		Enemy.initPManagers(this);
 		Character.initManager(this);
+		Entity.setWorldsEdge(this);
 
 		this.cameras.main.setViewport(GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);

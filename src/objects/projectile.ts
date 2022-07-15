@@ -110,7 +110,6 @@ export class Projectile extends Entity{
 }
 
 export interface IPPatternData{
-    nextFire: number;
     fireRate: number;
     pSpeed: number;
 }
@@ -121,12 +120,14 @@ export interface IWavePatternData extends IPPatternData{
 }
 
 export abstract class PPattern{
+    nextFire: number;
     parent: Character;
     projectile: PoolGroup | undefined;
     pPoint: IVectorPoint;
     updatePattern: IFunctionDelegate;
 
     constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined){
+        this.nextFire = 0;
         this.parent = parent;
         this.pPoint = pPoint;
         this.projectile = p;
@@ -135,39 +136,61 @@ export abstract class PPattern{
 }
 
 export class PPatternWave extends PPattern{
-    pData: IWavePatternData;
+    patternData: IWavePatternData;
 
     constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IWavePatternData){
         super(parent, pPoint, p);
-        this.pData = pData;
+        this.patternData = pData;
         
         this.updatePattern = Math.abs(pPoint.theta) == 90 ? this.waveVertical : this.waveHorizontal;
     }
 
     private waveBase(gx = 0, gy = 0){
-        if(this.parent.time() < this.pData.nextFire) { return; }
+        if(this.parent.time() < this.nextFire) { return; }
 
         const x = this.parent.x + this.pPoint.pos.x;
         const y = this.parent.y + this.pPoint.pos.y;
-        this.projectile?.getFirstDead(false).updateProjectileE({ x: x, y: y, speed : this.pData.pSpeed, angle: this.pPoint.theta, gx: gx, gy: gy });
-        this.pData.waveIndex++;
-        if (this.pData.waveIndex === this.pData.wave.length) {
-            this.pData.waveIndex = 0;
+        this.projectile?.getFirstDead(false).updateProjectileE({ x: x, y: y, speed : this.patternData.pSpeed, angle: this.pPoint.theta, gx: gx, gy: gy });
+        this.patternData.waveIndex++;
+        if (this.patternData.waveIndex === this.patternData.wave.length) {
+            this.patternData.waveIndex = 0;
         }
 
-        this.pData.nextFire = this.parent.time() + this.pData.fireRate;
+        this.nextFire = this.parent.time() + this.patternData.fireRate;
     }
 
     waveVertical() {
-        this.waveBase(this.pData.wave[this.pData.waveIndex]);
+        this.waveBase(this.patternData.wave[this.patternData.waveIndex]);
     }
 
     waveHorizontal() {
-        this.waveBase(0, this.pData.wave[this.pData.waveIndex]);
+        this.waveBase(0, this.patternData.wave[this.patternData.waveIndex]);
     }
 
     static generateWaveArray(value: number, step : number){
         const s = value/step*2;
         return Phaser.Utils.Array.NumberArrayStep(-value, value, s).concat(Phaser.Utils.Array.NumberArrayStep(value, -value, -s));
+    }
+}
+
+export interface IScalePatternData extends IPPatternData{
+    scaleSpeed: number;
+}
+
+export class PPatternScale extends PPattern{
+    patternData: IScalePatternData;
+
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IScalePatternData){
+        super(parent, pPoint, p);
+        this.patternData = pData;
+        this.updatePattern = this.scaleBase;
+    }
+
+    scaleBase(){
+        if(this.parent.time() < this.nextFire) { return; }
+        const x = this.parent.x + this.pPoint.pos.x;
+        const y = this.parent.y + this.pPoint.pos.y;
+        this.projectile?.getFirstDead(false).updateProjectileE({ x: x, y: y, speed : this.patternData.pSpeed, angle: this.pPoint.theta, scaleSpeed: this.patternData.scaleSpeed });
+        this.nextFire = this.parent.time() + this.patternData.fireRate;
     }
 }
