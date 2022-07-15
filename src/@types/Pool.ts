@@ -15,8 +15,7 @@ export class PoolGroup extends Phaser.GameObjects.Group{
 
         this.runChildUpdate = true;
         scene.add.existing(this);
-
-        // this.children.each((c : any) => c.disableEntity());
+        this.children.each((c : any) => c.disableEntity());
     }
 
     getInstance(point : IVectorPoint){
