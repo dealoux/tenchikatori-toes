@@ -43,7 +43,7 @@ export class Projectile extends Entity{
         super.create();
     }
 
-    handleCollision(char: Character){
+    handleCollision(ent: Entity){
         this.resetProperties();
         this.disableEntity();
     }

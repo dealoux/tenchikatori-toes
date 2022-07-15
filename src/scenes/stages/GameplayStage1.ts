@@ -4,13 +4,14 @@ import { Yousei1 } from '../../entities/Enemy_Specific';
 import { GAMEPLAY_SIZE } from '../Gameplay';
 import { SCENE_NAMES } from '../GameManager';
 import { Enemy, YOUSEI1_TEXTURE } from '../../entities/Enemy';
-import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../objects/Projectile_Enemy';
+import { DATA_SHOTBLUE, DATA_SHOTRED, EnemyProjectile } from '../../objects/Projectile_Enemy';
 import { PoolGroup, PoolManager } from '../../@types/Pool';
 import { Entity } from '../../entities/Entity';
 import { BGM, playAudio } from '../../@types/Audio';
 import { Player } from '../../entities/Player';
 import { Character } from '../../entities/Character';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM } from '../../entities/items/Item';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM, Item } from '../../entities/items/Item';
+import { Projectile } from '../../objects/Projectile';
 
 //#region Dialogues
 const chant = [
@@ -56,13 +57,13 @@ export default class GameplayStage1 extends GameplayScene {
 		this.mobManager = new PoolManager(this);
 		this.handleYousei1();
 
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.hitPlayerEnemyProjectile, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.hitPlayerEnemyProjectile, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
 
-		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.hitGrazeItem, undefined, this);
-		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.hitGrazeItem, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.hitPlayerPowerItem, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.hitPlayerScoreItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerPowerItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerScoreItem, undefined, this);
 	}
 
 	update() {
@@ -87,12 +88,15 @@ export default class GameplayStage1 extends GameplayScene {
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.mobManager?.pList.forEach(eGroup => {
-				this.physics.add.overlap(eGroup, pGroup, this.hitEnemyMob, undefined, this);
+				this.physics.add.overlap(eGroup, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			})
 		});
 	}
 
-	protected hitPlayerEnemyProjectile(playerHitbox: any, p: any) {
+	protected callBack_hitPlayerEnemyProjectile(playerHitbox: any, p: any) {
+		this.hitPlayerEnemyProjectile(playerHitbox as Entity, p as Projectile);
+	}
+	protected hitPlayerEnemyProjectile(playerHitbox: Entity, p: Projectile) {
 		//playerHitbox.handleCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
 		p.handleCollision(playerHitbox);
@@ -107,7 +111,10 @@ export default class GameplayStage1 extends GameplayScene {
 		// this.explodeSFX.play();
 	}
 
-	protected hitEnemyMob(enemy: any, p: any) {
+	protected callBack_hitEnemyMob(enemy: any, p: any) {
+		this.hitEnemyMob(enemy as Enemy, p as Projectile);
+	}
+	protected hitEnemyMob(enemy: Enemy, p: Projectile) {
 		// this.score += enemy.points;
 		// this.scoreText.setText("SCORE:"+Phaser.Utils.String.Pad(this.score, 6, '0', 1));
 		enemy.handleCollision(p);
@@ -121,16 +128,25 @@ export default class GameplayStage1 extends GameplayScene {
 		// this.explodeSFX.play();
 	}
 
-	protected hitGrazeItem(player: any, i: any){
+	protected callBack_hitGrazeItem(player: any, i: any) {
+		this.hitGrazeItem(player as Player, i as Item);
+	}
+	protected hitGrazeItem(player: Player, i: Item){
 		i.handlingGrazeHBCollision(player);
 	}
 
-	protected hitPlayerPowerItem(playerHitbox: any, i: any){
+	protected callBack_hitPlayerPowerItem(playerHitbox: any, i: any) {
+		this.hitPlayerPowerItem(playerHitbox as Entity, i as Item);
+	}
+	protected hitPlayerPowerItem(playerHitbox: Entity, i: Item){
 		this.player?.handlingPowerItemCollisionDelegate(i);
 		i.handleCollision(playerHitbox);
 	}
 
-	protected hitPlayerScoreItem(playerHitbox: any, i: any){
+	protected callBack_hitPlayerScoreItem(playerHitbox: any, i: any) {
+		this.hitPlayerScoreItem(playerHitbox as Entity, i as Item);
+	}
+	protected hitPlayerScoreItem(playerHitbox: Entity, i: Item){
 		this.player?.handlingScoreItem(i);
 		i.handleCollision(playerHitbox);
 	}

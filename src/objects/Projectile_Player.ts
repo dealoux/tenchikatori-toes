@@ -50,7 +50,7 @@ export const SHOOTPOINTS_FOCUSED : IShootPoints = {
     point_4: { pos: new Phaser.Math.Vector2(-36, -50), theta: 0 },
 }
 
-class PlayerPorjectile extends Projectile{
+export class PlayerPorjectile extends Projectile{
     constructor(scene: Phaser.Scene, data: IProjectileData){
         super(scene, data);
     }

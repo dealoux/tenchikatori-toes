@@ -18,7 +18,7 @@ export const DefaultConfig = {
   physics: {
     default: 'Arcade',
     arcade: {
-      debug: false,
+      debug: true,
       gravity: 0,
     },
   },

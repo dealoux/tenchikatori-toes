@@ -79,13 +79,5 @@ export class Enemy extends Character{
     }
 
     protected special(){
-        // const shot = this.projectileManager.pList.get(PlayersProjectileType.special);
-
-        // if(shot){
-        //     this.castingSpecial = true;
-        //     eventsCenter.emit(PlayerEvents.special);
-        //     shot.getProjectile(this.getBody().x, this.getBody().y);
-        //     this.specials--; 
-        // }
     }
 }

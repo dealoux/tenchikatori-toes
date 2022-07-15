@@ -23,7 +23,7 @@ export const DATA_SHOTRED : IProjectileData = {
     value: 1,
 }
 
-class EnemyProjectile extends Projectile{
+export class EnemyProjectile extends Projectile{
     constructor(scene: Phaser.Scene, data: IProjectileData){
         super(scene, data);
     }

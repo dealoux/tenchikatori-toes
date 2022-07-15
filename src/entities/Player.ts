@@ -110,7 +110,7 @@ export class Player extends Character{
             function(player: Player) { player.spawnProjectile(player.projectileManager, DATA_PLAYER_P2.texture.key, player.currShootPoints.point_4); },
         ]
 
-        this.currPower = 1;
+        this.currPower = 3.5;
         this.currScore = 0;
     }
 
@@ -132,24 +132,6 @@ export class Player extends Character{
         // );
 	}
     
-    getDamage(value?: number): void {
-        this.scene.tweens.add({
-            targets: this,
-            duration: 100,
-            repeat: 3,
-            yoyo: true,
-            alpha: 0.5,
-            onStart: () => {
-                if (value) {
-                    this.hp = this.hp - value;
-                }
-            },
-            onComplete: () => {
-                this.setAlpha(1);
-            },
-        });
-    }
-
     create(){
         super.create();
 
@@ -299,14 +281,16 @@ export class Player extends Character{
     private handlingPowerUp(p: Projectile){
         this.currPower += p.entData.value;
 
-        console.log(this.currPower);
-
-        if(this.currPower >= MAX_POWER)
+        if(this.currPower > MAX_POWER){
+            this.currPower = MAX_POWER;
             this.handlingPowerItemCollisionDelegate = this.emptyFunction;
+        }
+        
+        // console.log(this.currPower + ", " + (this.currPower > MAX_POWER));
     }
 
     handlingScoreItem(p: Projectile){
         this.currScore += p.entData.value;
-        console.log(this.currScore);
+        //console.log(this.currScore);
     }
 }
