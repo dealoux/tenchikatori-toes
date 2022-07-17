@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { Character } from "../entities/Character";
+import { Character } from "../entities/characters/Character";
 import { IEntity } from "../entities/Entity";
 
 // declare global { interface Array<T> { seek() : void; } }
