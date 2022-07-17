@@ -2,10 +2,10 @@ import Phaser, { Scene } from 'phaser';
 import { Dialog, DialogUpdateAction } from '../objects/Dialog';
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
-import { Player, PLAYER_TEXTURE } from '../entities/Player';
-import { Enemy } from '../entities/Enemy';
-import { Character } from '../entities/Character';
-import { Item } from '../entities/items/Item';
+import { Player, PLAYER_TEXTURE } from '../entities/characters/player/Player';
+import { Enemy } from '../entities/characters/enemies/Enemy';
+import { Character } from '../entities/characters/Character';
+import { Item } from '../entities/projectiles/items/Item';
 import { Entity } from '../entities/Entity';
 
 export const GAMEPLAY_SIZE = {

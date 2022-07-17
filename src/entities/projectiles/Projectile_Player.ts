@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
-import { COLLISION_CATEGORIES } from '../entities/Entity';
-import { Player } from '../entities/Player';
+import { COLLISION_CATEGORIES } from '../Entity';
+import { Player } from '../characters/player/Player';
 import { Projectile, IProjectileData } from './Projectile';
-import { IVectorPoint, ITexture } from '../entities/Entity';
-import { Character } from '../entities/Character';
+import { IVectorPoint, ITexture } from '../Entity';
+import { Character } from '../characters/Character';
 
 export interface IShootPoints{
     point_1: IVectorPoint,

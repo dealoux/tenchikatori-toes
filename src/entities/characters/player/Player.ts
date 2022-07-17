@@ -1,19 +1,14 @@
 import Phaser from 'phaser';
-import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES, Entity, ITexture } from './Entity';
-import { InputHandler, INPUT_EVENTS } from '../plugins/InputHandler';
-import { PoolManager } from '../@types/Pool';
-import eventsCenter from '../plugins/EventsCentre';
-import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../objects/Projectile_Player';
-import { Character } from './Character';
-import { IScalePatternData, PPatternScale, Projectile } from '../objects/Projectile';
+import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES, Entity, ITexture } from '../../Entity';
+import { InputHandler, INPUT_EVENTS } from '../../../plugins/InputHandler';
+import { PoolManager } from '../../../@types/Pool';
+import eventsCenter from '../../../plugins/EventsCentre';
+import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
+import { Character } from '../Character';
+import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
-}
-
-export enum PLAYER_STATE{
-    NORMAL,
-    FOCUSED,
 }
 
 export enum PLAYER_EVENTS{

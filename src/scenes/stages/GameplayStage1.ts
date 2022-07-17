@@ -1,32 +1,33 @@
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../../objects/DialogLine';
 import { GameplayScene } from '../Gameplay';
-import { Yousei1 } from '../../entities/Enemy_Specific';
 import { GAMEPLAY_SIZE } from '../Gameplay';
 import { SCENE_NAMES } from '../GameManager';
-import { Enemy, YOUSEI1_TEXTURE } from '../../entities/Enemy';
-import { DATA_SHOTBLUE, DATA_SHOTRED, EnemyProjectile } from '../../objects/Projectile_Enemy';
+import { Enemy, YOUSEI1_TEXTURE } from '../../entities/characters/enemies/Enemy';
+import { DATA_SHOTBLUE, DATA_SHOTRED, EnemyProjectile } from '../../entities/projectiles/Projectile_Enemy';
 import { PoolGroup, PoolManager } from '../../@types/Pool';
 import { Entity } from '../../entities/Entity';
 import { BGM, playAudio } from '../../@types/Audio';
-import { Player } from '../../entities/Player';
-import { Character } from '../../entities/Character';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM, Item } from '../../entities/items/Item';
-import { Projectile } from '../../objects/Projectile';
+import { Player } from '../../entities/characters/player/Player';
+import { Character } from '../../entities/characters/Character';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM, Item } from '../../entities/projectiles/items/Item';
+import { Yousei1 } from '../../entities/characters/enemies/Enemy_Specific';
+import { Projectile } from '../../entities/projectiles/Projectile';
 
 //#region Dialogues
 const chant = [
-	'JINZOU FIRE FAIBO WAIPAA', 
-	'TAIGA TAIGA TTTTAIGA', 
-	'CHAPE APE KARA KINA' ,
-	'CHAPE APE KARA KINA' ,
-	'MYOHHONTUSUKE' ,
-	'*CLAP* WAIPAA!!', 
-	'FIRE FIRE' ,
-	'TORA TORA KARA KINA',
-	'CHAPE APE BABA',
-	'AMA AMA JYASUPA!',
-	'TORA TAIGA, DARE TAIGA!',
-	'JINZOU SENI YA TAIGA!'
+	'Jinzou Faiya Faibo Waipa', 
+	'Taiga, Taiga, T-T-T-T-Taiga', 
+	'Chape Ape Kara Kina' ,
+	'Chape Ape Kara Kina' ,
+	'Myouhontusuke' ,
+	'*Clap*', 
+	'Waipa!',
+	'Faiya, Faiya' ,
+	'Tora Tora Kara Kina',
+	'Chape Ape Fama',
+	'Ama Ama Jyasupa',
+	'Tora Taiga, Tora Taiga',
+	'Jinzou Sen\'i Iettaiga!'
 ];
 //#endregion
 

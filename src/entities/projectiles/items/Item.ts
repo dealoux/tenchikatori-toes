@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import { PoolManager } from '../../@types/Pool';
-import { IUpdateArgs, IProjectileData, PPatternWave, Projectile } from '../../objects/Projectile';
-import { Entity } from '../Entity';
-import { PLAYER_SPEED_NORMAL } from '../Player';
+import { PoolManager } from '../../../@types/Pool';
+import { IUpdateArgs, IProjectileData, PPatternWave, Projectile } from '../Projectile';
+import { Entity } from '../../Entity';
+import { PLAYER_SPEED_NORMAL } from '../../characters/player/Player';
 
 export const DATA_POWER_ITEM : IProjectileData = {
     pos: Phaser.Math.Vector2.ZERO,

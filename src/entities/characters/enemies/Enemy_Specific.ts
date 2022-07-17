@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
-import { PoolManager } from '../@types/Pool';
 import { Enemy, YOUSEI1_TEXTURE } from './Enemy';
-import { IEntity, IVectorPoint } from './Entity';
-import { DATA_SHOTBLUE, DATA_SHOTRED } from '../objects/Projectile_Enemy' 
-import { IWavePatternData, PPatternWave } from '../objects/Projectile';
+import { IEntity, IVectorPoint } from '../../Entity';
+import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy' 
+import { IWavePatternData, PPatternWave } from '../../projectiles/Projectile';
 
 export enum YOUSEI1_ANIMS{
     idle = 'yousei1_idle',

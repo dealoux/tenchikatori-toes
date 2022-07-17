@@ -45,7 +45,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     collisionCategory?: number;
     static worldsEdge: Phaser.Geom.Rectangle;
 
-    constructor(scene: Phaser.Scene, { pos, texture, hitSize: hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
+    constructor(scene: Phaser.Scene, { pos = Phaser.Math.Vector2.ZERO, texture, hitSize: hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
         super(scene, pos.x, pos.y, texture.key, frame);
 
         this.updateDelegate = this.updateHere;

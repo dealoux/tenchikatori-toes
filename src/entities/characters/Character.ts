@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
-import { IEntity, Entity, IVectorPoint, COLLISION_CATEGORIES, ITexture, IFunctionDelegate } from './Entity';
-import { PoolManager } from '../@types/Pool';
-import eventsCenter from '../plugins/EventsCentre';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM, ItemManager, ITEM_POOL, PowerItem, ScoreItem } from './items/Item';
-import { Projectile } from '../objects/Projectile';
+import { IEntity, Entity, IVectorPoint, COLLISION_CATEGORIES, ITexture, IFunctionDelegate } from '../Entity';
+import { PoolManager } from '../../@types/Pool';
+import eventsCenter from '../../plugins/EventsCentre';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM, ItemManager, ITEM_POOL, PowerItem, ScoreItem } from '../projectiles/items/Item';
+import { Projectile } from '../projectiles/Projectile';
 
 export enum CharacterState{
     ALIVE,

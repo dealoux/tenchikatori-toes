@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import { COLLISION_CATEGORIES } from '../entities/Entity';
+import { COLLISION_CATEGORIES } from '../Entity';
 import { Projectile, IProjectileData } from './Projectile';
-import { IVectorPoint } from '../entities/Entity';
+import { IVectorPoint } from '../Entity';
 
 export const ENEMY_PROJECTILE_HITBOX = new Phaser.Math.Vector2(6, 6);
 export const ENEMY_PROJECTILE_POOL = 1000;
