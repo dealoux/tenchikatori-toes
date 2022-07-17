@@ -6,7 +6,6 @@ import eventsCenter from '../../../plugins/EventsCentre';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
 import { Character, ICharacter } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
-import { EMPTY_TEXTURE } from '../../../scenes/GameManager';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;

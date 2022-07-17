@@ -1,22 +1,26 @@
 import Phaser from 'phaser';
 import { Projectile } from '../../../projectiles/Projectile';
 import { Enemy, IEnemy } from '../Enemy';
-import { IEntity, ITexture } from '../../../Entity';
-import { IState } from '../../../../@types/StateMachine';
-
-export const YOUSEI1_TEXTURE : ITexture = {
-    key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json'
-}
+import { ITexture } from '../../../Entity';
+import { IState, StateMachine } from '../../../../@types/StateMachine';
+import { Enemy_IdleState } from '../enemy_states/Enemy_IdleState';
+import { Enemy_MoveState } from '../enemy_states/Enemy_MoveState';
+import { Enemy_AttackState } from '../enemy_states/Enemy_AttackState';
 
 export interface IEnemyBoss extends IEnemy{
     maxIdleTime: number,
 }
 
 export class EnemyBoss extends Enemy{
+    stateMachine: StateMachine;
     stateSequence : Array<IState>;
+    idleState?: Enemy_IdleState;
+    moveState?: Enemy_MoveState;
+    attackState?: Enemy_AttackState;
 
     constructor(scene: Phaser.Scene, data: IEnemyBoss){
         super(scene, data);
+        this.stateMachine = new StateMachine(this);
         this.stateSequence = new Array;
     }
 
