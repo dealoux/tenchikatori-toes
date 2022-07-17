@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { PoolManager } from '../../../@types/Pool';
 import { IUpdateArgs, IProjectileData, PPatternWave, Projectile } from '../Projectile';
 import { Entity } from '../../Entity';
-import { PLAYER_SPEED_NORMAL } from '../../characters/player/Player';
+import { PLAYER_DATA } from '../../characters/player/Player';
 
 export const DATA_POWER_ITEM : IProjectileData = {
     pos: Phaser.Math.Vector2.ZERO,
@@ -74,7 +74,7 @@ export class Item extends Projectile{
     }
 
     handlingGrazeHBCollision(hitbox: Entity){
-        this.updateProjectile({ x: this.x, y: this.y, speed: PLAYER_SPEED_NORMAL, target: hitbox });
+        this.updateProjectile({ x: this.x, y: this.y, speed: PLAYER_DATA.speed, target: hitbox });
     }
 }
 

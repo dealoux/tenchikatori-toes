@@ -1,31 +1,26 @@
 import Phaser from 'phaser';
-import {IEntity, IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES, Entity, ITexture } from '../../Entity';
+import { IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES, Entity, ITexture } from '../../Entity';
 import { InputHandler, INPUT_EVENTS } from '../../../plugins/InputHandler';
 import { PoolManager } from '../../../@types/Pool';
 import eventsCenter from '../../../plugins/EventsCentre';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
-import { Character } from '../Character';
+import { Character, ICharacter } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
+import { EMPTY_TEXTURE } from '../../../scenes/GameManager';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
 }
 
-export enum PLAYER_EVENTS{
-    special = 'special',
+interface IPlayer extends ICharacter{
+    speedFocused: number,
 }
 
-export const PLAYER_TEXTURE : ITexture = {
-    key: 'enna', path: 'assets/sprites/touhouenna.png',
-};
-
-export const PLAYER_SPEED_NORMAL = 250;
-const SPEED_FOCUSED = PLAYER_SPEED_NORMAL*.5;
-
-const SPECIAL_DATA : IScalePatternData = {
-    pSpeed : DATA_PLAYER_PMOON.speed,
-    fireRate : 30,
-    scaleSpeed: 0.25,
+export const PLAYER_DATA : IPlayer = {
+    texture: { key: 'enna', path: 'assets/sprites/touhouenna.png', },
+    speed: 250,
+    speedFocused: 250 *.5,
+    hp: 4
 }
 
 const HITBOX_TEXTURE: ITexture = {
@@ -37,9 +32,7 @@ const HITBOX_OFFSET = -HITBOX_SIZE/2;
 const GRAZEHB_SIZE = 60;
 
 const MODE_IDICATOR_SIZE = 20;
-const MODE_IDICATOR_OFFSET = new Phaser.Math.Vector2(-MODE_IDICATOR_SIZE/2, GRAZEHB_SIZE + 10 -MODE_IDICATOR_SIZE/2);
-
-const MAX_POWER = 4;
+const MODE_IDICATOR_OFFSET = new Phaser.Math.Vector2(-MODE_IDICATOR_SIZE/2, GRAZEHB_SIZE -MODE_IDICATOR_SIZE/2);
 
 const BLUE_MODE: ITexture = {
     key: 'bluemode', path: 'assets/sprites/bluemode.png',
@@ -47,6 +40,18 @@ const BLUE_MODE: ITexture = {
 const RED_MODE: ITexture = {
     key: 'redmode', path: 'assets/sprites/redmode.png',
 };
+
+const MAX_POWER = 4;
+
+export enum PLAYER_EVENTS{
+    special = 'special',
+}
+
+const SPECIAL_DATA : IScalePatternData = {
+    pSpeed : DATA_PLAYER_PMOON.speed,
+    fireRate : 30,
+    scaleSpeed: 0.25,
+}
 
 export class Player extends Character{
     actionDelegate : IFunctionDelegate;
@@ -69,9 +74,12 @@ export class Player extends Character{
     currPower: number;
     currScore: number;
 
-    constructor(scene: Phaser.Scene, { pos, texture, frame, offset }: IEntity){
-        // let shapes = scene.game.cache.json.get('shapes');        
-        super(scene, { pos, texture, hitSize: new Phaser.Math.Vector2(GRAZEHB_SIZE, GRAZEHB_SIZE) , frame, offset }, 3, PLAYER_SPEED_NORMAL);
+    speed: number;
+
+    constructor(scene: Phaser.Scene, pos: Phaser.Math.Vector2){
+        // let shapes = scene.game.cache.json.get('shapes');
+        PLAYER_DATA.pos = pos;
+        super(scene, PLAYER_DATA);
         this.setCollideWorldBounds(true);
         
         this.actionDelegate = this.shoot;
@@ -80,11 +88,11 @@ export class Player extends Character{
 
         this.bodyOffset = new Phaser.Math.Vector2(this.x - this.body.x, this.y - this.body.y);
         
-        this.hitbox = new Entity(scene, { pos, texture: HITBOX_TEXTURE}, true);
+        this.hitbox = new Entity(scene, { pos, texture: HITBOX_TEXTURE }, true);
         this.hitbox.setScale(HITBOX_SIZE/this.hitbox.width);
         this.hitbox.setVisible(false);
-
-        this.modeIndicator = new Entity(scene, { pos: new Phaser.Math.Vector2(pos.x + MODE_IDICATOR_OFFSET.x, pos.y + MODE_IDICATOR_OFFSET.y), texture: BLUE_MODE }, true);
+        
+        this.modeIndicator = new Entity(scene, { pos: new Phaser.Math.Vector2(pos.x + MODE_IDICATOR_OFFSET.x, pos.y + MODE_IDICATOR_OFFSET.y), texture: BLUE_MODE } , true);
         this.modeIndicator.setScale(MODE_IDICATOR_SIZE/this.modeIndicator.width);
 
         this.setModeBlue();
@@ -107,10 +115,11 @@ export class Player extends Character{
 
         this.currPower = 3.5;
         this.currScore = 0;
+        this.speed = PLAYER_DATA.speed || 0;
     }
 
     static preload(scene: Phaser.Scene) {
-        scene.load.image(PLAYER_TEXTURE.key, PLAYER_TEXTURE.path);
+        scene.load.image(PLAYER_DATA.texture.key, PLAYER_DATA.texture.path);
 
         scene.load.image(HITBOX_TEXTURE.key, HITBOX_TEXTURE.path);
         scene.load.image(BLUE_MODE.key, BLUE_MODE.path);
@@ -131,13 +140,13 @@ export class Player extends Character{
         super.create();
 
         eventsCenter.on(INPUT_EVENTS.Focus_down, () => {
-            this.speed = SPEED_FOCUSED;
+            this.speed = PLAYER_DATA.speedFocused;
             this.currShootPoints = SHOOTPOINTS_FOCUSED;
             this.hitbox.setVisible(true);
 		});
 
         eventsCenter.on(INPUT_EVENTS.Focus_up, () => {
-            this.speed = PLAYER_SPEED_NORMAL;
+            this.speed = PLAYER_DATA.speedFocused;
             this.currShootPoints = SHOOTPOINTS_NORMAL;
             this.hitbox.setVisible(false);
 		});

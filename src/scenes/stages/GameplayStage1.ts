@@ -2,7 +2,7 @@ import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../../objects/DialogLine';
 import { GameplayScene } from '../Gameplay';
 import { GAMEPLAY_SIZE } from '../Gameplay';
 import { SCENE_NAMES } from '../GameManager';
-import { Enemy, YOUSEI1_TEXTURE } from '../../entities/characters/enemies/Enemy';
+import { Enemy } from '../../entities/characters/enemies/Enemy';
 import { DATA_SHOTBLUE, DATA_SHOTRED, EnemyProjectile } from '../../entities/projectiles/Projectile_Enemy';
 import { PoolGroup, PoolManager } from '../../@types/Pool';
 import { Entity } from '../../entities/Entity';
@@ -10,7 +10,7 @@ import { BGM, playAudio } from '../../@types/Audio';
 import { Player } from '../../entities/characters/player/Player';
 import { Character } from '../../entities/characters/Character';
 import { DATA_POWER_ITEM, DATA_SCORE_ITEM, Item } from '../../entities/projectiles/items/Item';
-import { Yousei1 } from '../../entities/characters/enemies/Enemy_Specific';
+import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Specific';
 import { Projectile } from '../../entities/projectiles/Projectile';
 
 //#region Dialogues
@@ -43,6 +43,7 @@ export default class GameplayStage1 extends GameplayScene {
 
 	preload() {
 		super.preload();
+		Yousei1.preload(this);
 	}
 
 	create() {
@@ -82,10 +83,10 @@ export default class GameplayStage1 extends GameplayScene {
 		// });
 
 
-		this.mobManager?.addGroup(YOUSEI1_TEXTURE.key, Yousei1, 4);
+		this.mobManager?.addGroup(DATA_YOUSEI1.texture.key, Yousei1, 4);
 
-		this.yousei1 = this.mobManager?.spawnInstance(YOUSEI1_TEXTURE.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
-		this.yousei2 = this.mobManager?.spawnInstance(YOUSEI1_TEXTURE.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
+		this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
+		this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.mobManager?.pList.forEach(eGroup => {

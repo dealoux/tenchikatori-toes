@@ -1,28 +1,25 @@
 import Phaser from 'phaser';
-import { Entity, IEntity, ITexture, IVectorPoint } from '../../Entity';
 import { PoolManager } from '../../../@types/Pool';
 import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy';
-import { Character } from '../Character';
-import { IUpdateArgs, PPatternWave, Projectile } from '../../projectiles/Projectile';
+import { Character, ICharacter } from '../Character';
+import { Projectile } from '../../projectiles/Projectile';
 import eventsCenter from '../../../plugins/EventsCentre';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM } from '../../projectiles/items/Item';
 
-export const YOUSEI1_TEXTURE : ITexture = {
-    key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json'
+export interface IEnemy extends ICharacter{
+
 }
 
 export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
     
-    constructor(scene: Phaser.Scene, { pos = Phaser.Math.Vector2.ZERO, texture, frame, offset = Phaser.Math.Vector2.ZERO }: IEntity, hp: number, speed: number){
-        super(scene, { pos, texture, frame, offset }, hp, speed);
+    constructor(scene: Phaser.Scene, data: ICharacter){
+        super(scene, data);
     }
 
     static preload(scene: Phaser.Scene) {
         scene.load.image(DATA_SHOTBLUE.texture.key, DATA_SHOTBLUE.texture.path);
         scene.load.image(DATA_SHOTRED.texture.key, DATA_SHOTRED.texture.path);
-        scene.load.atlas(YOUSEI1_TEXTURE.key, YOUSEI1_TEXTURE.path, YOUSEI1_TEXTURE.json);
 	}
 
     static initPManagers(scene: Phaser.Scene){

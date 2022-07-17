@@ -2,7 +2,7 @@ import Phaser, { Scene } from 'phaser';
 import { Dialog, DialogUpdateAction } from '../objects/Dialog';
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../objects/DialogLine';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../constants';
-import { Player, PLAYER_TEXTURE } from '../entities/characters/player/Player';
+import { Player } from '../entities/characters/player/Player';
 import { Enemy } from '../entities/characters/enemies/Enemy';
 import { Character } from '../entities/characters/Character';
 import { Item } from '../entities/projectiles/items/Item';
@@ -35,7 +35,7 @@ export class GameplayScene extends Scene {
 		});
 
 		//this.add.image(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2, 'godseesall').setScale(1.5).setAlpha(.2);
-		this.player = new Player(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2), texture: PLAYER_TEXTURE } );
+		this.player = new Player(this, new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2));
 
 		//this.player.handlingInput(false);
 		

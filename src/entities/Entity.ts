@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { EMPTY_TEXTURE } from '../scenes/GameManager';
 
 export interface IVectorPoint{
     pos: Phaser.Math.Vector2;
@@ -12,11 +13,11 @@ export interface ITexture{
 }
 
 export interface IEntity{
-    pos: Phaser.Math.Vector2;
-    texture: ITexture;
-    frame?: string | number;
-    hitSize?: Phaser.Math.Vector2;
-    offset?: Phaser.Math.Vector2;
+    pos?: Phaser.Math.Vector2,
+    texture: ITexture,
+    frame?: string | number,
+    hitSize?: Phaser.Math.Vector2,
+    offset?: Phaser.Math.Vector2,
 }
 
 export interface IFunctionDelegate{
@@ -45,7 +46,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     collisionCategory?: number;
     static worldsEdge: Phaser.Geom.Rectangle;
 
-    constructor(scene: Phaser.Scene, { pos = Phaser.Math.Vector2.ZERO, texture, hitSize: hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
+    constructor(scene: Phaser.Scene, { pos = Phaser.Math.Vector2.ZERO, texture = EMPTY_TEXTURE, hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
         super(scene, pos.x, pos.y, texture.key, frame);
 
         this.updateDelegate = this.updateHere;

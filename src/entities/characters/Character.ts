@@ -5,24 +5,20 @@ import eventsCenter from '../../plugins/EventsCentre';
 import { DATA_POWER_ITEM, DATA_SCORE_ITEM, ItemManager, ITEM_POOL, PowerItem, ScoreItem } from '../projectiles/items/Item';
 import { Projectile } from '../projectiles/Projectile';
 
-export enum CharacterState{
-    ALIVE,
-    DEAD
+export interface ICharacter extends IEntity{
+    hp: number,
+    speed?: number,
 }
 
 export class Character extends Entity{
     static itemManager: ItemManager;
-    state: CharacterState;
     hp: number;
-    speed: number;
     lastShotTime: number;
 
-    constructor(scene: Phaser.Scene, { pos, texture, hitSize: hitRadius, frame }: IEntity,  hp: number, speed: number){
-        super(scene, { pos, texture, hitSize: hitRadius, frame }, true);
+    constructor(scene: Phaser.Scene, data: ICharacter){
+        super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame }, true);
 
-        this.hp = hp;
-        this.speed = speed;
-        this.state = CharacterState.ALIVE;
+        this.hp = data.hp;
         this.lastShotTime = 0;
     }
 

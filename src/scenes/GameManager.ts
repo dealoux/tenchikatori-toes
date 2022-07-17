@@ -6,7 +6,7 @@ import { HUDScene } from './Gameplay';
 import { loadBGM } from '../@types/Audio';
 import { ITexture } from '../entities/Entity';
 
-const EMPTY_TEXTURE : ITexture = {
+export const EMPTY_TEXTURE : ITexture = {
 	key: 'empty', path: 'assets/sprites/empty.png'
 };
 

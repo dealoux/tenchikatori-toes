@@ -12,10 +12,10 @@ export interface IState{
 }
 
 export class State implements IState{
-    stateMachine: PushDownAutomata;
+    stateMachine: StateMachine;
     data: IEntity;
 
-    constructor(stateMachine: PushDownAutomata, data: IEntity){
+    constructor(stateMachine: StateMachine, data: IEntity){
         this.stateMachine = stateMachine;
         this.data = data;
     }
@@ -31,7 +31,8 @@ export class State implements IState{
     }
 }
 
-export class PushDownAutomata{
+// Pushdown automata
+export class StateMachine{
     States : Array<State>;
     parent: Character
 
