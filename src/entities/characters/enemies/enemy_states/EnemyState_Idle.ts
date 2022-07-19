@@ -1,15 +1,15 @@
 import Phaser from "phaser";
-import { IState, StateMachine } from "../../../../@types/StateMachine";
+import { IState, IStateData, State, StateMachine } from "../../../../@types/StateMachine";
 import { Enemy, IEnemy } from "../Enemy";
-import { Enemy_State, IStateData } from "./Enemy_State";
+import { EnemyState } from "./EnemyState";
 
-export interface IEnemyIdleStateData extends IStateData{
+export interface IEnemyStateData_Idle extends IStateData{
     maxIdleTime: number;
     attackRate: number;
 }
 
-export class Enemy_IdleState extends Enemy_State{
-    sData: IEnemyIdleStateData;
+export class EnemyState_Idle extends EnemyState{
+    sData: IEnemyStateData_Idle;
     idleTime: number;
 
     // constructor(char: Enemy, stateMachine: StateMachine, data: IEnemyBoss, sData: IEnemyIdleStateData){
@@ -18,7 +18,7 @@ export class Enemy_IdleState extends Enemy_State{
     //     this.restTime = 0;
     // }
 
-    constructor(char: Enemy, data: IEnemy, sData: IEnemyIdleStateData){
+    constructor(char: Enemy, data: IEnemy, sData: IEnemyStateData_Idle){
         super(char, data, sData);
         this.sData = sData;
         this.idleTime = 0;

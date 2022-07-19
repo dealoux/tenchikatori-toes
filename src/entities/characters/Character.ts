@@ -1,9 +1,10 @@
 import Phaser from 'phaser';
-import { IEntity, Entity, IVectorPoint, COLLISION_CATEGORIES, ITexture, IFunctionDelegate } from '../Entity';
-import { PoolManager } from '../../@types/Pool';
 import eventsCenter from '../../plugins/EventsCentre';
+import { IEntity, Entity, IVectorPoint } from '../Entity';
+import { PoolManager } from '../../@types/Pool';
 import { DATA_POWER_ITEM, DATA_SCORE_ITEM, ItemManager, ITEM_POOL, PowerItem, ScoreItem } from '../projectiles/items/Item';
 import { Projectile } from '../projectiles/Projectile';
+import { State, StateMachine } from '../../@types/StateMachine';
 
 export interface ICharacter extends IEntity{
     hp: number,
@@ -20,12 +21,15 @@ export class Character extends Entity{
     static itemManager: ItemManager;
     hp: number;
     lastShotTime: number;
+    stateMachine: StateMachine;
 
     constructor(scene: Phaser.Scene, data: ICharacter){
         super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame }, true);
 
         this.hp = data.hp;
         this.lastShotTime = 0;
+
+        this.stateMachine = new StateMachine(this);
     }
 
     time(){
@@ -39,9 +43,10 @@ export class Character extends Entity{
         Character.itemManager.addGroup(DATA_SCORE_ITEM.texture.key, ScoreItem, ITEM_POOL);
     }
 
-    // create(){
-    //     super.create();
-    // }
+    protected updateHere() {
+        super.updateHere();
+        this.stateMachine.currState().update();
+    }
 
     handleCollision(p: Projectile){
         super.handleCollision(p);

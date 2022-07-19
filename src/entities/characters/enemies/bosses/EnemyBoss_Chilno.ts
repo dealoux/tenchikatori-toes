@@ -3,9 +3,9 @@ import { IWavePatternData, PPatternWave, Projectile } from '../../../projectiles
 import { DATA_SHOTBLUE } from '../../../projectiles/Projectile_Enemy';
 import { IAnimation } from '../../Character';
 import { Enemy, IEnemy } from '../Enemy';
-import { IEnemyAttackStateData } from '../enemy_states/Enemy_AttackState';
-import { IEnemyIdleStateData } from '../enemy_states/Enemy_IdleState';
-import { IEnemyMoveStateData } from '../enemy_states/Enemy_MoveState';
+import { IEnemyStateData_Attack } from '../enemy_states/Enemy_AttackState';
+import { IEnemyStateData_Idle } from '../enemy_states/Enemy_IdleState';
+import { IEnemyStateData_Move } from '../enemy_states/Enemy_MoveState';
 
 const DATA_CHILNO: IEnemy = {
     texture: { key: 'chilno', path: 'assets/sprites/touhou_test/chilno.png', json: 'assets/sprites/touhou_test/chilno.json' },
@@ -37,13 +37,13 @@ const CHILNO_ANIMS_DATA: Array<IAnimation> = [
     { key: CHILNO_ANIMS.spell3, end: 2, pad: 2 },
 ]
 
-const SDATA_IDLE_CHILNO: IEnemyIdleStateData = {
+const SDATA_IDLE_CHILNO: IEnemyStateData_Idle = {
     maxIdleTime: 800,
     attackRate: .85,
     animKey: CHILNO_ANIMS.idle,
 }
 
-const SDATA_MOVE_CHILNO: IEnemyMoveStateData = {
+const SDATA_MOVE_CHILNO: IEnemyStateData_Move = {
     locations: [
         { pos: new Phaser.Math.Vector2(720, 300), theta: 0 },
         { pos: new Phaser.Math.Vector2(1020, 200), theta: 0 },
@@ -52,7 +52,7 @@ const SDATA_MOVE_CHILNO: IEnemyMoveStateData = {
     animKey: CHILNO_ANIMS.strafeLeft,
 }
 
-const SDATA_ATTACK_CHILNO: IEnemyAttackStateData = {
+const SDATA_ATTACK_CHILNO: IEnemyStateData_Attack = {
     animKey: CHILNO_ANIMS.spell1,
 }
 

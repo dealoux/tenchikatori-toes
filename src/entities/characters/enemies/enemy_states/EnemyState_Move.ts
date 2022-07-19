@@ -1,15 +1,15 @@
 import Phaser from "phaser";
-import { IState, StateMachine } from "../../../../@types/StateMachine";
+import { IState, IStateData, State, StateMachine } from "../../../../@types/StateMachine";
 import { IVectorPoint } from "../../../Entity";
 import { Enemy, IEnemy } from "../Enemy";
-import { Enemy_State, IStateData } from "./Enemy_State";
+import { EnemyState } from "./EnemyState";
 
-export interface IEnemyMoveStateData extends IStateData{
+export interface IEnemyStateData_Move extends IStateData{
     locations: Array<IVectorPoint>
 }
 
-export class Enemy_MoveState extends Enemy_State{
-    sData: IEnemyMoveStateData;
+export class EnemyState_Move extends EnemyState{
+    sData: IEnemyStateData_Move;
     currIndex: number
 
     // constructor(char: Enemy, stateMachine: StateMachine, entData: IEnemyBoss, sData: IEnemyMoveStateData){
@@ -17,7 +17,7 @@ export class Enemy_MoveState extends Enemy_State{
     //     this.sData = sData;
     // }
 
-    constructor(char: Enemy, entData: IEnemy, sData: IEnemyMoveStateData){
+    constructor(char: Enemy, entData: IEnemy, sData: IEnemyStateData_Move){
         super(char, entData, sData);
         this.sData = sData;
         this.currIndex = 0;
@@ -46,7 +46,7 @@ export class Enemy_MoveState extends Enemy_State{
         this.changeState(this.char.idleState);
     }
     
-    protected moveTo(point: IVectorPoint, completeFunc: Function){
+    protected async moveTo(point: IVectorPoint, completeFunc: Function){
         let distance = point.pos.distance(new Phaser.Math.Vector2(this.char.x, this.char.y));
         const movementDuration = (distance / this.entData.speed!) * 1000;
         // const { movementDuration } = this.entData;

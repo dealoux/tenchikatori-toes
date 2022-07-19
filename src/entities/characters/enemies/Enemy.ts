@@ -5,11 +5,10 @@ import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTR
 import { Character, ICharacter } from '../Character';
 import { PPattern, Projectile } from '../../projectiles/Projectile';
 import { IVectorPoint } from '../../Entity';
-import { IState, StateMachine } from '../../../@types/StateMachine';
-import { Enemy_State } from './enemy_states/Enemy_State';
-import { Enemy_IdleState, IEnemyIdleStateData } from './enemy_states/Enemy_IdleState';
-import { Enemy_MoveState, IEnemyMoveStateData } from './enemy_states/Enemy_MoveState';
-import { Enemy_AttackState, IEnemyAttackStateData } from './enemy_states/Enemy_AttackState';
+import { EnemyState_Idle, IEnemyStateData_Idle } from './enemy_states/EnemyState_Idle';
+import { EnemyState_Move, IEnemyStateData_Move } from './enemy_states/EnemyState_Move';
+import { EnemyState_Attack, IEnemyStateData_Attack } from './enemy_states/EnemyState_Attack';
+import { EnemyState } from './enemy_states/EnemyState';
 
 export interface IEnemy extends ICharacter{
     shootPoint: IVectorPoint
@@ -20,25 +19,21 @@ export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
 
-    stateMachine: StateMachine;
-    stateSequence: Array<IState>;
-    idleState: Enemy_State;
-    moveState: Enemy_State;
-    attackState: Enemy_State;
+    idleState: EnemyState;
+    moveState: EnemyState;
+    attackState: EnemyState;
+
     attacks: Map<string, PPattern>;
 
-    
-    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyIdleStateData, sData_Move: IEnemyMoveStateData, sData_Attack: IEnemyAttackStateData){
+    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Move: IEnemyStateData_Move, sData_Attack: IEnemyStateData_Attack){
         super(scene, data);
 
-        this.stateMachine = new StateMachine(this);
-        this.stateSequence = new Array;
-
-        this.idleState = new Enemy_IdleState(this, data, sData_Idle);
-        this.moveState = new Enemy_MoveState(this, data, sData_Move);
-        this.attackState = new Enemy_AttackState(this, data, sData_Attack);
-
         this.attacks = new Map;
+
+        this.idleState = new EnemyState_Idle(this, data, sData_Idle);
+        this.moveState = new EnemyState_Move(this, data, sData_Move);
+        this.attackState = new EnemyState_Attack(this, data, sData_Attack);
+
         this.stateMachine.initialize(this.idleState);
     }
 
@@ -71,11 +66,6 @@ export class Enemy extends Character{
                 this.setAlpha(1);
             },
         });
-    }
-
-    protected updateHere (){
-        super.updateHere();
-        this.stateMachine.currState().update();
     }
 
     handleCollision(p: Projectile) {

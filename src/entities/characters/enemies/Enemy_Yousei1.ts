@@ -4,9 +4,9 @@ import { IEntity, IVectorPoint } from '../../Entity';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy' 
 import { IWavePatternData, PPatternWave } from '../../projectiles/Projectile';
 import { IAnimation } from '../Character';
-import { IEnemyIdleStateData } from './enemy_states/Enemy_IdleState';
-import { IEnemyMoveStateData } from './enemy_states/Enemy_MoveState';
-import { IEnemyAttackStateData } from './enemy_states/Enemy_AttackState';
+import { IEnemyStateData_Idle } from './enemy_states/Enemy_IdleState';
+import { IEnemyStateData_Move } from './enemy_states/Enemy_MoveState';
+import { IEnemyStateData_Attack } from './enemy_states/Enemy_AttackState';
 
 export const DATA_YOUSEI1: IEnemy = {
     texture: { key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' },
@@ -26,14 +26,14 @@ const YOUSEI1_ANIMS_DATA: Array<IAnimation> = [
     { key: YOUSEI1_ANIMS.run, end: 3, pad: 4 },
 ]
 
-const SDATA_IDLE_YOUSEI1: IEnemyIdleStateData = {
+const SDATA_IDLE_YOUSEI1: IEnemyStateData_Idle = {
     animKey: YOUSEI1_ANIMS.idle,
 
     maxIdleTime: 800,
     attackRate: .85,
 }
 
-const SDATA_MOVE_YOUSEI1: IEnemyMoveStateData = {
+const SDATA_MOVE_YOUSEI1: IEnemyStateData_Move = {
     animKey: YOUSEI1_ANIMS.run,
 
     locations: [
@@ -43,7 +43,7 @@ const SDATA_MOVE_YOUSEI1: IEnemyMoveStateData = {
     ],
 }
 
-const SDATA_ATTACK_YOUSEI1: IEnemyAttackStateData = {
+const SDATA_ATTACK_YOUSEI1: IEnemyStateData_Attack = {
     animKey: YOUSEI1_ANIMS.idle,
 }
 

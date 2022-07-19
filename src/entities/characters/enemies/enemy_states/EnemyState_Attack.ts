@@ -1,15 +1,15 @@
 import Phaser from "phaser";
-import { IState, StateMachine } from "../../../../@types/StateMachine";
+import { IState, IStateData, StateMachine } from "../../../../@types/StateMachine";
 import { IVectorPoint } from "../../../Entity";
 import { PPattern } from "../../../projectiles/Projectile";
 import { Enemy, IEnemy } from "../Enemy";
-import { Enemy_State, IStateData } from "./Enemy_State";
+import { EnemyState } from "./EnemyState";
 
-export interface IEnemyAttackStateData extends IStateData{
+export interface IEnemyStateData_Attack extends IStateData{
 }
 
-export class Enemy_AttackState extends Enemy_State{
-    sData: IEnemyAttackStateData;
+export class EnemyState_Attack extends EnemyState{
+    sData: IEnemyStateData_Attack;
     shootPoint: IVectorPoint;
     currAttack?: PPattern;
 
@@ -18,7 +18,7 @@ export class Enemy_AttackState extends Enemy_State{
     //     this.sData = sData;
     // }
 
-    constructor(char: Enemy, entData: IEnemy, sData: IEnemyAttackStateData){
+    constructor(char: Enemy, entData: IEnemy, sData: IEnemyStateData_Attack){
         super(char, entData, sData);
         this.sData = sData;
 
