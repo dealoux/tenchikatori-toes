@@ -7,7 +7,7 @@ import { IFunctionDelegate } from "../../Entity";
 import { PLAYER_SHOOT_DELAY, SHOOTPOINTS_FOCUSED, SHOOTPOINTS_NORMAL } from "../../projectiles/Projectile_Player";
 
 interface PlayerStateData extends IStateData{}
-const PLAYER_STATE_DATA = {};
+const PLAYER_STATE_DATA: PlayerStateData = {};
 
 export class PlayerState extends State{
     char: Player;
@@ -57,7 +57,6 @@ export class PlayerState_Idle extends PlayerState{
         }
     }
 }
-
 
 export class PlayerState_Interactive extends PlayerState{
     actionDelegate : IFunctionDelegate;

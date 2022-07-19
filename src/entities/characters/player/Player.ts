@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
 import eventsCenter from '../../../plugins/EventsCentre';
-import { IVectorPoint, IFunctionDelegate, COLLISION_CATEGORIES, Entity, ITexture } from '../../Entity';
-import { InputHandler, INPUT_EVENTS } from '../../../plugins/InputHandler';
+import { IVectorPoint, COLLISION_CATEGORIES, Entity, ITexture } from '../../Entity';
 import { PoolManager } from '../../../@types/Pool';
-import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, PLAYER_SHOOT_DELAY, SHOOTPOINTS_NORMAL, SHOOTPOINTS_FOCUSED, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
+import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
 import { Character, ICharacter } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
 import { PlayerState_Idle, PlayerState_Interactive } from './PlayerState';
@@ -64,13 +63,14 @@ export class Player extends Character{
     currPower: number;
     currScore: number;
 
+    interactiveState: PlayerState_Interactive;
+    idleState: PlayerState_Idle;
+
     shots : Function[];
     currShootPoints : IShootPoints;
     projectileManager: PoolManager;
     specialPattern: PPatternScale;
 
-    interactiveState: PlayerState_Interactive;
-    idleState: PlayerState_Idle;
 
     constructor(scene: Phaser.Scene, pos: Phaser.Math.Vector2){
         // let shapes = scene.game.cache.json.get('shapes');
@@ -88,14 +88,13 @@ export class Player extends Character{
         
         this.modeIndicator = new Entity(scene, { pos: new Phaser.Math.Vector2(pos.x + MODE_IDICATOR_OFFSET.x, pos.y + MODE_IDICATOR_OFFSET.y), texture: BLUE_MODE } , true);
         this.modeIndicator.setScale(MODE_IDICATOR_SIZE/this.modeIndicator.width);
-
         this.setModeBlue();
-
-        this.currPower = 3.5;
-        this.currScore = 0;
 
         this.interactiveState = new PlayerState_Interactive(this, PLAYER_DATA);
         this.idleState = new PlayerState_Idle(this, PLAYER_DATA);
+
+        this.currPower = 3.5;
+        this.currScore = 0;
 
         this.currShootPoints = SHOOTPOINTS_NORMAL;
 
