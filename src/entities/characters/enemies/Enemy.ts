@@ -4,9 +4,10 @@ import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTR
 import { Character, ICharacter } from '../Character';
 import { Projectile } from '../../projectiles/Projectile';
 import eventsCenter from '../../../plugins/EventsCentre';
+import { IVectorPoint } from '../../Entity';
 
 export interface IEnemy extends ICharacter{
-
+    shootPoint: IVectorPoint
 }
 
 export class Enemy extends Character{

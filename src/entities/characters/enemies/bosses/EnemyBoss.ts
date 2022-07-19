@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { PPattern, Projectile } from '../../../projectiles/Projectile';
 import { Enemy, IEnemy } from '../Enemy';
-import { ITexture } from '../../../Entity';
+import { ITexture, IVectorPoint } from '../../../Entity';
 import { IState, StateMachine } from '../../../../@types/StateMachine';
 import { Enemy_IdleState, IEnemyIdleStateData } from '../enemy_states/Enemy_IdleState';
 import { Enemy_MoveState, IEnemyMoveStateData } from '../enemy_states/Enemy_MoveState';
@@ -18,7 +18,8 @@ export class EnemyBoss extends Enemy{
     idleState: Enemy_State;
     moveState: Enemy_State;
     attackState: Enemy_State;
-    attackPatterns: Array<PPattern>;
+    attacks: Map<string, PPattern>;
+
 
     constructor(scene: Phaser.Scene, data: IEnemyBoss, sData_Idle: IEnemyIdleStateData, sData_Move: IEnemyMoveStateData, sData_Attack: IEnemyAttackStateData){
         super(scene, data);
@@ -28,9 +29,9 @@ export class EnemyBoss extends Enemy{
         this.idleState = new Enemy_IdleState(this, data, sData_Idle);
         this.moveState = new Enemy_MoveState(this, data, sData_Move);
         this.attackState = new Enemy_AttackState(this, data, sData_Attack);
-        this.attackPatterns = new Array;
 
         this.stateMachine.initialize(this.idleState);
+        this.attacks = new Map;
     }
 
     static preload(scene: Phaser.Scene) {
@@ -46,7 +47,8 @@ export class EnemyBoss extends Enemy{
     }
     
     protected updateHere (){
-        //super.updateHere();
+        super.updateHere();
+        this.stateMachine.currState().update();
     }
 
     handleCollision(p: Projectile) {

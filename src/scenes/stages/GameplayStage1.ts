@@ -80,8 +80,8 @@ export default class GameplayStage1 extends GameplayScene {
 	private handleYousei1(){
 		this.mobManager?.addGroup(DATA_YOUSEI1.texture.key, Yousei1, 4);
 
-		// this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
-		// this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
+		this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
+		this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.mobManager?.pList.forEach(eGroup => {
@@ -89,7 +89,7 @@ export default class GameplayStage1 extends GameplayScene {
 			})
 		});
 
-		this.chilno = new Chilno(this);
+		//this.chilno = new Chilno(this);
 	}
 
 	protected callBack_hitPlayerEnemyProjectile(playerHitbox: any, p: any) {

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { Projectile } from '../../../projectiles/Projectile';
+import { IWavePatternData, PPatternWave, Projectile } from '../../../projectiles/Projectile';
+import { DATA_SHOTBLUE } from '../../../projectiles/Projectile_Enemy';
 import { IAnimation } from '../../Character';
 import { IEnemyAttackStateData } from '../enemy_states/Enemy_AttackState';
 import { IEnemyIdleStateData } from '../enemy_states/Enemy_IdleState';
@@ -8,6 +9,7 @@ import { EnemyBoss, IEnemyBoss } from './EnemyBoss';
 
 const DATA_CHILNO: IEnemyBoss = {
     texture: { key: 'chilno', path: 'assets/sprites/touhou_test/chilno.png', json: 'assets/sprites/touhou_test/chilno.json' },
+    shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, },
     hp: 200,
     speed: 200,
     movementDuration: 1500,
@@ -54,9 +56,19 @@ const SDATA_ATTACK_CHILNO: IEnemyAttackStateData = {
     animKey: CHILNO_ANIMS.spell1,
 }
 
+const WAVEPATTERN_CHILNO : IWavePatternData = {
+    pSpeed : 250,
+    fireRate : 30,
+    wave: PPatternWave.generateWaveArray(400, 16),
+    waveIndex: 0,
+    duration: 250,
+}
+
 export class Chilno extends EnemyBoss{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_CHILNO, SDATA_IDLE_CHILNO, SDATA_MOVE_CHILNO, SDATA_ATTACK_CHILNO);
+
+        this.attacks.set('key', new PPatternWave(this, DATA_CHILNO.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), WAVEPATTERN_CHILNO));
     }
 
     static preload(scene: Phaser.Scene) {
@@ -75,15 +87,13 @@ export class Chilno extends EnemyBoss{
         // this.anims.create({ key: CHILNO_ANIMS.spell2, frames: this.anims.generateFrameNames(DATA_CHILNO.texture.key, { prefix: CHILNO_ANIMS.spell2, end: 3, zeroPad: 2}), repeat: -1});
     }
 
-
     static initPManagers(scene: Phaser.Scene){
     }
-    
-    protected updateHere (){
-        //super.updateHere();
-        this.stateMachine.currState().update();
-    }
 
+    protected updateHere(): void {
+        super.updateHere();
+    }
+    
     handleCollision(p: Projectile) {
         
     }
