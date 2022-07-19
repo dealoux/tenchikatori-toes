@@ -47,14 +47,6 @@ export class PlayerState_Idle extends PlayerState{
 
     update(): void {
         super.update();
-
-        const {inputs} = InputHandler.Instance();
-
-        if(inputs.Switch){
-            this.char.switchMode();
-            inputs.Switch = false;
-            this.changeState(this.char.interactiveState);
-        }
     }
 }
 
@@ -142,7 +134,6 @@ export class PlayerState_Interactive extends PlayerState{
         if(inputs.Switch){
             this.char.switchMode();
             inputs.Switch = false;
-            this.changeState(this.char.idleState);
         }
 
         // actions
