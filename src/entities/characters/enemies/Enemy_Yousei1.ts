@@ -4,12 +4,11 @@ import { IEntity, IVectorPoint } from '../../Entity';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy' 
 import { IWavePatternData, PPatternWave } from '../../projectiles/Projectile';
 import { IAnimation } from '../Character';
-import { EnemyBoss, IEnemyBoss } from './bosses/EnemyBoss';
 import { IEnemyIdleStateData } from './enemy_states/Enemy_IdleState';
 import { IEnemyMoveStateData } from './enemy_states/Enemy_MoveState';
 import { IEnemyAttackStateData } from './enemy_states/Enemy_AttackState';
 
-export const DATA_YOUSEI1: IEnemyBoss = {
+export const DATA_YOUSEI1: IEnemy = {
     texture: { key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' },
     hp: 3,
     speed: 200,
@@ -53,14 +52,15 @@ const WAVEPATTERN_YOUSEI1 : IWavePatternData = {
     fireRate : 30,
     wave: PPatternWave.generateWaveArray(400, 16),
     waveIndex: 0,
+    duration: 250,
 }
 
-export class Yousei1 extends EnemyBoss{
+export class Yousei1 extends Enemy{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_YOUSEI1, SDATA_IDLE_YOUSEI1, SDATA_MOVE_YOUSEI1, SDATA_ATTACK_YOUSEI1);
-        // this.setScale(2);
+        this.setScale(2);
 
-        this.attacks.set('key', new PPatternWave(this, DATA_YOUSEI1.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), WAVEPATTERN_YOUSEI1));
+        this.attacks.set('key', new PPatternWave(this, DATA_YOUSEI1.shootPoint, this.getRedGroup(DATA_SHOTRED.texture.key), WAVEPATTERN_YOUSEI1));
     }
 
     static preload(scene: Phaser.Scene) {
@@ -81,7 +81,7 @@ export class Yousei1 extends EnemyBoss{
     }
 }
 
-const TEST_SHOT_DELAY = 500;
+// const TEST_SHOT_DELAY = 500;
 
 // export class Yousei1 extends Enemy{
 //     wavePattern: PPatternWave;

@@ -2,12 +2,12 @@ import Phaser from 'phaser';
 import { IWavePatternData, PPatternWave, Projectile } from '../../../projectiles/Projectile';
 import { DATA_SHOTBLUE } from '../../../projectiles/Projectile_Enemy';
 import { IAnimation } from '../../Character';
+import { Enemy, IEnemy } from '../Enemy';
 import { IEnemyAttackStateData } from '../enemy_states/Enemy_AttackState';
 import { IEnemyIdleStateData } from '../enemy_states/Enemy_IdleState';
 import { IEnemyMoveStateData } from '../enemy_states/Enemy_MoveState';
-import { EnemyBoss, IEnemyBoss } from './EnemyBoss';
 
-const DATA_CHILNO: IEnemyBoss = {
+const DATA_CHILNO: IEnemy = {
     texture: { key: 'chilno', path: 'assets/sprites/touhou_test/chilno.png', json: 'assets/sprites/touhou_test/chilno.json' },
     shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, },
     hp: 200,
@@ -64,7 +64,7 @@ const WAVEPATTERN_CHILNO : IWavePatternData = {
     duration: 250,
 }
 
-export class Chilno extends EnemyBoss{
+export class Chilno extends Enemy{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_CHILNO, SDATA_IDLE_CHILNO, SDATA_MOVE_CHILNO, SDATA_ATTACK_CHILNO);
 

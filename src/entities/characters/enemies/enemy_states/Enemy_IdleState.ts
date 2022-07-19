@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { IState, StateMachine } from "../../../../@types/StateMachine";
-import { IEnemyBoss, EnemyBoss } from "../bosses/EnemyBoss";
+import { Enemy, IEnemy } from "../Enemy";
 import { Enemy_State, IStateData } from "./Enemy_State";
 
 export interface IEnemyIdleStateData extends IStateData{
@@ -18,7 +18,7 @@ export class Enemy_IdleState extends Enemy_State{
     //     this.restTime = 0;
     // }
 
-    constructor(char: EnemyBoss, data: IEnemyBoss, sData: IEnemyIdleStateData){
+    constructor(char: Enemy, data: IEnemy, sData: IEnemyIdleStateData){
         super(char, data, sData);
         this.sData = sData;
         this.idleTime = 0;

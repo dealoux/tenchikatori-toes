@@ -1,15 +1,15 @@
 import Phaser from "phaser";
 import { IState, StateMachine } from "../../../../@types/StateMachine";
-import { IEnemyBoss, EnemyBoss } from "../bosses/EnemyBoss";
+import { Enemy, IEnemy } from "../Enemy";
 
 export interface IStateData{
     animKey?: string,
 }
 
 export abstract class Enemy_State implements IState{
-    char: EnemyBoss;
+    char: Enemy;
     // stateMachine: StateMachine;
-    entData: IEnemyBoss;
+    entData: IEnemy;
     enterTime: number;
     sData: IStateData;
 
@@ -20,7 +20,7 @@ export abstract class Enemy_State implements IState{
     //     this.enterTime = 0;
     // }
 
-    constructor(char: EnemyBoss, entData: IEnemyBoss, sData: IStateData){
+    constructor(char: Enemy, entData: IEnemy, sData: IStateData){
         this.char = char;
         this.entData = entData;
         this.enterTime = 0;
