@@ -62,4 +62,12 @@ export class Enemy extends Character{
         
         // console.log(this.hp);
     }
+
+    public getBlueGroup(key: string){
+        return Enemy.bluePManager.getGroup(key);
+    }
+
+    public getRedGroup(key: string){
+        return Enemy.redPManager.getGroup(key);
+    }
 }

@@ -10,6 +10,12 @@ export interface ICharacter extends IEntity{
     speed?: number,
 }
 
+export interface IAnimation{
+    key: string,
+    end: number,
+    pad: number, 
+}
+
 export class Character extends Entity{
     static itemManager: ItemManager;
     hp: number;
@@ -55,5 +61,11 @@ export class Character extends Entity{
 
     protected spawnProjectile(manager: PoolManager, name: string, point: IVectorPoint){
         return manager.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.x + point.pos.x, this.y + point.pos.y), theta: point.theta });
+    }
+
+    protected createAnimation(data: Array<IAnimation>, parent: string){
+        data.forEach(a =>{
+            this.anims.create({ key: a.key, frames: this.anims.generateFrameNames(parent, { prefix: a.key, end: a.end, zeroPad: a.pad }), repeat: -1 });
+        });
     }
 }

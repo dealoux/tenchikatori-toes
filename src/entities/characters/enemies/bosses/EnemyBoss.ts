@@ -1,27 +1,36 @@
 import Phaser from 'phaser';
-import { Projectile } from '../../../projectiles/Projectile';
+import { PPattern, Projectile } from '../../../projectiles/Projectile';
 import { Enemy, IEnemy } from '../Enemy';
 import { ITexture } from '../../../Entity';
 import { IState, StateMachine } from '../../../../@types/StateMachine';
-import { Enemy_IdleState } from '../enemy_states/Enemy_IdleState';
-import { Enemy_MoveState } from '../enemy_states/Enemy_MoveState';
-import { Enemy_AttackState } from '../enemy_states/Enemy_AttackState';
+import { Enemy_IdleState, IEnemyIdleStateData } from '../enemy_states/Enemy_IdleState';
+import { Enemy_MoveState, IEnemyMoveStateData } from '../enemy_states/Enemy_MoveState';
+import { Enemy_AttackState, IEnemyAttackStateData } from '../enemy_states/Enemy_AttackState';
+import { Enemy_State } from '../enemy_states/Enemy_State';
 
 export interface IEnemyBoss extends IEnemy{
-    maxIdleTime: number,
+    movementDuration: number,
 }
 
 export class EnemyBoss extends Enemy{
     stateMachine: StateMachine;
-    stateSequence : Array<IState>;
-    idleState?: Enemy_IdleState;
-    moveState?: Enemy_MoveState;
-    attackState?: Enemy_AttackState;
+    stateSequence: Array<IState>;
+    idleState: Enemy_State;
+    moveState: Enemy_State;
+    attackState: Enemy_State;
+    attackPatterns: Array<PPattern>;
 
-    constructor(scene: Phaser.Scene, data: IEnemyBoss){
+    constructor(scene: Phaser.Scene, data: IEnemyBoss, sData_Idle: IEnemyIdleStateData, sData_Move: IEnemyMoveStateData, sData_Attack: IEnemyAttackStateData){
         super(scene, data);
         this.stateMachine = new StateMachine(this);
         this.stateSequence = new Array;
+
+        this.idleState = new Enemy_IdleState(this, data, sData_Idle);
+        this.moveState = new Enemy_MoveState(this, data, sData_Move);
+        this.attackState = new Enemy_AttackState(this, data, sData_Attack);
+        this.attackPatterns = new Array;
+
+        this.stateMachine.initialize(this.idleState);
     }
 
     static preload(scene: Phaser.Scene) {

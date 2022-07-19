@@ -10,8 +10,9 @@ import { BGM, playAudio } from '../../@types/Audio';
 import { Player } from '../../entities/characters/player/Player';
 import { Character } from '../../entities/characters/Character';
 import { DATA_POWER_ITEM, DATA_SCORE_ITEM, Item } from '../../entities/projectiles/items/Item';
-import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Specific';
 import { Projectile } from '../../entities/projectiles/Projectile';
+import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Yousei1';
+import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 
 //#region Dialogues
 const chant = [
@@ -34,6 +35,7 @@ const chant = [
 export default class GameplayStage1 extends GameplayScene {
 	yousei1?: Yousei1;
 	yousei2?: Yousei1;
+	chilno?: Chilno;
 	mobManager?: PoolManager;
 	bgm?: Phaser.Sound.BaseSound;
 	
@@ -44,6 +46,7 @@ export default class GameplayStage1 extends GameplayScene {
 	preload() {
 		super.preload();
 		Yousei1.preload(this);
+		Chilno.preload(this);
 	}
 
 	create() {
@@ -71,28 +74,22 @@ export default class GameplayStage1 extends GameplayScene {
 	update() {
 		super.update();
 		// this.yousei1?.update();
+		this.chilno?.update();
 	}
 
 	private handleYousei1(){
-		// this.yousei1 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), texture: YOUSEI1_TEXTURE });
-		// this.yousei2 = new Yousei1(this, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), texture: YOUSEI1_TEXTURE });
-
-		// this.player?.projectileManager.pList.forEach(pGroup => {
-		// 	this.physics.add.overlap(this.yousei1 as Yousei1, pGroup, this.hitEnemyMob, undefined, this);
-		// 	this.physics.add.overlap(this.yousei2 as Yousei1, pGroup, this.hitEnemyMob, undefined, this);
-		// });
-
-
 		this.mobManager?.addGroup(DATA_YOUSEI1.texture.key, Yousei1, 4);
 
-		this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
-		this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
+		// this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
+		// this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.mobManager?.pList.forEach(eGroup => {
 				this.physics.add.overlap(eGroup, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			})
 		});
+
+		this.chilno = new Chilno(this);
 	}
 
 	protected callBack_hitPlayerEnemyProjectile(playerHitbox: any, p: any) {
@@ -101,16 +98,7 @@ export default class GameplayStage1 extends GameplayScene {
 	protected hitPlayerEnemyProjectile(playerHitbox: Entity, p: Projectile) {
 		//playerHitbox.handleCollision(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
-		p.handleCollision(playerHitbox);
-		// console.dir(playerHitbox)
-
-		// console.log(typeof playerHitbox + " " + typeof p);
-		
-		// this.explosion
-		//   .setSpeedX(0.2 * bullet.body.velocity.x)
-		//   .setSpeedY(0.2 * bullet.body.velocity.y)
-		//   .emitParticleAt(x, y);
-		// this.explodeSFX.play();
+		p.handleCollision(playerHitbox);	
 	}
 
 	protected callBack_hitEnemyMob(enemy: any, p: any) {

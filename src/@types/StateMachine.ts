@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 import { Character } from "../entities/characters/Character";
-import { IEntity } from "../entities/Entity";
 
 // declare global { interface Array<T> { seek() : void; } }
 // Array.prototype.seek = function() { return this[this.length-1]; }
@@ -11,62 +10,47 @@ export interface IState{
     update(): void;
 }
 
-export class State implements IState{
-    stateMachine: StateMachine;
-    data: IEntity;
-
-    constructor(stateMachine: StateMachine, data: IEntity){
-        this.stateMachine = stateMachine;
-        this.data = data;
-    }
-
-    enter(): void {
-        
-    }
-
-    exit(): void {
-    }
-
-    update(): void {
-    }
-}
-
 // Pushdown automata
 export class StateMachine{
-    States : Array<State>;
+    states : Array<IState>;
     parent: Character
 
     constructor(parent: Character){
-        this.States = new Array;
+        this.states = new Array;
         this.parent = parent;
     }
 
-    currState() : State{
-        return this.States[this.States.length-1];
+    currState() : IState{
+        //console.log(this.states[this.states.length-1]);
+        return this.states[this.states.length-1];
         // return this.States.seek();
     }
 
-    initialize(startingState: State){
-        this.States.push(startingState);
-    }
-
-    changeState(newState: State, savePrevious = false){
-        this.currState().exit();
-
-        if(!savePrevious)
-            this.States.pop();
-
-        this.States.push(newState);
+    initialize(startingState: IState){
+        this.states.push(startingState);
         this.currState().enter();
     }
 
-    changeStatePrevious(backUpState: State){
-        if(this.States.length > 1){
+    changeState(newState: IState, savePrevious = false){
+        this.currState().exit();
+
+        if(!savePrevious)
+            this.states.pop();
+
+        this.states.push(newState);
+
+        this.currState().enter();
+
+        // console.log(this.states);
+    }
+
+    changeStatePrevious(backUpState: IState){
+        if(this.states.length > 1){
             this.currState().exit();
-            this.States.pop();
+            this.states.pop();
         }
         else{
-            this.States.push(backUpState);
+            this.states.push(backUpState);
         }
 
         try{

@@ -145,7 +145,7 @@ export class Player extends Character{
 		});
 
         eventsCenter.on(INPUT_EVENTS.Focus_up, () => {
-            this.speed = PLAYER_DATA.speedFocused;
+            this.speed = PLAYER_DATA.speed!;
             this.currShootPoints = SHOOTPOINTS_NORMAL;
             this.hitbox.setVisible(false);
 		});

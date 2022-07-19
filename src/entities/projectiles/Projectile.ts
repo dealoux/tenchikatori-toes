@@ -112,6 +112,7 @@ export class Projectile extends Entity{
 export interface IPPatternData{
     fireRate: number;
     pSpeed: number;
+    duration?: number;
 }
 
 export interface IWavePatternData extends IPPatternData{
@@ -125,13 +126,15 @@ export abstract class PPattern{
     projectile: PoolGroup | undefined;
     pPoint: IVectorPoint;
     updatePattern: IFunctionDelegate;
+    patternData: IPPatternData;
 
-    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined){
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IPPatternData){
         this.nextFire = 0;
         this.parent = parent;
         this.pPoint = pPoint;
         this.projectile = p;
         this.updatePattern = function() {};
+        this.patternData = pData;
     }
 }
 
@@ -139,7 +142,7 @@ export class PPatternWave extends PPattern{
     patternData: IWavePatternData;
 
     constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IWavePatternData){
-        super(parent, pPoint, p);
+        super(parent, pPoint, p, pData);
         this.patternData = pData;
         
         this.updatePattern = Math.abs(pPoint.theta) == 90 ? this.waveVertical : this.waveHorizontal;
@@ -181,7 +184,7 @@ export class PPatternScale extends PPattern{
     patternData: IScalePatternData;
 
     constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IScalePatternData){
-        super(parent, pPoint, p);
+        super(parent, pPoint, p, pData);
         this.patternData = pData;
         this.updatePattern = this.scaleBase;
     }
