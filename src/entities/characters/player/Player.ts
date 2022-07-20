@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
-import eventsCenter from '../../../plugins/EventsCentre';
+import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
 import { IVectorPoint, COLLISION_CATEGORIES, Entity, ITexture } from '../../Entity';
 import { PoolManager } from '../../../@types/Pool';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
 import { Character, ICharacter } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
-import { PlayerState_Idle, PlayerState_Interactive } from './PlayerState';
+import { PlayerState_DisableInteractive, PlayerState_Interactive } from './PlayerState';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
@@ -41,10 +41,7 @@ const RED_MODE: ITexture = {
 };
 
 const MAX_POWER = 4;
-
-export enum PLAYER_EVENTS{
-    special = 'special',
-}
+const MAX_SPECIAL = 10;
 
 const SPECIAL_DATA : IScalePatternData = {
     pSpeed : DATA_PLAYER_PMOON.speed,
@@ -54,6 +51,7 @@ const SPECIAL_DATA : IScalePatternData = {
 
 export class Player extends Character{
     handlingPowerItemCollisionDelegate: IHandlingPCollisionDelegate;
+    handlingSpecialItemCollisionDelegate: IHandlingPCollisionDelegate;
 
     bodyOffset: Phaser.Math.Vector2;
 
@@ -61,10 +59,12 @@ export class Player extends Character{
     modeIndicator: Entity;
 
     currPower: number;
+    currSpecial: number;
     currScore: number;
+    currGraze: number;
 
     interactiveState: PlayerState_Interactive;
-    idleState: PlayerState_Idle;
+    disableInteractiveState: PlayerState_DisableInteractive;
 
     shots : Function[];
     currShootPoints : IShootPoints;
@@ -78,7 +78,8 @@ export class Player extends Character{
         super(scene, PLAYER_DATA);
         this.setCollideWorldBounds(true);
         
-        this.handlingPowerItemCollisionDelegate = this.handlingPowerUp;
+        this.handlingPowerItemCollisionDelegate = this.handlingPowerItem;
+        this.handlingSpecialItemCollisionDelegate = this.handlingSpecialItem;
 
         this.bodyOffset = new Phaser.Math.Vector2(this.x - this.body.x, this.y - this.body.y);
         
@@ -91,10 +92,12 @@ export class Player extends Character{
         this.setModeBlue();
 
         this.interactiveState = new PlayerState_Interactive(this, PLAYER_DATA);
-        this.idleState = new PlayerState_Idle(this, PLAYER_DATA);
+        this.disableInteractiveState = new PlayerState_DisableInteractive(this, PLAYER_DATA);
 
         this.currPower = 3.5;
+        this.currSpecial = 2;
         this.currScore = 0;
+        this.currGraze = 0;
 
         this.currShootPoints = SHOOTPOINTS_NORMAL;
 
@@ -112,6 +115,11 @@ export class Player extends Character{
         this.specialPattern = new PPatternScale(this, {pos: new Phaser.Math.Vector2(0, 30), theta: -90,} as IVectorPoint, this.projectileManager.getGroup(DATA_PLAYER_PMOON.texture.key), SPECIAL_DATA);
 
         this.stateMachine.initialize(this.interactiveState);
+
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateScore, this.currScore);
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateSpecialCount, this.currSpecial);
+        eventsCenter.emit(GAMEPLAY_EVENTS.updatePowerCount, this.currPower);
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateGrazeCount, this.currGraze);
     }
 
     static preload(scene: Phaser.Scene) {
@@ -147,7 +155,16 @@ export class Player extends Character{
     }
 
     handleCollision(entity: Entity) {
-        console.dir(entity);
+        // console.dir(entity);
+
+        if(this.currPower > 1.8){
+            Character.itemManager.emitItems(this.x, this.y);
+        }
+        else if(this.currPower > 1){
+            const delta = this.currPower - 1 * 10;
+            this.currPower = 1;
+            Character.itemManager.emitItems(this.x, this.y, delta);
+        }
     }
 
     setMode(mode: number) {
@@ -197,7 +214,7 @@ export class Player extends Character{
         }
     }
 
-    private handlingPowerUp(p: Projectile){
+    private handlingPowerItem(p: Projectile){
         this.currPower += p.entData.value;
 
         if(this.currPower > MAX_POWER){
@@ -205,11 +222,34 @@ export class Player extends Character{
             this.handlingPowerItemCollisionDelegate = this.emptyFunction;
         }
         
+        eventsCenter.emit(GAMEPLAY_EVENTS.updatePowerCount, this.currPower);
         // console.log(this.currPower + ", " + (this.currPower > MAX_POWER));
     }
 
-    handlingScoreItem(p: Projectile){
+    private handlingSpecialItem(p: Projectile){
+        this.currSpecial += p.entData.value;
+
+        if(this.currSpecial > MAX_SPECIAL){
+            this.currSpecial = MAX_SPECIAL;
+            // this.handlingSpecialItemCollisionDelegate = this.emptyFunction;
+        }
+
+        this.updateSpecialCount();
+    }
+
+    updateSpecialCount(){
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateSpecialCount, this.currSpecial);
+    }
+
+    updateScore(p: Projectile){
         this.currScore += p.entData.value;
         //console.log(this.currScore);
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateScore, this.currScore);
+    }
+
+    updateGrazeCount(p: Projectile){
+        this.currGraze++;
+        this.updateScore(p);
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateGrazeCount, this.currGraze);
     }
 }

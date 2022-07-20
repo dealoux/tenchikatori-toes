@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { EMPTY_TEXTURE } from '../scenes/GameManager';
+import { EMPTY_TEXTURE } from '../constants';
 
 export interface IVectorPoint{
     pos: Phaser.Math.Vector2;
@@ -10,6 +10,12 @@ export interface ITexture{
     key: string,
     path: string,
     json?: string
+}
+
+export interface IText{
+    text: string,
+    font: string,
+    point: IVectorPoint,
 }
 
 export interface IEntity{

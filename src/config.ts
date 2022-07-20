@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import { WINDOW_WIDTH, WINDOW_HEIGHT } from './constants';
+import { TITLE, ALIAS, WINDOW_WIDTH, WINDOW_HEIGHT } from './constants';
 
-export const DefaultConfig = {
-  title: "Tenchikatori ~ Testament of Empyrean Songbird",
+export const DefaultConfig: Phaser.Types.Core.GameConfig = {
+  title: TITLE,
   type: Phaser.AUTO,
-  parent: 'Tenchikatori-ToES',
+  parent: ALIAS,
   //backgroundColor: '#33A5E7',
   pixelArt: true,
 
@@ -19,7 +19,7 @@ export const DefaultConfig = {
     default: 'Arcade',
     arcade: {
       debug: true,
-      gravity: 0,
+      gravity: {x: 0, y: 0},
     },
   },
 

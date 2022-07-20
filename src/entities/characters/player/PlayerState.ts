@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import eventsCenter from '../../../plugins/EventsCentre';
+import { eventsCenter } from '../../../plugins/EventsCentre';
 import { IStateData, State } from "../../../@types/StateMachine";
 import { IPlayer, Player } from "./Player";
 import { InputHandler, INPUT_EVENTS } from "../../../plugins/InputHandler";
@@ -32,7 +32,7 @@ export class PlayerState extends State{
     }
 }
 
-export class PlayerState_Idle extends PlayerState{
+export class PlayerState_DisableInteractive extends PlayerState{
     constructor(char: Player, entData: IPlayer){
         super(char, entData);
     }
@@ -56,7 +56,6 @@ export class PlayerState_Interactive extends PlayerState{
 
     lastShotTime: number;
     
-    specials: number;
     castingSpecial: boolean;
 
 
@@ -66,7 +65,6 @@ export class PlayerState_Interactive extends PlayerState{
         this.actionDelegate = this.shoot;
         this.speed = entData.speed!;
 
-        this.specials = 3;
         this.castingSpecial = false;
 
         this.speed = this.entData.speed!;
@@ -141,7 +139,7 @@ export class PlayerState_Interactive extends PlayerState{
             if(inputs.Shot && this.char.time() > this.lastShotTime){
                 this.shoot();
             }
-            if(inputs.Special && this.specials > 0){
+            if(inputs.Special && this.char.currSpecial > 0){
                 this.special();
             }
         }
@@ -158,15 +156,7 @@ export class PlayerState_Interactive extends PlayerState{
     private special(){
         this.char.specialPattern.updatePattern();
         InputHandler.Instance().inputs.Special = false;
-        this.specials--;
-
-        // const shot = this.projectileManager.pList.get(PlayersProjectileType.special);
-
-        // if(shot){
-        //     this.castingSpecial = true;
-        //     eventsCenter.emit(PlayerEvents.special);
-        //     shot.getProjectile(this.getBody().x, this.getBody().y);
-        //     this.specials--; 
-        // }
+        this.char.currSpecial--;
+        this.char.updateSpecialCount();
     }
 }

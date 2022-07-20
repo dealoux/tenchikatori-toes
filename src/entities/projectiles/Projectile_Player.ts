@@ -16,23 +16,21 @@ export const PLAYER_SHOOT_DELAY = 60;
 export const PLAYER_PROJECTILE_POOL = 40;
 
 export const DATA_PLAYER_P1 : IProjectileData = {
-    pos: Phaser.Math.Vector2.ZERO,
     texture: { key: 'card1', path: 'assets/sprites/touhou_test/card1.png' },
     speed: 600,
     value: 1,
 }
 
 export const DATA_PLAYER_P2 : IProjectileData = {
-    pos: Phaser.Math.Vector2.ZERO,
     texture: { key: 'card2', path: 'assets/sprites/touhou_test/card2.png' },
     speed: 600,
     value: 1,
 }
 
 export const DATA_PLAYER_PMOON : IProjectileData = {
-    pos: Phaser.Math.Vector2.ZERO,
+    hitSize: new Phaser.Math.Vector2(24, 10),
     texture: { key: 'moon', path: 'assets/sprites/touhou_test/moon.png' },
-    speed: 600,
+    speed: 400,
     value: 3,
 }
 

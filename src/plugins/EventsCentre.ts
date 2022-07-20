@@ -1,4 +1,13 @@
 import Phaser from 'phaser';
 
-const eventsCenter = new Phaser.Events.EventEmitter();
-export default eventsCenter;
+export const eventsCenter = new Phaser.Events.EventEmitter();
+
+export enum GAMEPLAY_EVENTS{
+    special = 'special',
+    updateScore = 'updateScore',
+    updatePowerCount = 'updatePowerCount',
+    updateSpecialCount = 'updateSpecialCount',
+    updateLivesCount = 'updateLivesCount',
+    updateGrazeCount = 'updateGrazeCount',
+    updateExtraScore = 'updateExtraScore',
+}

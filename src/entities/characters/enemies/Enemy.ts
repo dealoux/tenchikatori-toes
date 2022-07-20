@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import eventsCenter from '../../../plugins/EventsCentre';
+import { eventsCenter } from '../../../plugins/EventsCentre';
 import { PoolManager } from '../../../@types/Pool';
 import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy';
 import { Character, ICharacter } from '../Character';

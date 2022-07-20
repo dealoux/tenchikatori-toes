@@ -1,4 +1,4 @@
-import eventsCenter from "./EventsCentre";
+import { eventsCenter } from "./EventsCentre";
 
 export interface IInputPoll{
     Up: boolean,

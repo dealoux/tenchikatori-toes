@@ -4,9 +4,9 @@ import { IEntity, IVectorPoint } from '../../Entity';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy' 
 import { IWavePatternData, PPatternWave } from '../../projectiles/Projectile';
 import { IAnimation } from '../Character';
-import { IEnemyStateData_Idle } from './enemy_states/Enemy_IdleState';
-import { IEnemyStateData_Move } from './enemy_states/Enemy_MoveState';
-import { IEnemyStateData_Attack } from './enemy_states/Enemy_AttackState';
+import { IEnemyStateData_Idle } from './enemy_states/EnemyState_Idle';
+import { IEnemyStateData_Move } from './enemy_states/EnemyState_Move';
+import { IEnemyStateData_Attack } from './enemy_states/EnemyState_Attack';
 
 export const DATA_YOUSEI1: IEnemy = {
     texture: { key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' },

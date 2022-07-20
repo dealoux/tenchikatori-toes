@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import eventsCenter from '../../plugins/EventsCentre';
+import { eventsCenter } from '../../plugins/EventsCentre';
 import { IEntity, Entity, IVectorPoint } from '../Entity';
 import { PoolManager } from '../../@types/Pool';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM, ItemManager, ITEM_POOL, PowerItem, ScoreItem } from '../projectiles/items/Item';
+import { DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, ItemManager, ITEM_POOL, PowerItem, ScoreItem, SpecialItem } from '../projectiles/items/Item';
 import { Projectile } from '../projectiles/Projectile';
-import { State, StateMachine } from '../../@types/StateMachine';
+import { StateMachine } from '../../@types/StateMachine';
 
 export interface ICharacter extends IEntity{
     hp: number,
@@ -37,10 +37,13 @@ export class Character extends Entity{
         return this.scene.game.getTime();
     }
 
-    static initManager(scene: Phaser.Scene){
+    static async initManager(scene: Phaser.Scene){
         Character.itemManager = new ItemManager(scene);
-        Character.itemManager.addGroup(DATA_POWER_ITEM.texture.key, PowerItem, ITEM_POOL);
-        Character.itemManager.addGroup(DATA_SCORE_ITEM.texture.key, ScoreItem, ITEM_POOL);
+        Character.itemManager.init();
+
+        // Character.itemManager.addGroup(DATA_POWER_ITEM.texture.key, PowerItem, ITEM_POOL);
+        // Character.itemManager.addGroup(DATA_SCORE_ITEM.texture.key, ScoreItem, ITEM_POOL);
+        // Character.itemManager.addGroup(DATA_SPECIAL_ITEM.texture.key, SpecialItem, 10);
     }
 
     protected updateHere() {

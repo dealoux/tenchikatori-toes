@@ -1,30 +1,15 @@
 import Phaser, { Scene } from 'phaser';
 import { InputHandler, INPUT_STRINGS } from '../plugins/InputHandler';
-import eventsCenter from '../plugins/EventsCentre';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
+import { eventsCenter } from '../plugins/EventsCentre';
+import { EMPTY_TEXTURE, GOD_SEES_ALL_BG, SCENE_NAMES, WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
 import { HUDScene } from './Gameplay';
 import { loadBGM } from '../@types/Audio';
-import { ITexture } from '../entities/Entity';
-
-export const EMPTY_TEXTURE : ITexture = {
-	key: 'empty', path: 'assets/sprites/empty.png'
-};
-
-const GOD_SEES_ALL_BG : ITexture = {
-	key: 'godseesall', path: 'assets/sprites/godseesall.png'
-};
-
-
-export enum SCENE_NAMES {
-	GameManager = 'GameManager',
-	MainMenu = 'MainMenu',
-	HUD = 'HUD',
-	Stage1_Gameplay = 'Stage1_Gameplay',
-}
+import { Item } from '../entities/projectiles/items/Item';
+import GameplayStage1 from './stages/GameplayStage1';
 
 export default class GameManager extends Scene {
 	constructor() {
-		super('GameManager');
+		super(SCENE_NAMES.GameManager);
 		new InputHandler();
 	}
 
@@ -34,22 +19,23 @@ export default class GameManager extends Scene {
 		//this.load.json('shapes', 'assets/sprites/spriteshapes.json');
 
 		loadBGM(this);
+		Item.preload(this);
+		this.loadScenes();
 	}
 
 	create() {
 		InputHandler.Instance().create(this);
 		this.scene.run(SCENE_NAMES.MainMenu);
-		this.scene.add(SCENE_NAMES.HUD, HUDScene);
 
 		this.add.image(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, GOD_SEES_ALL_BG.key).setScale(1.5).setAlpha(.2).setDepth(1);
 
-		eventsCenter.on('stage1_starts', () => {
-			this.scene.run(SCENE_NAMES.HUD);
-			console.log('stage 1 starts');
-		});
-
 		this.game.events.on(Phaser.Core.Events.BLUR, () => this.pause());
 		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.resume());
+	}
+
+	private loadScenes(){
+		this.scene.add(SCENE_NAMES.HUD, HUDScene);
+		this.scene.add(SCENE_NAMES.Stage1_Gameplay, GameplayStage1);
 	}
 
 	private pause(){
