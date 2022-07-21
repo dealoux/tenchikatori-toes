@@ -1,6 +1,5 @@
 import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../../objects/DialogLine';
 import { GameplayScene } from '../Gameplay';
-import { GAMEPLAY_SIZE } from '../Gameplay';
 import { Enemy } from '../../entities/characters/enemies/Enemy';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../entities/projectiles/Projectile_Enemy';
 import { PoolGroup, PoolManager } from '../../@types/Pool';
@@ -12,7 +11,7 @@ import { DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../..
 import { Projectile } from '../../entities/projectiles/Projectile';
 import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Yousei1';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
-import { SCENE_NAMES } from '../../constants';
+import { GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
 
 //#region Dialogues
 const chant = [
@@ -57,7 +56,7 @@ export default class GameplayStage1 extends GameplayScene {
 			text: chant,
 		});
 
-		this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, true, .2);
+		// this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, true, .2);
 
 		this.mobManager = new PoolManager(this);
 		this.handleMob();
@@ -67,7 +66,6 @@ export default class GameplayStage1 extends GameplayScene {
 		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
 		this.physics.add.overlap(this.player as Player, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.callBack_hitGrazeEnemyProjectile, undefined, this);
 		this.physics.add.overlap(this.player as Player, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.callBack_hitGrazeEnemyProjectile, undefined, this);
-
 
 		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
 		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
@@ -100,7 +98,7 @@ export default class GameplayStage1 extends GameplayScene {
 		this.chilno = new Chilno(this);
 	}
 
-	protected callBack_hitPlayerEnemyProjectile(playerHitbox: any, p: any) {
+	protected callBack_hitPlayerEnemyProjectile(playerHitbox: unknown, p: unknown) {
 		this.hitPlayerEnemyProjectile(playerHitbox as Entity, p as Projectile);
 	}
 	protected hitPlayerEnemyProjectile(playerHitbox: Entity, p: Projectile) {
@@ -109,14 +107,14 @@ export default class GameplayStage1 extends GameplayScene {
 		p.handleCollision(playerHitbox);	
 	}
 
-	protected callBack_hitGrazeEnemyProjectile(player: any, p: any) {
+	protected callBack_hitGrazeEnemyProjectile(player: unknown, p: unknown) {
 		this.hitGrazeEnemyProjectile(player as Player, p as Projectile);
 	}
 	protected hitGrazeEnemyProjectile(player: Player, p: Projectile) {
 		player.updateGrazeCount(p);
 	}
 
-	protected callBack_hitEnemyMob(enemy: any, p: any) {
+	protected callBack_hitEnemyMob(enemy: unknown, p: unknown) {
 		this.hitEnemyMob(enemy as Enemy, p as Projectile);
 	}
 	protected hitEnemyMob(enemy: Enemy, p: Projectile) {
@@ -133,34 +131,34 @@ export default class GameplayStage1 extends GameplayScene {
 		// this.explodeSFX.play();
 	}
 
-	protected callBack_hitGrazeItem(player: any, i: any) {
+	protected callBack_hitGrazeItem(player: unknown, i: unknown) {
 		this.hitGrazeItem(player as Player, i as Item);
 	}
 	protected hitGrazeItem(player: Player, i: Item){
 		i.handlingGrazeHBCollision(player);
 	}
 
-	protected callBack_hitPlayerPowerItem(playerHitbox: any, i: any) {
+	protected callBack_hitPlayerPowerItem(playerHitbox: unknown, i: unknown) {
 		this.hitPlayerPowerItem(playerHitbox as Entity, i as Item);
 	}
 	protected hitPlayerPowerItem(playerHitbox: Entity, i: Item){
-		this.player?.handlingPowerItemCollisionDelegate(i);
 		i.handleCollision(playerHitbox);
+		this.player?.handlingPowerItemCollisionDelegate(i);
 	}
 
-	protected callBack_hitPlayerScoreItem(playerHitbox: any, i: any) {
+	protected callBack_hitPlayerScoreItem(playerHitbox: unknown, i: unknown) {
 		this.hitPlayerScoreItem(playerHitbox as Entity, i as Item);
 	}
 	protected hitPlayerScoreItem(playerHitbox: Entity, i: Item){
-		this.player?.updateScore(i);
 		i.handleCollision(playerHitbox);
+		this.player?.handlingScoreItem(i);
 	}
 
-	protected callBack_hitPlayerSpecialItem(playerHitbox: any, i: any) {
+	protected callBack_hitPlayerSpecialItem(playerHitbox: unknown, i: unknown) {
 		this.hitPlayerSpecialItem(playerHitbox as Entity, i as Item);
 	}
 	protected hitPlayerSpecialItem(playerHitbox: Entity, i: Item){
-		this.player?.handlingSpecialItemCollisionDelegate(i);
 		i.handleCollision(playerHitbox);
+		this.player?.handlingSpecialItemCollisionDelegate(i);
 	}
 }

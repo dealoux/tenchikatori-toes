@@ -6,8 +6,8 @@ import { PLAYER_DATA } from '../../characters/player/Player';
 
 export const DATA_POWER_ITEM : IProjectileData = {
     texture: { key: 'powerItem', path: 'assets/sprites/touhou_test/powerItem.png' },
-    speed: 140,
-    value: .1,
+    speed: 70,
+    value: .5,
 }
 
 export const DATA_SCORE_ITEM : IProjectileData = {

@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { IState, IStateData, State, StateMachine } from "../../../../@types/StateMachine";
+import { IStateData } from "../../../../@types/StateMachine";
 import { IVectorPoint } from "../../../Entity";
 import { Enemy, IEnemy } from "../Enemy";
 import { EnemyState } from "./EnemyState";
@@ -11,11 +11,6 @@ export interface IEnemyStateData_Move extends IStateData{
 export class EnemyState_Move extends EnemyState{
     sData: IEnemyStateData_Move;
     currIndex: number
-
-    // constructor(char: Enemy, stateMachine: StateMachine, entData: IEnemyBoss, sData: IEnemyMoveStateData){
-    //     super(char, stateMachine, entData);
-    //     this.sData = sData;
-    // }
 
     constructor(char: Enemy, entData: IEnemy, sData: IEnemyStateData_Move){
         super(char, entData, sData);

@@ -82,8 +82,8 @@ export class Projectile extends Entity{
         this.tagertingSpeed = 0;
     }
 
-    protected preUpdateHere(time: number, delta: number): void {
-        super.preUpdateHere(time, delta);
+    preUpdate(time: number, delta: number): void {
+        super.preUpdate(time, delta);
 
         if (this.tracking) {      
             this.rotation = this.body.velocity.angle();
@@ -99,13 +99,12 @@ export class Projectile extends Entity{
         }
     }
 
-    protected updateHere() {
-        super.updateHere();
+    update() {
+        super.update();
 
         if(this.target) {
             this.scene.physics.moveToObject(this, this.target, this.tagertingSpeed);
-        } 
-
+        }
     }
 }
 
@@ -145,7 +144,7 @@ export class PPatternWave extends PPattern{
         super(parent, pPoint, p, pData);
         this.patternData = pData;
         
-        this.updatePattern = Math.abs(pPoint.theta) == 90 ? this.waveVertical : this.waveHorizontal;
+        this.updatePattern = Math.abs(pPoint.theta!) == 90 ? this.waveVertical : this.waveHorizontal;
     }
 
     private waveBase(gx = 0, gy = 0){

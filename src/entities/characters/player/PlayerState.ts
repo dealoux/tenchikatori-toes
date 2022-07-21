@@ -18,57 +18,25 @@ export class PlayerState extends State{
         this.char = char;
         this.entData = entData;
     }
-
-    enter(): void {
-        super.enter();
-    }
-
-    exit(): void {
-        super.exit();
-    }
-
-    update(): void {
-        super.update();
-    }
 }
 
 export class PlayerState_DisableInteractive extends PlayerState{
     constructor(char: Player, entData: IPlayer){
         super(char, entData);
     }
-
-    enter(): void {
-        super.enter();
-    }
-
-    exit(): void {
-        super.exit();
-    }
-
-    update(): void {
-        super.update();
-    }
 }
 
 export class PlayerState_Interactive extends PlayerState{
-    actionDelegate : IFunctionDelegate;
     speed: number;
-
     lastShotTime: number;
-    
     castingSpecial: boolean;
-
 
     constructor(char: Player, entData: IPlayer){
         super(char, entData);
 
-        this.actionDelegate = this.shoot;
         this.speed = entData.speed!;
-
-        this.castingSpecial = false;
-
-        this.speed = this.entData.speed!;
         this.lastShotTime = 0;
+        this.castingSpecial = false;
     }
 
     enter(): void {
@@ -137,20 +105,13 @@ export class PlayerState_Interactive extends PlayerState{
         // actions
         if(!this.castingSpecial){
             if(inputs.Shot && this.char.time() > this.lastShotTime){
-                this.shoot();
+                this.char.actionDelegate();
+                this.lastShotTime = this.char.time() + PLAYER_SHOOT_DELAY;
             }
             if(inputs.Special && this.char.currSpecial > 0){
                 this.special();
             }
         }
-    }
-
-    private shoot(){
-        for(let i = 0; i< Phaser.Math.FloorTo(this.char.currPower); i++){
-            this.char.shots[i](this.char);
-        }
-
-        this.lastShotTime = this.char.time() + PLAYER_SHOOT_DELAY;
     }
 
     private special(){

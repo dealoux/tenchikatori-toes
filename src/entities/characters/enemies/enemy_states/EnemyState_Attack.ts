@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { IState, IStateData, StateMachine } from "../../../../@types/StateMachine";
+import { IStateData } from "../../../../@types/StateMachine";
 import { IVectorPoint } from "../../../Entity";
 import { PPattern } from "../../../projectiles/Projectile";
 import { Enemy, IEnemy } from "../Enemy";
@@ -12,11 +12,6 @@ export class EnemyState_Attack extends EnemyState{
     sData: IEnemyStateData_Attack;
     shootPoint: IVectorPoint;
     currAttack?: PPattern;
-
-    // constructor(char: Enemy, stateMachine: StateMachine, entData: IEnemyBoss, sData: IEnemyAttackStateData){
-    //     super(char, stateMachine, entData);
-    //     this.sData = sData;
-    // }
 
     constructor(char: Enemy, entData: IEnemy, sData: IEnemyStateData_Attack){
         super(char, entData, sData);
@@ -39,6 +34,4 @@ export class EnemyState_Attack extends EnemyState{
             this.changeState(this.char.idleState)
         }
     }
-
-    protected randomEnum(){}
 }

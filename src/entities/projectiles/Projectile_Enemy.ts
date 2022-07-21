@@ -29,7 +29,7 @@ export class EnemyProjectile extends Projectile{
     }
 
     protected move(point: IVectorPoint, speed: number){
-        let velocity = new Phaser.Math.Vector2(Math.sin(point.theta), -Math.cos(point.theta)).normalize().scale(speed);
+        let velocity = new Phaser.Math.Vector2(Math.sin(point.theta!), -Math.cos(point.theta!)).normalize().scale(speed);
         this.setVelocity(velocity.x, velocity.y);
     }
 }

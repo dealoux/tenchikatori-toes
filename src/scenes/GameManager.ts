@@ -6,20 +6,24 @@ import { HUDScene } from './Gameplay';
 import { loadBGM } from '../@types/Audio';
 import { Item } from '../entities/projectiles/items/Item';
 import GameplayStage1 from './stages/GameplayStage1';
+import { DialogLine } from '../objects/DialogLine';
 
 export default class GameManager extends Scene {
+	currScore: number;
+
 	constructor() {
 		super(SCENE_NAMES.GameManager);
 		new InputHandler();
+		this.currScore = 0;
 	}
 
 	preload() {
 		this.load.image(EMPTY_TEXTURE.key, EMPTY_TEXTURE.path);
 		this.load.image(GOD_SEES_ALL_BG.key, GOD_SEES_ALL_BG.path);
-		//this.load.json('shapes', 'assets/sprites/spriteshapes.json');
 
 		loadBGM(this);
 		Item.preload(this);
+		DialogLine.preload(this);
 		this.loadScenes();
 	}
 

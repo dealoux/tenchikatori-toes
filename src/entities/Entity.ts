@@ -1,21 +1,10 @@
 import Phaser from 'phaser';
+import { ITexture } from '../@types/UI';
 import { EMPTY_TEXTURE } from '../constants';
 
 export interface IVectorPoint{
     pos: Phaser.Math.Vector2;
-    theta: number;
-}
-
-export interface ITexture{
-    key: string,
-    path: string,
-    json?: string
-}
-
-export interface IText{
-    text: string,
-    font: string,
-    point: IVectorPoint,
+    theta?: number;
 }
 
 export interface IEntity{
@@ -46,17 +35,12 @@ export enum COLLISION_CATEGORIES{
 }
 
 export class Entity extends Phaser.Physics.Arcade.Sprite{
-    updateDelegate: IFunctionDelegate;
-    preUpdateDelegate: IPreUpdateDelegate;
     entData?: IEntity;
     collisionCategory?: number;
     static worldsEdge: Phaser.Geom.Rectangle;
 
     constructor(scene: Phaser.Scene, { pos = Phaser.Math.Vector2.ZERO, texture = EMPTY_TEXTURE, hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
         super(scene, pos.x, pos.y, texture.key, frame);
-
-        this.updateDelegate = this.updateHere;
-        this.preUpdateDelegate = this.preUpdateHere;
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -86,9 +70,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         this.setVisible(status);
     }
 
-    protected updateHere(){ }
-    protected preUpdateHere(time: number, delta: number) {}
-
     static setWorldsEdge(scene: Phaser.Scene){
         const { worldView } = scene.cameras.main;
         const offset = new Phaser.Math.Vector2(worldView.width * .125, worldView.height * .125);
@@ -97,16 +78,13 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     }
 
     create(){
-        //this.setOnCollide(this.handleCollision);
         //console.log('bruh');
     }
 
     preUpdate(time: number, delta: number){
-        this.preUpdateDelegate(time, delta);
     } 
 
     update() {
-        this.updateDelegate();
     }
 
     updateTransform(point: IVectorPoint){
@@ -115,9 +93,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         this.enableEntity(point.pos);
     }
 
-    getBody(){
-        return this.body as Phaser.Physics.Arcade.Body;
-    }
+    getBody(){ return this.body as Phaser.Physics.Arcade.Body; }
 
     handleCollision(entity: Entity){
         console.log(entity);
@@ -126,16 +102,11 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     enableEntity(pos: Phaser.Math.Vector2){
         this.setStatus(true);
         this.enableBody(true, pos.x, pos.y, true, true);
-        this.updateDelegate = this.updateHere;
-        this.preUpdateDelegate = this.preUpdateHere;
-
     }
 
     disableEntity(){
         this.setStatus(false);
         this.disableBody(true, true);
-        this.updateDelegate = this.emptyFunction;
-        this.preUpdateDelegate = this.emptyFunction;
         //this.removeInteractive();
     }
 

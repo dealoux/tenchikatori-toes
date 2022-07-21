@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { eventsCenter } from '../../plugins/EventsCentre';
 import { IEntity, Entity, IVectorPoint } from '../Entity';
 import { PoolManager } from '../../@types/Pool';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, ItemManager, ITEM_POOL, PowerItem, ScoreItem, SpecialItem } from '../projectiles/items/Item';
+import { ItemManager } from '../projectiles/items/Item';
 import { Projectile } from '../projectiles/Projectile';
 import { StateMachine } from '../../@types/StateMachine';
 
@@ -19,17 +19,13 @@ export interface IAnimation{
 
 export class Character extends Entity{
     static itemManager: ItemManager;
-    hp: number;
-    lastShotTime: number;
     stateMachine: StateMachine;
+    hp: number;
 
     constructor(scene: Phaser.Scene, data: ICharacter){
         super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame }, true);
-
-        this.hp = data.hp;
-        this.lastShotTime = 0;
-
         this.stateMachine = new StateMachine(this);
+        this.hp = data.hp;
     }
 
     time(){
@@ -40,15 +36,16 @@ export class Character extends Entity{
     static async initManager(scene: Phaser.Scene){
         Character.itemManager = new ItemManager(scene);
         Character.itemManager.init();
-
-        // Character.itemManager.addGroup(DATA_POWER_ITEM.texture.key, PowerItem, ITEM_POOL);
-        // Character.itemManager.addGroup(DATA_SCORE_ITEM.texture.key, ScoreItem, ITEM_POOL);
-        // Character.itemManager.addGroup(DATA_SPECIAL_ITEM.texture.key, SpecialItem, 10);
     }
 
-    protected updateHere() {
-        super.updateHere();
+    update() {
+        super.update();
         this.stateMachine.currState().update();
+    }
+
+    preUpdate(time: number, delta: number): void {
+        super.preUpdate(time, delta);
+        this.stateMachine.currState().preUpdate(time, delta);
     }
 
     handleCollision(p: Projectile){

@@ -3,9 +3,9 @@ import { IWavePatternData, PPatternWave, Projectile } from '../../../projectiles
 import { DATA_SHOTBLUE } from '../../../projectiles/Projectile_Enemy';
 import { IAnimation } from '../../Character';
 import { Enemy, IEnemy } from '../Enemy';
-import { IEnemyStateData_Attack } from '../enemy_states/Enemy_AttackState';
-import { IEnemyStateData_Idle } from '../enemy_states/Enemy_IdleState';
-import { IEnemyStateData_Move } from '../enemy_states/Enemy_MoveState';
+import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
+import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
+import { IEnemyStateData_Move } from '../enemy_states/EnemyState_Move';
 
 const DATA_CHILNO: IEnemy = {
     texture: { key: 'chilno', path: 'assets/sprites/touhou_test/chilno.png', json: 'assets/sprites/touhou_test/chilno.json' },
@@ -88,10 +88,6 @@ export class Chilno extends Enemy{
     }
 
     static initPManagers(scene: Phaser.Scene){
-    }
-
-    protected updateHere(): void {
-        super.updateHere();
     }
     
     handleCollision(p: Projectile) {

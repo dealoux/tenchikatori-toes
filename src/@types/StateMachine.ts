@@ -8,6 +8,7 @@ export interface IState{
     enter(): void;
     exit(): void;
     update(): void;
+    preUpdate(time: number, delta: number): void;
 }
 
 export interface IStateData{
@@ -16,17 +17,9 @@ export interface IStateData{
 
 export abstract class State implements IState{
     char: Character;
-    // stateMachine: StateMachine;
     entData: ICharacter;
     enterTime: number;
     sData: IStateData;
-
-    // constructor(char: Enemy, stateMachine: StateMachine, entData: IEnemyBoss){
-    //     this.char = char;
-    //     this.stateMachine = stateMachine;
-    //     this.entData = entData;
-    //     this.enterTime = 0;
-    // }
 
     constructor(char: Character, entData: ICharacter, sData: IStateData){
         this.char = char;
@@ -40,13 +33,11 @@ export abstract class State implements IState{
         this.char.anims.play(this.sData.animKey || '');
     }
 
-    exit(): void {
-        
-    }
+    exit(): void { }
 
-    update(): void {
-        
-    }
+    update(): void { }
+
+    preUpdate(time: number, delta: number): void { }
 
     protected changeState(nextState: IState, savePrevious = false){
         this.char.stateMachine.changeState(nextState, savePrevious);

@@ -74,11 +74,7 @@ export class Yousei1 extends Enemy{
         this.anims.create({ key: YOUSEI1_ANIMS.idle, frames: this.anims.generateFrameNames(DATA_YOUSEI1.texture.key, { prefix: YOUSEI1_ANIMS.idle, end: 2, zeroPad: 4}), repeat: -1});
         this.anims.create({ key: YOUSEI1_ANIMS.run, frames: this.anims.generateFrameNames(DATA_YOUSEI1.texture.key, { prefix: YOUSEI1_ANIMS.run, end: 3, zeroPad: 4}), repeat: -1});
 
-    }
-    
-    protected updateHere (){
-        super.updateHere();
-    }
+    }    
 }
 
 // const TEST_SHOT_DELAY = 500;

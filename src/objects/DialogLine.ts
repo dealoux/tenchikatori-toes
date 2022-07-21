@@ -1,4 +1,4 @@
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from "../constants";
+import { FONT_INTER, FONT_NOKIA, WINDOW_HEIGHT, WINDOW_WIDTH } from "../constants";
 import Phaser from 'phaser';
 
 const VERY_LONG_TIME = 1000 * 30; // 30 mins
@@ -78,7 +78,8 @@ export class DialogLine extends Phaser.GameObjects.Container implements IDialog 
 	state: DialogLineState = DialogLineState.ACTIVATING;
 
 	static preload(scene: Phaser.Scene) {
-		scene.load.bitmapFont('inter', 'assets/fonts/inter-regular-outline-2_0.png', 'assets/fonts/inter-regular-outline-2.fnt');
+		scene.load.bitmapFont(FONT_INTER.key, FONT_INTER.path, FONT_INTER.json);
+		scene.load.bitmapFont(FONT_NOKIA.key, FONT_NOKIA.path, FONT_NOKIA.json);
 	}
 
 	constructor(scene: Phaser.Scene, { x, y, width, size, step, text }: DialogLineCreateOpts) {
