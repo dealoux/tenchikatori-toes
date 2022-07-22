@@ -64,7 +64,7 @@ export abstract class UIScene extends Phaser.Scene {
 	}
 
 	create() {
-        this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown, this);
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
 	}
 
 	update() {
@@ -89,7 +89,7 @@ export abstract class UIScene extends Phaser.Scene {
 		}
 	}
     
-    protected shutdown(){
+    protected onShutdown(){
         this.buttons = new Array();
         this.currSelected = 0;
         InputHandler.Instance().reset();
@@ -98,13 +98,10 @@ export abstract class UIScene extends Phaser.Scene {
     protected restartButton(){
 		this.scene.stop();
 		this.scene.start(GameManager.currStage);
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayRestart);
 	}
 
     protected mainMenuButton(){
 		this.scene.stop(GameManager.currStage);
 		this.scene.start(SCENE_NAMES.MainMenu);
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayEnd);
 	}
-
 }

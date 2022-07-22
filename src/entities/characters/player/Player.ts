@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
-import { IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate } from '../../Entity';
+import { COLLISION_CATEGORIES, Entity } from '../../Entity';
 import { PoolManager } from '../../../@types/Pool';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
 import { Character, ICharacter } from '../Character';
@@ -8,6 +8,7 @@ import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/
 import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
 import { ITexture } from '../../../@types/UI';
 import { SCENE_NAMES } from '../../../constants';
+import { emptyFunction, IFunctionDelegate } from '../../../plugins/Utilities';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
@@ -245,7 +246,6 @@ export class Player extends Character{
                 this.stateMachine.changeState(this.spawnState);
             }
             else{
-                // this.scene.scene.stop(SCENE_NAMES.HUD);
                 this.scene.scene.start(SCENE_NAMES.OverMenu);
             }
         }
@@ -268,13 +268,12 @@ export class Player extends Character{
                 else{
                     this.currPower = PLAYER_DATA.maxPower;
                     this.actionDelegate = this.shoot4;
-                    this.handlingPowerItemCollisionDelegate = this.emptyFunction;        
+                    this.handlingPowerItemCollisionDelegate = emptyFunction;        
                 }
             }
         }
         
         this.updatePowerCount();
-        // console.log(this.currPower + ", " + (this.currPower > MAX_POWER));
     }
 
     private updatePowerCount(){
@@ -286,7 +285,7 @@ export class Player extends Character{
 
         if(this.hp > PLAYER_DATA.maxHP){
             this.hp = PLAYER_DATA.maxHP;
-            // this.handlingHPItemCollisionDelegate = this.emptyFunction;
+            // this.handlingHPItemCollisionDelegate = emptyFunction;
         }
 
         this.updateHPCount();
@@ -298,7 +297,7 @@ export class Player extends Character{
 
         if(this.currSpecial > PLAYER_DATA.maxSpecial){
             this.currSpecial = PLAYER_DATA.maxSpecial;
-            // this.handlingSpecialItemCollisionDelegate = this.emptyFunction;
+            // this.handlingSpecialItemCollisionDelegate = emptyFunction;
         }
 
         this.updateSpecialCount();

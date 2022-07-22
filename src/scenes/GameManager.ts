@@ -5,15 +5,18 @@ import { InputHandler } from '../plugins/InputHandler';
 import { EMPTY_TEXTURE, GOD_SEES_ALL_BG, SCENE_NAMES, WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
 import { loadBGM } from '../@types/Audio';
 import { Item } from '../entities/projectiles/items/Item';
+import { emptyFunction, IFunctionDelegate } from '../plugins/Utilities';
 
 export default class GameManager extends Scene {
 	static currStage: string;
 	currScore: number;
+	updateScoreDelegate: IFunctionDelegate;
 
 	constructor() {
 		super(SCENE_NAMES.GameManager);
 		new InputHandler();
 		this.currScore = 0;
+		this.updateScoreDelegate = emptyFunction;
 	}
 
 	preload() {
@@ -35,6 +38,10 @@ export default class GameManager extends Scene {
 		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.resume());
 
 		eventsCenter.on(GAMEPLAY_EVENTS.updateScore, (value: number) => this.currScore += value, this);
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, () => this.updateScoreDelegate = this.updateScore);
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayResume, () => this.updateScoreDelegate = this.updateScore);
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause, () => this.updateScoreDelegate = emptyFunction);
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayEnd, () => { this.updateScoreDelegate = emptyFunction; this.currScore = 0 });
 	}
 
 	private pause(){
@@ -47,6 +54,10 @@ export default class GameManager extends Scene {
 	}
 
 	update() {
-		// eventsCenter.emit(GAMEPLAY_EVENTS.displayScore, ++this.currScore);
+		this.updateScoreDelegate();
+	}
+
+	private updateScore(){
+		eventsCenter.emit(GAMEPLAY_EVENTS.displayScore, ++this.currScore);
 	}
 }

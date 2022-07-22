@@ -16,10 +16,6 @@ export interface IEntity{
     collisionCategory?: number,
 }
 
-export interface IFunctionDelegate{
-    () : void;
-}
-
 export interface IPreUpdateDelegate{
     (time: number, delta: number) : void;
 }
@@ -61,8 +57,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         this.create();
     }
 
-    protected emptyFunction() {}
-
     protected inCameraView(){
         // return this.scene.cameras.main.worldView.contains(this.x, this.y);
         return Entity.worldsEdge.contains(this.x, this.y);
@@ -81,7 +75,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     }
 
     create(){
-        //console.log('bruh');
     }
 
     preUpdate(time: number, delta: number){

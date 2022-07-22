@@ -5,6 +5,7 @@ import { IPlayer, Player } from "./Player";
 import { InputHandler, INPUT_EVENTS } from "../../../plugins/InputHandler";
 import { PLAYER_SHOOT_DELAY, SHOOTPOINTS_FOCUSED, SHOOTPOINTS_NORMAL } from "../../projectiles/Projectile_Player";
 import { GAMEPLAY_SIZE } from "../../../constants";
+import { emptyFunction } from "../../../plugins/Utilities";
 
 interface PlayerStateData extends IStateData{}
 const PLAYER_STATE_DATA: PlayerStateData = {};
@@ -35,7 +36,7 @@ export class PlayerState_Spawn extends PlayerState{
         this.char.setCollideWorldBounds(false);
         this.char.modeIndicator.setVisible(false);
         this.char.enableEntity(new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25));
-        this.char.handlingProjectileCollisionDelegate = ()=>{};
+        this.char.handlingProjectileCollisionDelegate = emptyFunction;
         this.char.createInvulnerableEffect(100, 24, ()=>{}, ()=>{ this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
 
         this.char.scene.tweens.add({

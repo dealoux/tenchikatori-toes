@@ -42,16 +42,12 @@ export abstract class GameplayScene extends Scene {
 		this.cameras.main.setViewport(GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 
-		this.events.on(Phaser.Scenes.Events.CREATE, () => { this.scene.run(SCENE_NAMES.HUD); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart, this) }, this);
-		// this.events.on(Phaser.Scenes.Events.SLEEP, () => { this.scene.sleep(SCENE_NAMES.HUD); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, this) }, this);
-		// this.events.on(Phaser.Scenes.Events.WAKE, () => this.scene.wake(SCENE_NAMES.HUD), this);
-		this.events.on(Phaser.Scenes.Events.PAUSE, () => { this.scene.pause(SCENE_NAMES.HUD); InputHandler.Instance().reset(); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, this); }, this);
-		this.events.on(Phaser.Scenes.Events.RESUME, () => this.scene.resume(SCENE_NAMES.HUD), this);
-		this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => { this.scene.sleep(SCENE_NAMES.HUD); InputHandler.Instance().reset(); }, this);
-
-		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, () => this.scene.run(SCENE_NAMES.HUD), this);
-		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause,  () => this.scene.pause(SCENE_NAMES.HUD), this);
-		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayResume, () => this.scene.resume(SCENE_NAMES.HUD), this);
+		this.events.on(Phaser.Scenes.Events.CREATE, this.onCreate, this);
+		this.events.on(Phaser.Scenes.Events.SLEEP, this.onPause, this);
+		this.events.on(Phaser.Scenes.Events.WAKE, this.onResume, this);
+		this.events.on(Phaser.Scenes.Events.PAUSE, this.onPause, this);
+		this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
+		this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
 	}
 
 	update() {
@@ -66,6 +62,28 @@ export abstract class GameplayScene extends Scene {
 			this.scene.launch(SCENE_NAMES.PauseMenu);
 			eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, SCENE_NAMES.Stage1_Gameplay);
 		}
+	}
+
+	protected onCreate(){
+		this.scene.run(SCENE_NAMES.HUD); 
+		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart);
+	}
+
+	protected onPause(){
+		this.scene.pause(SCENE_NAMES.HUD); 
+		InputHandler.Instance().reset(); 
+		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause);
+	}
+
+	protected onResume(){
+		this.scene.resume(SCENE_NAMES.HUD); 
+		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayResume);
+	}
+
+	protected onShutdown(){
+		this.scene.stop(SCENE_NAMES.HUD); 
+		InputHandler.Instance().reset(); 
+		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayEnd);
 	}
 }
 
@@ -137,7 +155,7 @@ export class HUDScene extends Scene{
 	hiscoreValue?: Phaser.GameObjects.BitmapText;
 	scoreValue?: Phaser.GameObjects.BitmapText;
 	HPCount?: Phaser.GameObjects.BitmapText;
-	specialCountValue?: Phaser.GameObjects.BitmapText;
+	specialCount?: Phaser.GameObjects.BitmapText;
 	powerCount?: Phaser.GameObjects.BitmapText;
 	extraScoreValue?: Phaser.GameObjects.BitmapText;
 	grazeCount?: Phaser.GameObjects.BitmapText;
@@ -152,18 +170,42 @@ export class HUDScene extends Scene{
 		this.scoreValue = this.displayText(HUD_SCORE);
 		this.grazeCount = this.displayText(HUD_GRAZE_COUNT);
 		this.HPCount = this.displayTextItem(HUD_LIVES_COUNT, DATA_HP_ITEM.texture.key);
-		this.specialCountValue = this.displayTextItem(HUD_SPECIAL_COUNT, DATA_SPECIAL_ITEM.texture.key);
+		this.specialCount = this.displayTextItem(HUD_SPECIAL_COUNT, DATA_SPECIAL_ITEM.texture.key);
 		this.powerCount = this.displayTextItem(HUD_POWER, DATA_POWER_ITEM.texture.key);
 		this.extraScoreValue = this.displayTextItem(HUD_EXTRA_SCORE, DATA_SCORE_ITEM.texture.key);
 
-		eventsCenter.on(GAMEPLAY_EVENTS.displayScore, (value: string) => this.updateText(this.scoreValue!, value), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.displayExtraScore, (value: string) => this.updateText(this.extraScoreValue!, value), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.displayGrazeCount, (value: string) => this.updateText(this.grazeCount!, value), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.displayHPCount, (value: string) => this.updateTextMax(this.HPCount!, value, PLAYER_DATA.maxHP.toString()), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.displayPowerCount, (value: string) => this.updateTextMax(this.powerCount!, value, PLAYER_DATA.maxPower.toString()), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.displaySpecialCount, (value: string) => this.updateTextMax(this.specialCountValue!, value, PLAYER_DATA.maxSpecial.toString()), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayScore, this.updateScore, this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayExtraScore, this.updateExtraScore, this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayGrazeCount, this.updateGrazeCount, this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayHPCount, this.updateHPCount, this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayPowerCount, this.updatePowerCount, this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displaySpecialCount, this.updateSpecialCount, this);
 
 		this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown);
+	}
+
+	updateScore(value: string){
+		this.updateText(this.scoreValue!, value);
+	}
+
+	updateExtraScore(value: string){
+		this.updateText(this.extraScoreValue!, value);
+	}
+
+	updateGrazeCount(value: string){
+		this.updateText(this.grazeCount!, value);
+	}
+
+	updateHPCount(value: string){
+		this.updateTextMax(this.HPCount!, value, PLAYER_DATA.maxHP.toString());
+	}
+
+	updatePowerCount(value: string){
+		this.updateTextMax(this.powerCount!, value, PLAYER_DATA.maxPower.toString());
+	}
+
+	updateSpecialCount(value: string){
+		this.updateTextMax(this.specialCount!, value, PLAYER_DATA.maxSpecial.toString());
 	}
 
 	protected displayText(textData: IText){
@@ -191,5 +233,11 @@ export class HUDScene extends Scene{
 		// this.specialCountValue?.destroy();
 		// this.powerCount?.destroy();
 		// this.extraScoreValue?.destroy();
+		eventsCenter.off(GAMEPLAY_EVENTS.displayScore, this.updateScore);
+		eventsCenter.off(GAMEPLAY_EVENTS.displayExtraScore, this.updateExtraScore);
+		eventsCenter.off(GAMEPLAY_EVENTS.displayGrazeCount, this.updateGrazeCount);
+		eventsCenter.off(GAMEPLAY_EVENTS.displayHPCount, this.updateHPCount);
+		eventsCenter.off(GAMEPLAY_EVENTS.displayPowerCount, this.updatePowerCount);
+		eventsCenter.off(GAMEPLAY_EVENTS.displaySpecialCount, this.updateSpecialCount);
 	}
 }

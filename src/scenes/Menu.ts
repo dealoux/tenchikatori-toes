@@ -61,7 +61,7 @@ export class MainMenu extends UIScene {
 	private startStage(stageName: string){
 		this.scene.start(stageName);
 		GameManager.currStage = stageName;
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart, stageName);
+		// eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart, stageName);
 	}
 	
 	private stage1(){
@@ -132,7 +132,6 @@ export class PauseScene extends UIScene {
 		// this.scene.switch(GameManager.currStage);
 		this.scene.stop();
 		this.scene.resume(GameManager.currStage);
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayResume);
 	}
 }
 

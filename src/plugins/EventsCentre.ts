@@ -6,7 +6,6 @@ export enum GAMEPLAY_EVENTS{
     gameplayStart = 'gameplayStart',
     gameplayPause = 'gameplayPause',
     gameplayResume = 'gameplayResume',
-    gameplayRestart = 'gameplayRestart',
     gameplayEnd = 'gameplayEnd',
 
     special = 'special',
