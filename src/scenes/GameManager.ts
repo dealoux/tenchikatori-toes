@@ -7,6 +7,7 @@ import { loadBGM } from '../@types/Audio';
 import { Item } from '../entities/projectiles/items/Item';
 import GameplayStage1 from './stages/GameplayStage1';
 import { DialogLine } from '../objects/DialogLine';
+import { PauseScene } from './Menu';
 
 export default class GameManager extends Scene {
 	currScore: number;
@@ -39,6 +40,7 @@ export default class GameManager extends Scene {
 
 	private loadScenes(){
 		this.scene.add(SCENE_NAMES.HUD, HUDScene);
+		this.scene.add(SCENE_NAMES.PauseMenu, PauseScene);
 		this.scene.add(SCENE_NAMES.Stage1_Gameplay, GameplayStage1);
 	}
 

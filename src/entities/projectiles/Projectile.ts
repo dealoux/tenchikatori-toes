@@ -37,13 +37,10 @@ export class Projectile extends Entity{
         this.scene = scene;
         this.entData = data;
         this.scaleSpeed = 0;
+
     }
 
-    create(){
-        super.create();
-    }
-
-    handleCollision(ent: Entity){
+    handleCollision(char?: Character){
         this.resetProperties();
         this.disableEntity();
     }

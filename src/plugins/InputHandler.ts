@@ -10,7 +10,7 @@ export interface IInputPoll{
     Switch: boolean,
     Focus: boolean,
     Pause: boolean,
-    [key: string]: boolean,
+    [key: string]: string,
 }
 
 export enum INPUT_STRINGS{

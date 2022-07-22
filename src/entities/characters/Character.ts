@@ -3,7 +3,6 @@ import { eventsCenter } from '../../plugins/EventsCentre';
 import { IEntity, Entity, IVectorPoint } from '../Entity';
 import { PoolManager } from '../../@types/Pool';
 import { ItemManager } from '../projectiles/items/Item';
-import { Projectile } from '../projectiles/Projectile';
 import { StateMachine } from '../../@types/StateMachine';
 
 export interface ICharacter extends IEntity{
@@ -33,7 +32,7 @@ export class Character extends Entity{
         return this.scene.game.getTime();
     }
 
-    static async initManager(scene: Phaser.Scene){
+    static initManager(scene: Phaser.Scene){
         Character.itemManager = new ItemManager(scene);
         Character.itemManager.init();
     }
@@ -48,11 +47,17 @@ export class Character extends Entity{
         this.stateMachine.currState().preUpdate(time, delta);
     }
 
-    handleCollision(p: Projectile){
-        super.handleCollision(p);
+    createInvulnerableEffect(duration = 50, repeat = 6, onStart = () => { }, onComplete =  () => { this.setAlpha(1); }) {
+        this.scene.tweens.add({
+            targets: this,
+            duration: duration,
+            repeat: repeat,
+            yoyo: true,
+            alpha: 0.5,
+            onStart: onStart,
+            onComplete: onComplete,
+        });
     }
-
-    handleCollisionChar(char: Character){}
 
     protected moveVertically(speed: number){
         //this.y += speed;

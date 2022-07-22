@@ -5,8 +5,9 @@ import { PoolManager } from '../../../@types/Pool';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
 import { Character, ICharacter } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
-import { PlayerState_DisableInteractive, PlayerState_Interactive } from './PlayerState';
+import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
 import { ITexture } from '../../../@types/UI';
+import { SCENE_NAMES } from '../../../constants';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
@@ -56,7 +57,9 @@ const SPECIAL_DATA : IScalePatternData = {
 export class Player extends Character{
     actionDelegate : IFunctionDelegate;
     handlingPowerItemCollisionDelegate: IHandlingPCollisionDelegate;
+    handlingHPItemCollisionDelegate: IHandlingPCollisionDelegate;
     handlingSpecialItemCollisionDelegate: IHandlingPCollisionDelegate;
+    handlingProjectileCollisionDelegate: IHandlingPCollisionDelegate;
 
     bodyOffset: Phaser.Math.Vector2;
 
@@ -69,36 +72,38 @@ export class Player extends Character{
     currGraze: number;
 
     interactiveState: PlayerState_Interactive;
+    spawnState: PlayerState_Spawn;
     disableInteractiveState: PlayerState_DisableInteractive;
 
     currShootPoints : IShootPoints;
     projectileManager: PoolManager;
     specialPattern: PPatternScale;
 
-    constructor(scene: Phaser.Scene, pos: Phaser.Math.Vector2){
-        PLAYER_DATA.pos = pos;
+    constructor(scene: Phaser.Scene){
         super(scene, PLAYER_DATA);
         this.setCollideWorldBounds(true);
         
         this.actionDelegate = this.shoot1;
         this.handlingPowerItemCollisionDelegate = this.handlingPowerItem;
+        this.handlingHPItemCollisionDelegate = this.handlingHPItem;
         this.handlingSpecialItemCollisionDelegate = this.handlingSpecialItem;
-        
+        this.handlingProjectileCollisionDelegate = this.handleProjectileCollision;
 
         this.bodyOffset = new Phaser.Math.Vector2(this.x - this.body.x, this.y - this.body.y);
         
-        this.hitbox = new Entity(scene, { pos, texture: HITBOX_TEXTURE }, true);
+        this.hitbox = new Entity(scene, { pos: new Phaser.Math.Vector2(this.x, this.y), texture: HITBOX_TEXTURE }, true);
         this.hitbox.setScale(HITBOX_SIZE/this.hitbox.width);
         this.hitbox.setVisible(false);
         
-        this.modeIndicator = new Entity(scene, { pos: new Phaser.Math.Vector2(pos.x + MODE_IDICATOR_OFFSET.x, pos.y + MODE_IDICATOR_OFFSET.y), texture: BLUE_MODE } , true);
+        this.modeIndicator = new Entity(scene, { pos: new Phaser.Math.Vector2(this.x + MODE_IDICATOR_OFFSET.x, this.y + MODE_IDICATOR_OFFSET.y), texture: BLUE_MODE } , true);
         this.modeIndicator.setScale(MODE_IDICATOR_SIZE/this.modeIndicator.width);
         this.setModeBlue();
 
         this.interactiveState = new PlayerState_Interactive(this, PLAYER_DATA);
+        this.spawnState = new PlayerState_Spawn(this, PLAYER_DATA);
         this.disableInteractiveState = new PlayerState_DisableInteractive(this, PLAYER_DATA);
 
-        this.currPower = 1;
+        this.currPower = 1.5;
         this.currSpecial = 2;
         this.currExtraScore = 0;
         this.currGraze = 0;
@@ -111,11 +116,11 @@ export class Player extends Character{
         this.projectileManager.addGroup(DATA_PLAYER_PMOON.texture.key, PlayerSpecialMoon, 4);
         this.specialPattern = new PPatternScale(this, { pos: new Phaser.Math.Vector2(0, 30), theta: -90 }, this.projectileManager.getGroup(DATA_PLAYER_PMOON.texture.key), SPECIAL_DATA);
 
-        this.stateMachine.initialize(this.interactiveState);
+        this.stateMachine.initialize(this.spawnState);
 
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateLivesCount, this.hp, PLAYER_DATA.maxHP);
-        eventsCenter.emit(GAMEPLAY_EVENTS.updatePowerCount, this.currPower, PLAYER_DATA.maxPower);
+        this.updateHPCount();        
         this.updateSpecialCount();
+        this.updatePowerCount();
         eventsCenter.emit(GAMEPLAY_EVENTS.updateExtraScore, this.currExtraScore);
         eventsCenter.emit(GAMEPLAY_EVENTS.updateGrazeCount, this.currGraze);
     }
@@ -132,10 +137,6 @@ export class Player extends Character{
         scene.load.spritesheet(DATA_PLAYER_PMOON.texture.key, DATA_PLAYER_PMOON.texture.path, { frameWidth: DATA_PLAYER_PMOON.texture.frameWidth!, frameHeight: DATA_PLAYER_PMOON.texture.frameHeight! });
 	}
     
-    create(){
-        super.create();
-    }
-
     preUpdate(time: number, delta: number){
         super.preUpdate(time, delta);
         // this.hitbox.setPosition(this.x, this.y);
@@ -146,22 +147,37 @@ export class Player extends Character{
         super.update();
     }
 
-    handleCollision(entity: Entity) {
-        // console.dir(entity);
-
-        if(this.currPower > 1.8){
-            Character.itemManager.emitItems(this.x, this.y);
-        }
-        else if(this.currPower > 1){
-            const delta = this.currPower - 1 * 10;
-            this.currPower = 1;
-            Character.itemManager.emitItems(this.x, this.y, delta);
-        }
+    setCollisionCategory(mode: number) {
+        super.setCollisionCategory(mode);
+        this.hitbox.setCollisionCategory(mode);
     }
 
-    setMode(mode: number) {
-        super.setMode(mode);
-        this.hitbox.setMode(mode);
+    private setModeRed(){
+        this.setCollisionCategory(COLLISION_CATEGORIES.blue);
+        this.modeIndicator.setTexture(RED_MODE.key);
+    }
+
+    switchMode(){
+        if(this.collisionCategory == COLLISION_CATEGORIES.blue){
+            this.setModeBlue();
+        }
+
+        else if(this.collisionCategory == COLLISION_CATEGORIES.red){
+            this.setModeRed();
+        }
+    }
+    
+    disableEntity(){
+        super.disableEntity();
+        this.hitbox.disableEntity();
+        this.modeIndicator.disableEntity();
+    }
+
+    enableEntity(pos: Phaser.Math.Vector2): void {
+        super.enableEntity(pos);
+        this.hitbox.enableEntity(pos);
+        this.modeIndicator.enableEntity(pos);
+        this.hitbox.setVisible(false);
     }
 
     moveHorizontally(x: number){
@@ -187,23 +203,8 @@ export class Player extends Character{
     }
 
     private setModeBlue(){
-        this.setMode(COLLISION_CATEGORIES.blue);
+        this.setCollisionCategory(COLLISION_CATEGORIES.red);
         this.modeIndicator.setTexture(BLUE_MODE.key);
-    }
-
-    private setModeRed(){
-        this.setMode(COLLISION_CATEGORIES.red);
-        this.modeIndicator.setTexture(RED_MODE.key);
-    }
-
-    switchMode(){
-        if(this.collisionCategory == COLLISION_CATEGORIES.blue){
-            this.setModeRed();
-        }
-
-        else if(this.collisionCategory == COLLISION_CATEGORIES.red){
-            this.setModeBlue();
-        }
     }
 
     private shoot1(){
@@ -225,6 +226,29 @@ export class Player extends Character{
         this.shoot2();
         this.spawnProjectile(this.projectileManager, DATA_PLAYER_P2.texture.key, this.currShootPoints.point_3);
         this.spawnProjectile(this.projectileManager, DATA_PLAYER_P2.texture.key, this.currShootPoints.point_4); 
+    }
+
+    handleProjectileCollision(p: Projectile) {
+        if(p.collisionCategory == this.collisionCategory){
+            this.hp--;
+
+            this.updateHPCount();
+
+            if(this.hp > 0){
+                this.disableEntity();
+
+                const delta = (this.currPower>1.8) ? .8 : (this.currPower-1);
+                this.currPower -= delta;
+                Character.itemManager.emitItemsPlayer(this.x, this.y, delta*10);
+                this.updatePowerCount();
+                
+                this.stateMachine.changeState(this.spawnState);
+            }
+            else{
+                // this.scene.scene.stop(SCENE_NAMES.HUD);
+                this.scene.scene.start(SCENE_NAMES.OverMenu);
+            }
+        }
     }
 
     private handlingPowerItem(p: Projectile){
@@ -249,9 +273,25 @@ export class Player extends Character{
             }
         }
         
-        eventsCenter.emit(GAMEPLAY_EVENTS.updatePowerCount, (Math.round(this.currPower * 10) / 10).toFixed(1), PLAYER_DATA.maxPower);
+        this.updatePowerCount();
         // console.log(this.currPower + ", " + (this.currPower > MAX_POWER));
     }
+
+    private updatePowerCount(){
+        eventsCenter.emit(GAMEPLAY_EVENTS.updatePowerCount, (Math.round(this.currPower * 10) / 10).toFixed(1), PLAYER_DATA.maxPower);
+    }
+
+    private handlingHPItem(p: Projectile){
+        this.hp += p.entData.value;
+
+        if(this.hp > PLAYER_DATA.maxHP){
+            this.hp = PLAYER_DATA.maxHP;
+            // this.handlingHPItemCollisionDelegate = this.emptyFunction;
+        }
+
+        this.updateHPCount();
+    }
+
 
     private handlingSpecialItem(p: Projectile){
         this.currSpecial += p.entData.value;
@@ -269,18 +309,20 @@ export class Player extends Character{
     }
 
     private updateScore(p: Projectile){
-        this.currExtraScore += p.entData.value;
-        //console.log(this.currScore);
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateScore, this.currExtraScore);
+        // this.currExtraScore += p.entData.value;
+        // eventsCenter.emit(GAMEPLAY_EVENTS.updateScore, this.currExtraScore);
     }
 
     updateSpecialCount(){
         eventsCenter.emit(GAMEPLAY_EVENTS.updateSpecialCount, this.currSpecial, PLAYER_DATA.maxSpecial);
     }
 
-    updateGrazeCount(p: Projectile){
-        this.currGraze++;
+    private updateHPCount(){
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateHPCount, this.hp, PLAYER_DATA.maxHP);
+    }
+
+    handlingGrazeCount(p: Projectile){
         this.updateScore(p);
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateGrazeCount, this.currGraze);
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateGrazeCount, ++this.currGraze);
     }
 }

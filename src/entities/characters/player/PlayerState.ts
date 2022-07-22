@@ -3,8 +3,8 @@ import { eventsCenter } from '../../../plugins/EventsCentre';
 import { IStateData, State } from "../../../@types/StateMachine";
 import { IPlayer, Player } from "./Player";
 import { InputHandler, INPUT_EVENTS } from "../../../plugins/InputHandler";
-import { IFunctionDelegate } from "../../Entity";
 import { PLAYER_SHOOT_DELAY, SHOOTPOINTS_FOCUSED, SHOOTPOINTS_NORMAL } from "../../projectiles/Projectile_Player";
+import { GAMEPLAY_SIZE } from "../../../constants";
 
 interface PlayerStateData extends IStateData{}
 const PLAYER_STATE_DATA: PlayerStateData = {};
@@ -23,6 +23,28 @@ export class PlayerState extends State{
 export class PlayerState_DisableInteractive extends PlayerState{
     constructor(char: Player, entData: IPlayer){
         super(char, entData);
+    }
+}
+
+export class PlayerState_Spawn extends PlayerState{
+    constructor(char: Player, entData: IPlayer){
+        super(char, entData);
+    }
+
+    enter(){
+        this.char.setCollideWorldBounds(false);
+        this.char.modeIndicator.setVisible(false);
+        this.char.enableEntity(new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25));
+        this.char.handlingProjectileCollisionDelegate = ()=>{};
+        this.char.createInvulnerableEffect(100, 24, ()=>{}, ()=>{ this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
+
+        this.char.scene.tweens.add({
+            targets: this.char,
+            y: GAMEPLAY_SIZE.HEIGHT*.85,
+            duration: 1600,
+            onStart: () => { },
+            onComplete: () => { this.char.setCollideWorldBounds(true); this.changeState(this.char.interactiveState); this.char.modeIndicator.setVisible(true); },
+        });
     }
 }
 
@@ -60,19 +82,19 @@ export class PlayerState_Interactive extends PlayerState{
         this.inputHandling();
     }
 
-    private focusedMode(){
+    protected focusedMode(){
         this.speed = this.entData.speedFocused;
         this.char.currShootPoints = SHOOTPOINTS_FOCUSED;
         this.char.hitbox.setVisible(true);
     }
 
-    private normalMode(){
+    protected normalMode(){
         this.speed = this.entData.speed!;
         this.char.currShootPoints = SHOOTPOINTS_NORMAL;
         this.char.hitbox.setVisible(false);
     }
 
-    private inputHandling(){
+    protected inputHandling(){
         const {inputs} = InputHandler.Instance();
 
         // directional movements
@@ -114,7 +136,7 @@ export class PlayerState_Interactive extends PlayerState{
         }
     }
 
-    private special(){
+    protected special(){
         this.char.specialPattern.updatePattern();
         InputHandler.Instance().inputs.Special = false;
         this.char.currSpecial--;

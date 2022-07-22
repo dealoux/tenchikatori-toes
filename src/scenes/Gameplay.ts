@@ -1,18 +1,22 @@
 import Phaser, { Scene } from 'phaser';
 import { Dialog, DialogUpdateAction } from '../objects/Dialog';
-import { FONT_NOKIA, FONT_INTER, HUD_SIZE, GAMEPLAY_SIZE } from '../constants';
+import { FONT_NOKIA, FONT_INTER, HUD_SIZE, GAMEPLAY_SIZE, SCENE_NAMES } from '../constants';
 import { Player, PLAYER_DATA } from '../entities/characters/player/Player';
 import { Enemy } from '../entities/characters/enemies/Enemy';
 import { Character } from '../entities/characters/Character';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM } from '../entities/projectiles/items/Item';
+import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM } from '../entities/projectiles/items/Item';
 import { Entity } from '../entities/Entity';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { addText, IText } from '../@types/UI';
+import { PoolManager } from '../@types/Pool';
 
 
-export class GameplayScene extends Scene {
+export abstract class GameplayScene extends Scene {
 	dialog?: IDialog;
 	player?: Player;
+	mobManager?: PoolManager;
+	bgm?: Phaser.Sound.BaseSound;
+	background?: unknown;
 
 	constructor(name: string) {
 		super(name);
@@ -28,7 +32,8 @@ export class GameplayScene extends Scene {
 			this.dialog?.update(this, { dialogUpdate: DialogUpdateAction.PROGRESS });
 		});
 
-		this.player = new Player(this, new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2));
+		this.mobManager = new PoolManager(this);
+		this.player = new Player(this);
 
 		Enemy.initPManagers(this);
 		Character.initManager(this);
@@ -36,11 +41,27 @@ export class GameplayScene extends Scene {
 
 		this.cameras.main.setViewport(GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
+
+		// this.events.on(Phaser.Scenes.Events.START, () => { this.scene.start(SCENE_NAMES.HUD); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart, this); console.log('bruh') }, this);
+		// this.events.on(Phaser.Scenes.Events.PAUSE,  () => { this.scene.pause(SCENE_NAMES.HUD); console.log('bo ro')}, this);
+		// this.events.on(Phaser.Scenes.Events.RESUME, () => this.scene.resume(SCENE_NAMES.HUD), this);
+
+		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, () => this.scene.run(SCENE_NAMES.HUD), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause,  () => this.scene.pause(SCENE_NAMES.HUD), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayResume, () => this.scene.resume(SCENE_NAMES.HUD), this);
 	}
 
 	update() {
 		this.dialog?.update(this, {});
 		this.player?.update();
+
+		// const {inputs} = InputHandler.Instance();
+
+		// if(inputs.Pause){
+		// 	inputs.Pause = false;
+		// 	this.scene.switch(SCENE_NAMES.PauseMenu);
+		// 	eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, SCENE_NAMES.Stage1_Gameplay);
+		// }
 	}
 }
 
@@ -69,7 +90,7 @@ const HUD_SCORE: IText = {
 }
 
 const HUD_LIVES_COUNT: IText = {
-	text: 'Lives Count',
+	text: 'HP',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
 	textTint: HUD_TEXT_TINT,
@@ -77,7 +98,7 @@ const HUD_LIVES_COUNT: IText = {
 }
 
 const HUD_SPECIAL_COUNT: IText = {
-	text: 'Special Count',
+	text: 'Special',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
 	textTint: HUD_TEXT_TINT,
@@ -111,7 +132,7 @@ const HUD_GRAZE_COUNT: IText = {
 export class HUDScene extends Scene{
 	hiscoreValue?: Phaser.GameObjects.BitmapText;
 	scoreValue?: Phaser.GameObjects.BitmapText;
-	livesCount?: Phaser.GameObjects.BitmapText;
+	HPCount?: Phaser.GameObjects.BitmapText;
 	specialCountValue?: Phaser.GameObjects.BitmapText;
 	powerCount?: Phaser.GameObjects.BitmapText;
 	extraScoreValue?: Phaser.GameObjects.BitmapText;
@@ -125,8 +146,8 @@ export class HUDScene extends Scene{
 		this.cameras.main.setViewport(HUD_SIZE.offset.x, HUD_SIZE.offset.y, HUD_SIZE.width, HUD_SIZE.height);
 
 		this.scoreValue = this.displayText(HUD_SCORE);
-		this.livesCount = this.displayText(HUD_LIVES_COUNT);
 		this.grazeCount = this.displayText(HUD_GRAZE_COUNT);
+		this.HPCount = this.displayTextItem(HUD_LIVES_COUNT, DATA_HP_ITEM.texture.key);
 		this.specialCountValue = this.displayTextItem(HUD_SPECIAL_COUNT, DATA_SPECIAL_ITEM.texture.key);
 		this.powerCount = this.displayTextItem(HUD_POWER, DATA_POWER_ITEM.texture.key);
 		this.extraScoreValue = this.displayTextItem(HUD_EXTRA_SCORE, DATA_SCORE_ITEM.texture.key);
@@ -134,9 +155,11 @@ export class HUDScene extends Scene{
 		eventsCenter.on(GAMEPLAY_EVENTS.updateScore, (value: string) => this.updateText(this.scoreValue!, value), this);
 		eventsCenter.on(GAMEPLAY_EVENTS.updateExtraScore, (value: string) => this.updateText(this.extraScoreValue!, value), this);
 		eventsCenter.on(GAMEPLAY_EVENTS.updateGrazeCount, (value: string) => this.updateText(this.grazeCount!, value), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.updateLivesCount, (value: string) => this.updateTextMax(this.livesCount!, value, PLAYER_DATA.maxHP.toString()), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.updateHPCount, (value: string) => this.updateTextMax(this.HPCount!, value, PLAYER_DATA.maxHP.toString()), this);
 		eventsCenter.on(GAMEPLAY_EVENTS.updatePowerCount, (value: string) => this.updateTextMax(this.powerCount!, value, PLAYER_DATA.maxPower.toString()), this);
 		eventsCenter.on(GAMEPLAY_EVENTS.updateSpecialCount, (value: string) => this.updateTextMax(this.specialCountValue!, value, PLAYER_DATA.maxSpecial.toString()), this);
+
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayRestart, () => this.scene.restart());
 	}
 
 	protected displayText(textData: IText){

@@ -50,29 +50,12 @@ export class Enemy extends Character{
         Enemy.redPManager.addGroup(DATA_SHOTRED.texture.key, EnemyPRed, ENEMY_PROJECTILE_POOL);
     }
     
-    getDamage(value?: number): void {
-        this.scene.tweens.add({
-            targets: this,
-            duration: 100,
-            repeat: 3,
-            yoyo: true,
-            alpha: 0.5,
-            onStart: () => {
-                if (value) {
-                    this.hp = this.hp - value;
-                }
-            },
-            onComplete: () => {
-                this.setAlpha(1);
-            },
-        });
-    }
-
     handleCollision(p: Projectile) {
-        this.hp -= p.entData.value || 0;
+        this.createInvulnerableEffect();
+        this.hp -= p.entData.value;
 
         if(this.hp <= 0){
-            Character.itemManager.emitItems(this.x, this.y);
+            Character.itemManager.emitItemsEnemy(this.x, this.y);
             this.disableEntity();
         }
         

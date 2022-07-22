@@ -7,11 +7,14 @@ import { Entity } from '../../entities/Entity';
 import { BGM, playAudio } from '../../@types/Audio';
 import { Player } from '../../entities/characters/player/Player';
 import { Character } from '../../entities/characters/Character';
-import { DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../../entities/projectiles/items/Item';
+import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../../entities/projectiles/items/Item';
 import { Projectile } from '../../entities/projectiles/Projectile';
 import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Yousei1';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 import { GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
+import { ITexture } from '../../@types/UI';
+
+const BG_STAGE1: ITexture = { key: 'bgStage1', path: 'assets/sprites/touhou_test/bg2.png' }
 
 //#region Dialogues
 const chant = [
@@ -35,8 +38,6 @@ export default class GameplayStage1 extends GameplayScene {
 	yousei1?: Yousei1;
 	yousei2?: Yousei1;
 	chilno?: Chilno;
-	mobManager?: PoolManager;
-	bgm?: Phaser.Sound.BaseSound;
 	
 	constructor() {
 		super(SCENE_NAMES.Stage1_Gameplay);
@@ -46,6 +47,7 @@ export default class GameplayStage1 extends GameplayScene {
 		super.preload();
 		Yousei1.preload(this);
 		Chilno.preload(this);
+		this.load.image(BG_STAGE1.key, BG_STAGE1.path);
 	}
 
 	create() {
@@ -58,7 +60,6 @@ export default class GameplayStage1 extends GameplayScene {
 
 		// this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, true, .2);
 
-		this.mobManager = new PoolManager(this);
 		this.handleMob();
 		this.handleBoss();
 
@@ -69,9 +70,11 @@ export default class GameplayStage1 extends GameplayScene {
 
 		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
 		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_HP_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
 		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerPowerItem, undefined, this);
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerScoreItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_HP_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerHPItem, undefined, this);
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerSpecialItem, undefined, this);
 	}
 
@@ -90,7 +93,7 @@ export default class GameplayStage1 extends GameplayScene {
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.mobManager?.pList.forEach(eGroup => {
 				this.physics.add.overlap(eGroup, pGroup, this.callBack_hitEnemyMob, undefined, this);
-			})
+			});
 		});
 	}
 
@@ -102,16 +105,16 @@ export default class GameplayStage1 extends GameplayScene {
 		this.hitPlayerEnemyProjectile(playerHitbox as Entity, p as Projectile);
 	}
 	protected hitPlayerEnemyProjectile(playerHitbox: Entity, p: Projectile) {
-		//playerHitbox.handleCollision(p);
+		this.player?.handlingProjectileCollisionDelegate(p);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
-		p.handleCollision(playerHitbox);	
+		p.handleCollision(this.player!);	
 	}
 
 	protected callBack_hitGrazeEnemyProjectile(player: unknown, p: unknown) {
 		this.hitGrazeEnemyProjectile(player as Player, p as Projectile);
 	}
 	protected hitGrazeEnemyProjectile(player: Player, p: Projectile) {
-		player.updateGrazeCount(p);
+		player.handlingGrazeCount(p);
 	}
 
 	protected callBack_hitEnemyMob(enemy: unknown, p: unknown) {
@@ -142,7 +145,7 @@ export default class GameplayStage1 extends GameplayScene {
 		this.hitPlayerPowerItem(playerHitbox as Entity, i as Item);
 	}
 	protected hitPlayerPowerItem(playerHitbox: Entity, i: Item){
-		i.handleCollision(playerHitbox);
+		i.handleCollision();
 		this.player?.handlingPowerItemCollisionDelegate(i);
 	}
 
@@ -150,15 +153,23 @@ export default class GameplayStage1 extends GameplayScene {
 		this.hitPlayerScoreItem(playerHitbox as Entity, i as Item);
 	}
 	protected hitPlayerScoreItem(playerHitbox: Entity, i: Item){
-		i.handleCollision(playerHitbox);
+		i.handleCollision();
 		this.player?.handlingScoreItem(i);
+	}
+
+	protected callBack_hitPlayerHPItem(playerHitbox: unknown, i: unknown) {
+		this.hitPlayerHPItem(playerHitbox as Entity, i as Item);
+	}
+	protected hitPlayerHPItem(playerHitbox: Entity, i: Item){
+		i.handleCollision();
+		this.player?.handlingHPItemCollisionDelegate(i);
 	}
 
 	protected callBack_hitPlayerSpecialItem(playerHitbox: unknown, i: unknown) {
 		this.hitPlayerSpecialItem(playerHitbox as Entity, i as Item);
 	}
 	protected hitPlayerSpecialItem(playerHitbox: Entity, i: Item){
-		i.handleCollision(playerHitbox);
+		i.handleCollision();
 		this.player?.handlingSpecialItemCollisionDelegate(i);
 	}
 }

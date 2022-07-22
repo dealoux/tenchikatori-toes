@@ -31,6 +31,8 @@ export const FONT_NOKIA : ITexture = { key: 'nokia', path: 'assets/fonts/nokia/n
 export enum SCENE_NAMES {
 	GameManager = 'GameManager',
 	MainMenu = 'MainMenu',
+	PauseMenu = 'PauseMenu',
+	OverMenu = 'OverMenu',
 	HUD = 'HUD',
 	Stage1_Gameplay = 'Stage1_Gameplay',
 }

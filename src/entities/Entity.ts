@@ -13,6 +13,7 @@ export interface IEntity{
     frame?: string | number,
     hitSize?: Phaser.Math.Vector2,
     offset?: Phaser.Math.Vector2,
+    collisionCategory?: number,
 }
 
 export interface IFunctionDelegate{
@@ -39,19 +40,21 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     collisionCategory?: number;
     static worldsEdge: Phaser.Geom.Rectangle;
 
-    constructor(scene: Phaser.Scene, { pos = Phaser.Math.Vector2.ZERO, texture = EMPTY_TEXTURE, hitSize = Phaser.Math.Vector2.ZERO, frame }: IEntity, active = false, scale = 1){
-        super(scene, pos.x, pos.y, texture.key, frame);
+    constructor(scene: Phaser.Scene, entData: IEntity, active = false, scale = 1, frame = 0){
+        super(scene, entData.pos?.x || 0, entData.pos?.y || 0, entData.texture.key || EMPTY_TEXTURE.key, frame);
+
+        this.entData = entData;
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
         // this.getBody().setCircle(hitRadius/2);
-        this.getBody().setSize(hitSize.x, hitSize.y, true);
+        this.getBody().setSize(entData.hitSize?.x || 0, entData.hitSize?.y || 0, true);
         this.getBody().setFriction(0, 0);
         this.getBody().setBounce(0, 0);
         this.setScale(scale);
         this.setOrigin(.5, .5);
-        
+
         if(!active)
             this.disableEntity();
         
@@ -95,10 +98,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
 
     getBody(){ return this.body as Phaser.Physics.Arcade.Body; }
 
-    handleCollision(entity: Entity){
-        console.log(entity);
-    }
-
     enableEntity(pos: Phaser.Math.Vector2){
         this.setStatus(true);
         this.enableBody(true, pos.x, pos.y, true, true);
@@ -110,7 +109,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         //this.removeInteractive();
     }
 
-    setMode(mode: number){
+    setCollisionCategory(mode: number){
         this.collisionCategory = mode;
     }
 }
