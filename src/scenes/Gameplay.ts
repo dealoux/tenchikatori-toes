@@ -9,7 +9,7 @@ import { Entity } from '../entities/Entity';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { addText, IText } from '../@types/UI';
 import { PoolManager } from '../@types/Pool';
-
+import { InputHandler } from '../plugins/InputHandler';
 
 export abstract class GameplayScene extends Scene {
 	dialog?: IDialog;
@@ -42,26 +42,30 @@ export abstract class GameplayScene extends Scene {
 		this.cameras.main.setViewport(GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.OFFSET, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 		this.physics.world.setBounds(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT);
 
-		// this.events.on(Phaser.Scenes.Events.START, () => { this.scene.start(SCENE_NAMES.HUD); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart, this); console.log('bruh') }, this);
-		// this.events.on(Phaser.Scenes.Events.PAUSE,  () => { this.scene.pause(SCENE_NAMES.HUD); console.log('bo ro')}, this);
-		// this.events.on(Phaser.Scenes.Events.RESUME, () => this.scene.resume(SCENE_NAMES.HUD), this);
+		this.events.on(Phaser.Scenes.Events.CREATE, () => { this.scene.run(SCENE_NAMES.HUD); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart, this) }, this);
+		// this.events.on(Phaser.Scenes.Events.SLEEP, () => { this.scene.sleep(SCENE_NAMES.HUD); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, this) }, this);
+		// this.events.on(Phaser.Scenes.Events.WAKE, () => this.scene.wake(SCENE_NAMES.HUD), this);
+		this.events.on(Phaser.Scenes.Events.PAUSE, () => { this.scene.pause(SCENE_NAMES.HUD); InputHandler.Instance().reset(); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, this); }, this);
+		this.events.on(Phaser.Scenes.Events.RESUME, () => this.scene.resume(SCENE_NAMES.HUD), this);
+		this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => { this.scene.stop(SCENE_NAMES.HUD); InputHandler.Instance().reset(); }, this);
 
 		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, () => this.scene.run(SCENE_NAMES.HUD), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause,  () => this.scene.pause(SCENE_NAMES.HUD), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.gameplayResume, () => this.scene.resume(SCENE_NAMES.HUD), this);
+		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause,  () => this.scene.pause(SCENE_NAMES.HUD), this);
+		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayResume, () => this.scene.resume(SCENE_NAMES.HUD), this);
 	}
 
 	update() {
 		this.dialog?.update(this, {});
 		this.player?.update();
 
-		// const {inputs} = InputHandler.Instance();
+		const {inputs} = InputHandler.Instance();
 
-		// if(inputs.Pause){
-		// 	inputs.Pause = false;
-		// 	this.scene.switch(SCENE_NAMES.PauseMenu);
-		// 	eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, SCENE_NAMES.Stage1_Gameplay);
-		// }
+		if(inputs.Pause){
+			// this.scene.switch(SCENE_NAMES.PauseMenu);
+			this.scene.pause();
+			this.scene.launch(SCENE_NAMES.PauseMenu);
+			eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, SCENE_NAMES.Stage1_Gameplay);
+		}
 	}
 }
 
@@ -138,8 +142,8 @@ export class HUDScene extends Scene{
 	extraScoreValue?: Phaser.GameObjects.BitmapText;
 	grazeCount?: Phaser.GameObjects.BitmapText;
 
-	constructor(name: string) {
-		super(name);
+	constructor() {
+		super(SCENE_NAMES.HUD);
 	}
 
 	create() {
@@ -159,7 +163,7 @@ export class HUDScene extends Scene{
 		eventsCenter.on(GAMEPLAY_EVENTS.updatePowerCount, (value: string) => this.updateTextMax(this.powerCount!, value, PLAYER_DATA.maxPower.toString()), this);
 		eventsCenter.on(GAMEPLAY_EVENTS.updateSpecialCount, (value: string) => this.updateTextMax(this.specialCountValue!, value, PLAYER_DATA.maxSpecial.toString()), this);
 
-		eventsCenter.on(GAMEPLAY_EVENTS.gameplayRestart, () => this.scene.restart());
+		this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown);
 	}
 
 	protected displayText(textData: IText){
@@ -178,5 +182,14 @@ export class HUDScene extends Scene{
 
 	protected updateTextMax(text: Phaser.GameObjects.BitmapText, value: string, maxValue: string){
 		text.setText(value + '/' + maxValue);
+	}
+
+	private shutdown(){
+		// this.scoreValue?.destroy();
+		// this.grazeCount?.destroy();
+		// this.HPCount?.destroy();
+		// this.specialCountValue?.destroy();
+		// this.powerCount?.destroy();
+		// this.extraScoreValue?.destroy();
 	}
 }

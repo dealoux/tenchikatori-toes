@@ -3,6 +3,7 @@ import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { FONT_NOKIA, SCENE_NAMES, TEXTURE_FLIXEL_BUTTON, WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
 import { Button, IButton, UIScene } from '../@types/UI';
 import { InputHandler } from '../plugins/InputHandler';
+import GameManager from './GameManager';
 
 const MAINMENU_UI_TEXT_SIZE = 32;
 const MAINMENU_UI_BUTTON_SCALE = { x: 6, y: 4.5 };
@@ -46,7 +47,8 @@ export class MainMenu extends UIScene {
 		this.load.spritesheet(TEXTURE_FLIXEL_BUTTON.key, TEXTURE_FLIXEL_BUTTON.path, { frameWidth: TEXTURE_FLIXEL_BUTTON.frameWidth!, frameHeight: TEXTURE_FLIXEL_BUTTON.frameHeight! });
 	}
 
-	create() {		
+	create() {
+		super.create();
 		this.buttons.push(new Button(this, STAGE1_BUTTON, this.stage1.bind(this), 0));
 		this.buttons.push(new Button(this, STAGE2_BUTTON, this.stage2.bind(this), 1));
 		// this.buttons.push(new Button(this, STAGE3_BUTTON, this.stage1.bind(this), 1));
@@ -57,8 +59,8 @@ export class MainMenu extends UIScene {
 	}
 
 	private startStage(stageName: string){
-		this.scene.start(SCENE_NAMES.Stage1_Gameplay);
-		this.scene.start(SCENE_NAMES.HUD);
+		this.scene.start(stageName);
+		GameManager.currStage = stageName;
 		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart, stageName);
 	}
 	
@@ -103,21 +105,18 @@ const MAIN_MENU_BUTTON: IButton = {
 }
 
 export class PauseScene extends UIScene {
-	currStage?: string;
-
 	constructor() {
 		super(SCENE_NAMES.PauseMenu);
 	}
 
 	preload() {}
 
-	create() {		
-		this.buttons.push(new Button(this, RESUME_BUTTON, this.resume.bind(this), 0));
-		this.buttons.push(new Button(this, RESTART_BUTTON, this.restart.bind(this), 1));
-		this.buttons.push(new Button(this, MAIN_MENU_BUTTON, this.mainMenu.bind(this), 1));
+	create() {
+		super.create();
 
-		eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, (stageName: string) => this.currStage = stageName);
-		eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause, (stageName: string) => this.currStage = stageName);
+		this.buttons.push(new Button(this, RESUME_BUTTON, this.resume.bind(this), 0));
+		this.buttons.push(new Button(this, RESTART_BUTTON, this.restartButton.bind(this), 1));
+		this.buttons.push(new Button(this, MAIN_MENU_BUTTON, this.mainMenuButton.bind(this), 1));
 	}
 
 	update() {
@@ -126,54 +125,32 @@ export class PauseScene extends UIScene {
 		const {inputs} = InputHandler.Instance();
 
 		if(inputs.Pause){
-			inputs.Pause = false;
 			this.resume();
 		}
 	}
 	
 	private resume(){
-		this.scene.switch(this.currStage!);
+		// this.scene.switch(GameManager.currStage);
+		this.scene.stop();
+		this.scene.resume(GameManager.currStage);
 		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayResume);
-	}
-
-	private restart(){
-		this.scene.get(this.currStage!).scene.restart();
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayRestart);
-	}
-
-	private mainMenu(){
-		this.scene.start(SCENE_NAMES.MainMenu);
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayEnd);
 	}
 }
 
 export class OverMenu extends UIScene {
-	lastStage?: string;
-
 	constructor() {
 		super(SCENE_NAMES.OverMenu);
 	}
 
 	preload() {}
 
-	create() {		
-		this.buttons.push(new Button(this, RESTART_BUTTON, this.restart.bind(this), 0));
-		this.buttons.push(new Button(this, MAIN_MENU_BUTTON, this.quit.bind(this), 1));
-
-		eventsCenter.on(GAMEPLAY_EVENTS.gameplayEnd, (stageName: string) => this.lastStage = stageName);
+	create() {
+		super.create();
+		this.buttons.push(new Button(this, RESTART_BUTTON, this.restartButton.bind(this), 0));
+		this.buttons.push(new Button(this, MAIN_MENU_BUTTON, this.mainMenuButton.bind(this), 1));
 	}
 
 	update() {
 		super.update();
-	}
-	
-	private restart(){
-		this.scene.get(this.lastStage!).scene.restart();
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayRestart);
-	}
-
-	private quit(){
-		this.scene.start(SCENE_NAMES.MainMenu);
-		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayEnd);
 	}
 }

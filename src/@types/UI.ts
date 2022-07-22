@@ -1,6 +1,9 @@
 import Phaser from "phaser";
+import { SCENE_NAMES } from "../constants";
 import { IVectorPoint } from "../entities/Entity";
+import { eventsCenter, GAMEPLAY_EVENTS } from "../plugins/EventsCentre";
 import { InputHandler } from "../plugins/InputHandler";
+import GameManager from "../scenes/GameManager";
 
 export interface ITexture{
     key: string,
@@ -60,7 +63,8 @@ export abstract class UIScene extends Phaser.Scene {
 	preload() {
 	}
 
-	create() {		
+	create() {
+        this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown, this);
 	}
 
 	update() {
@@ -83,5 +87,24 @@ export abstract class UIScene extends Phaser.Scene {
 			this.buttons[this.currSelected].setFrame(2);
 			this.buttons[this.currSelected].action();
 		}
-	}	
+	}
+    
+    protected shutdown(){
+        this.buttons = new Array();
+        this.currSelected = 0;
+        InputHandler.Instance().reset();
+    }
+
+    protected restartButton(){
+		this.scene.stop();
+		this.scene.start(GameManager.currStage);
+		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayRestart);
+	}
+
+    protected mainMenuButton(){
+		this.scene.stop(GameManager.currStage);
+		this.scene.start(SCENE_NAMES.MainMenu);
+		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayEnd);
+	}
+
 }

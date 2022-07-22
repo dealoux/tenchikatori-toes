@@ -1,15 +1,15 @@
 import Phaser, { Scene } from 'phaser';
-import { InputHandler, INPUT_STRINGS } from '../plugins/InputHandler';
 import { eventsCenter } from '../plugins/EventsCentre';
+import { DialogLine } from '../objects/DialogLine';
+import { InputHandler } from '../plugins/InputHandler';
 import { EMPTY_TEXTURE, GOD_SEES_ALL_BG, SCENE_NAMES, WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
-import { HUDScene } from './Gameplay';
 import { loadBGM } from '../@types/Audio';
 import { Item } from '../entities/projectiles/items/Item';
-import GameplayStage1 from './stages/GameplayStage1';
-import { DialogLine } from '../objects/DialogLine';
-import { PauseScene } from './Menu';
+// import { HUDScene } from './Gameplay';
+// import GameplayStage1 from './stages/GameplayStage1';
 
 export default class GameManager extends Scene {
+	static currStage: string;
 	currScore: number;
 
 	constructor() {
@@ -39,9 +39,8 @@ export default class GameManager extends Scene {
 	}
 
 	private loadScenes(){
-		this.scene.add(SCENE_NAMES.HUD, HUDScene);
-		this.scene.add(SCENE_NAMES.PauseMenu, PauseScene);
-		this.scene.add(SCENE_NAMES.Stage1_Gameplay, GameplayStage1);
+		// this.scene.add(SCENE_NAMES.HUD, HUDScene);
+		// this.scene.add(SCENE_NAMES.Stage1_Gameplay, GameplayStage1);
 	}
 
 	private pause(){

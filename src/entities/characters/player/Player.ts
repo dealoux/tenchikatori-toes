@@ -24,7 +24,7 @@ export const PLAYER_DATA : IPlayer = {
     texture: { key: 'enna', path: 'assets/sprites/touhouenna.png', },
     speed: 250,
     speedFocused: 250 *.5,
-    hp: 4,
+    hp: 1,
     maxHP: 10,
     maxPower: 4,
     maxSpecial: 10,

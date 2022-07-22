@@ -1,6 +1,4 @@
 import Phaser from 'phaser';
-import { COLLISION_CATEGORIES } from '../Entity';
-import { Player } from '../characters/player/Player';
 import { Projectile, IProjectileData } from './Projectile';
 import { IVectorPoint } from '../Entity';
 import { Character } from '../characters/Character';
