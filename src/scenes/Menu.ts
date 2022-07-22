@@ -69,8 +69,7 @@ export class MainMenu extends UIScene {
 	}
 
 	private stage2(){
-		// this.scene.start(SCENE_NAMES.Stage1_Gameplay);
-		// this.scene.start(SCENE_NAMES.HUD);
+		// this.startStage(SCENE_NAMES.Stage1_Gameplay);
 	}
 }
 

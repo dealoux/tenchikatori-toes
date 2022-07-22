@@ -47,7 +47,7 @@ export abstract class GameplayScene extends Scene {
 		// this.events.on(Phaser.Scenes.Events.WAKE, () => this.scene.wake(SCENE_NAMES.HUD), this);
 		this.events.on(Phaser.Scenes.Events.PAUSE, () => { this.scene.pause(SCENE_NAMES.HUD); InputHandler.Instance().reset(); eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, this); }, this);
 		this.events.on(Phaser.Scenes.Events.RESUME, () => this.scene.resume(SCENE_NAMES.HUD), this);
-		this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => { this.scene.stop(SCENE_NAMES.HUD); InputHandler.Instance().reset(); }, this);
+		this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => { this.scene.sleep(SCENE_NAMES.HUD); InputHandler.Instance().reset(); }, this);
 
 		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, () => this.scene.run(SCENE_NAMES.HUD), this);
 		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause,  () => this.scene.pause(SCENE_NAMES.HUD), this);
