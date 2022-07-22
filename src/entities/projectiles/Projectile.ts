@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { PoolGroup } from '../../@types/Pool';
+import { IFunctionDelegate } from '../../plugins/Utilities';
 import { Character } from '../characters/Character';
-import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity, IFunctionDelegate } from '../Entity';
+import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity } from '../Entity';
 
 export interface IProjectileData extends IEntity{
     speed: number,
