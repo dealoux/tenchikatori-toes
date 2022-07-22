@@ -11,9 +11,10 @@ export enum GAMEPLAY_EVENTS{
 
     special = 'special',
     updateScore = 'updateScore',
-    updatePowerCount = 'updatePowerCount',
-    updateSpecialCount = 'updateSpecialCount',
-    updateHPCount = 'updateHPCount',
-    updateGrazeCount = 'updateGrazeCount',
-    updateExtraScore = 'updateExtraScore',
+    displayScore = 'displayScore',
+    displayPowerCount = 'updatePowerCount',
+    displaySpecialCount = 'updateSpecialCount',
+    displayHPCount = 'updateHPCount',
+    displayGrazeCount = 'updateGrazeCount',
+    displayExtraScore = 'updateExtraScore',
 }

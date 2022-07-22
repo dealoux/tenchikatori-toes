@@ -121,8 +121,8 @@ export class Player extends Character{
         this.updateHPCount();        
         this.updateSpecialCount();
         this.updatePowerCount();
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateExtraScore, this.currExtraScore);
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateGrazeCount, this.currGraze);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayExtraScore, this.currExtraScore);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayGrazeCount, this.currGraze);
     }
 
     static preload(scene: Phaser.Scene) {
@@ -278,7 +278,7 @@ export class Player extends Character{
     }
 
     private updatePowerCount(){
-        eventsCenter.emit(GAMEPLAY_EVENTS.updatePowerCount, (Math.round(this.currPower * 10) / 10).toFixed(1), PLAYER_DATA.maxPower);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayPowerCount, (Math.round(this.currPower * 10) / 10).toFixed(1), PLAYER_DATA.maxPower);
     }
 
     private handlingHPItem(p: Projectile){
@@ -305,24 +305,24 @@ export class Player extends Character{
     }
 
     handlingScoreItem(p: Projectile){
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateExtraScore, ++this.currExtraScore);
+        this.updateScore(p);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayExtraScore, ++this.currExtraScore);
     }
 
     private updateScore(p: Projectile){
-        // this.currExtraScore += p.entData.value;
-        // eventsCenter.emit(GAMEPLAY_EVENTS.updateScore, this.currExtraScore);
+        eventsCenter.emit(GAMEPLAY_EVENTS.updateScore, p.entData.value);
     }
 
     updateSpecialCount(){
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateSpecialCount, this.currSpecial, PLAYER_DATA.maxSpecial);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displaySpecialCount, this.currSpecial, PLAYER_DATA.maxSpecial);
     }
 
     private updateHPCount(){
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateHPCount, this.hp, PLAYER_DATA.maxHP);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayHPCount, this.hp, PLAYER_DATA.maxHP);
     }
 
     handlingGrazeCount(p: Projectile){
         this.updateScore(p);
-        eventsCenter.emit(GAMEPLAY_EVENTS.updateGrazeCount, ++this.currGraze);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayGrazeCount, ++this.currGraze);
     }
 }

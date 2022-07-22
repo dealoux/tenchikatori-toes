@@ -1,12 +1,10 @@
 import Phaser, { Scene } from 'phaser';
-import { eventsCenter } from '../plugins/EventsCentre';
+import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { DialogLine } from '../objects/DialogLine';
 import { InputHandler } from '../plugins/InputHandler';
 import { EMPTY_TEXTURE, GOD_SEES_ALL_BG, SCENE_NAMES, WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
 import { loadBGM } from '../@types/Audio';
 import { Item } from '../entities/projectiles/items/Item';
-// import { HUDScene } from './Gameplay';
-// import GameplayStage1 from './stages/GameplayStage1';
 
 export default class GameManager extends Scene {
 	static currStage: string;
@@ -25,7 +23,6 @@ export default class GameManager extends Scene {
 		loadBGM(this);
 		Item.preload(this);
 		DialogLine.preload(this);
-		this.loadScenes();
 	}
 
 	create() {
@@ -36,11 +33,8 @@ export default class GameManager extends Scene {
 
 		this.game.events.on(Phaser.Core.Events.BLUR, () => this.pause());
 		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.resume());
-	}
 
-	private loadScenes(){
-		// this.scene.add(SCENE_NAMES.HUD, HUDScene);
-		// this.scene.add(SCENE_NAMES.Stage1_Gameplay, GameplayStage1);
+		eventsCenter.on(GAMEPLAY_EVENTS.updateScore, (value: number) => this.currScore += value, this);
 	}
 
 	private pause(){
@@ -53,5 +47,6 @@ export default class GameManager extends Scene {
 	}
 
 	update() {
+		// eventsCenter.emit(GAMEPLAY_EVENTS.displayScore, ++this.currScore);
 	}
 }

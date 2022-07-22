@@ -146,7 +146,7 @@ export class HUDScene extends Scene{
 		super(SCENE_NAMES.HUD);
 	}
 
-	create() {
+	async create() {
 		this.cameras.main.setViewport(HUD_SIZE.offset.x, HUD_SIZE.offset.y, HUD_SIZE.width, HUD_SIZE.height);
 
 		this.scoreValue = this.displayText(HUD_SCORE);
@@ -156,12 +156,12 @@ export class HUDScene extends Scene{
 		this.powerCount = this.displayTextItem(HUD_POWER, DATA_POWER_ITEM.texture.key);
 		this.extraScoreValue = this.displayTextItem(HUD_EXTRA_SCORE, DATA_SCORE_ITEM.texture.key);
 
-		eventsCenter.on(GAMEPLAY_EVENTS.updateScore, (value: string) => this.updateText(this.scoreValue!, value), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.updateExtraScore, (value: string) => this.updateText(this.extraScoreValue!, value), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.updateGrazeCount, (value: string) => this.updateText(this.grazeCount!, value), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.updateHPCount, (value: string) => this.updateTextMax(this.HPCount!, value, PLAYER_DATA.maxHP.toString()), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.updatePowerCount, (value: string) => this.updateTextMax(this.powerCount!, value, PLAYER_DATA.maxPower.toString()), this);
-		eventsCenter.on(GAMEPLAY_EVENTS.updateSpecialCount, (value: string) => this.updateTextMax(this.specialCountValue!, value, PLAYER_DATA.maxSpecial.toString()), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayScore, (value: string) => this.updateText(this.scoreValue!, value), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayExtraScore, (value: string) => this.updateText(this.extraScoreValue!, value), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayGrazeCount, (value: string) => this.updateText(this.grazeCount!, value), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayHPCount, (value: string) => this.updateTextMax(this.HPCount!, value, PLAYER_DATA.maxHP.toString()), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displayPowerCount, (value: string) => this.updateTextMax(this.powerCount!, value, PLAYER_DATA.maxPower.toString()), this);
+		eventsCenter.on(GAMEPLAY_EVENTS.displaySpecialCount, (value: string) => this.updateTextMax(this.specialCountValue!, value, PLAYER_DATA.maxSpecial.toString()), this);
 
 		this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown);
 	}
