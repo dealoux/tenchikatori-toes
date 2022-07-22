@@ -1,7 +1,7 @@
 import { ITexture } from "./@types/UI";
 
-export const TITLE = "Tenchikatori ~ Testament of Empyrean Songbird";
-export const ALIAS = "Tenchikatori-ToES";
+export const TITLE = 'Tenchikatori ~ Testament of Empyrean Songbird';
+export const ALIAS = 'Tenchikatori-ToES';
 
 export const WINDOW_WIDTH = 1920;
 export const WINDOW_HEIGHT = 1080;

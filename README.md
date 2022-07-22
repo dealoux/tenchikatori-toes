@@ -17,7 +17,7 @@ server by running `npm run dev` and navigate to localhost.
 
 ## Production
 
-After running `npm run build`, the files you need for production will be on the `dist` folder. To test code on your `dist` folder, run `npm run serve` and navigate to localhost
+After running `npm run build`, the files you need for production will be on the `dist` folder. To test code on your `dist` folder, run `npm run serve` and navigate to the [GitHub Pages](https://dealoux.github.io/tenchikatori-toes/)
 
 ## Important Links
 
