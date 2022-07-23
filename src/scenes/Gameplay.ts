@@ -9,8 +9,45 @@ import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { InputHandler } from '../plugins/InputHandler';
 import { playAudio, SFX } from '../plugins/Audio';
 import { PoolManager } from '../plugins/Pool';
-import { BaseScene } from './BaseScene';
+import { BaseScene, SceneState } from './BaseScene';
 import { StateMachine } from '../plugins/StateMachine';
+
+class SceneState_Interactive extends SceneState{
+	constructor(scene: GameplayScene){
+		super(scene);
+	}
+
+	enter(): void {
+		super.enter();
+	}
+
+	exit(): void {
+		super.exit();
+	}
+
+	update(time: number, delta: number): void {
+		super.update(time, delta);
+		this.scene.gameplayUpdate(time, delta);
+	}
+}
+
+class SceneState_Cutscene extends SceneState{
+	constructor(scene: GameplayScene){
+		super(scene);
+	}
+
+	enter(): void {
+		super.enter();
+	}
+
+	exit(): void {
+		super.exit();
+	}
+
+	update(time: number, delta: number): void {
+		super.update(time, delta);
+	}
+}
 
 export abstract class GameplayScene extends BaseScene {
 	dialog?: IDialog;
@@ -19,10 +56,14 @@ export abstract class GameplayScene extends BaseScene {
 	bgm?: Phaser.Sound.BaseSound;
 	background?: Phaser.GameObjects.TileSprite;
 	stateMachine: StateMachine;
+	interactiveState: SceneState;
+	cutsceneState: SceneState;
 
 	constructor(name: string) {
 		super(name);
 		this.stateMachine = new StateMachine();
+		this.interactiveState = new SceneState_Interactive(this);
+		this.cutsceneState  = new SceneState_Cutscene(this);
 	}
 
 	preload() {
@@ -52,9 +93,15 @@ export abstract class GameplayScene extends BaseScene {
 		this.events.on(Phaser.Scenes.Events.WAKE, this.onResume, this);
 		this.events.on(Phaser.Scenes.Events.PAUSE, this.onPause, this);
 		this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
+
+		this.stateMachine.initialize(this.interactiveState);
 	}
 
 	update(time: number, delta: number) {
+		this.stateMachine.currState().update(time, delta);
+	}
+
+	gameplayUpdate(time: number, delta: number){
 		this.dialog?.update(this, {});
 		this.player?.update(time, delta);
 
@@ -67,6 +114,7 @@ export abstract class GameplayScene extends BaseScene {
 			this.scene.launch(SCENE_NAMES.PauseMenu);
 			eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, SCENE_NAMES.Stage1_Gameplay);
 		}
+
 	}
 
 	protected backgroundScroll(speedY = 0, speedX = 0){

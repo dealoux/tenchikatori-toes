@@ -1,11 +1,11 @@
 import Phaser from "phaser";
-import { IStateData } from "../../../../plugins/StateMachine";
+import { ICharacterStateData } from "../../Character";
 import { IVectorPoint } from "../../../Entity";
 import { PPattern } from "../../../projectiles/Projectile";
 import { Enemy, IEnemy } from "../Enemy";
 import { EnemyState } from "./EnemyState";
 
-export interface IEnemyStateData_Attack extends IStateData{
+export interface IEnemyStateData_Attack extends ICharacterStateData{
 }
 
 export class EnemyState_Attack extends EnemyState{

@@ -11,39 +11,6 @@ export interface IState{
     preUpdate(time: number, delta: number): void;
 }
 
-export interface IStateData{
-    animKey?: string,
-}
-
-export abstract class CharacterState implements IState{
-    char: Character;
-    entData: ICharacter;
-    sData: IStateData;
-    enterTime: number;
-
-    constructor(char: Character, entData: ICharacter, sData: IStateData){
-        this.char = char;
-        this.entData = entData;
-        this.sData = sData;
-        this.enterTime = 0;
-    }
-
-    enter(): void {
-        this.enterTime = this.char.time();
-        this.char.anims.play(this.sData.animKey || '');
-    }
-
-    exit(): void { }
-
-    update(time: number, delta: number): void { }
-
-    preUpdate(time: number, delta: number): void { }
-
-    protected changeState(nextState: IState, savePrevious = false){
-        this.char.stateMachine.changeState(nextState, savePrevious);
-    }
-}
-
 // Pushdown automata
 export class StateMachine{
     states : Array<IState>;

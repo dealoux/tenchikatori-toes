@@ -10,6 +10,10 @@ export class BaseScene extends Scene{
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
     }
 
+    gameplayUpdate(time: number, delta: number){
+
+    }
+
     protected onShutdown(){ }
 }
 

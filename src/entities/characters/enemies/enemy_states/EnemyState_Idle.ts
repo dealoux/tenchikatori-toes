@@ -1,10 +1,10 @@
 import Phaser from "phaser";
-import { IStateData } from "../../../../plugins/StateMachine";
-import { UIBarComponent } from "../../Character";
+import { ICharacterStateData } from "../../Character";
+import { UIBarComponent } from "../../CharacterComponent";
 import { Enemy, IEnemy } from "../Enemy";
 import { EnemyState } from "./EnemyState";
 
-export interface IEnemyStateData_Idle extends IStateData{
+export interface IEnemyStateData_Idle extends ICharacterStateData{
     maxIdleTime: number;
     attackRate: number;
 }

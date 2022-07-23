@@ -1,10 +1,10 @@
 import Phaser from "phaser";
-import { IStateData } from "../../../../plugins/StateMachine";
+import { ICharacterStateData } from "../../Character";
 import { IVectorPoint } from "../../../Entity";
 import { Enemy, IEnemy } from "../Enemy";
 import { EnemyState } from "./EnemyState";
 
-export interface IEnemyStateData_Spawn extends IStateData{
+export interface IEnemyStateData_Spawn extends ICharacterStateData{
     spawnPoint: IVectorPoint;
     targetPoint: IVectorPoint;
     duration: number;

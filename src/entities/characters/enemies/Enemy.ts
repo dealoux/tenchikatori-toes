@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { eventsCenter } from '../../../plugins/EventsCentre';
 import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy';
-import { Character, ICharacter, IUIBar, UIBarComponent } from '../Character';
+import { Character, ICharacter } from '../Character';
 import { PPattern, Projectile } from '../../projectiles/Projectile';
 import { IVectorPoint } from '../../Entity';
 import { EnemyState_Idle, IEnemyStateData_Idle } from './enemy_states/EnemyState_Idle';
@@ -11,6 +11,7 @@ import { EnemyState } from './enemy_states/EnemyState';
 import { playAudio, SFX } from '../../../plugins/Audio';
 import { PoolManager } from '../../../plugins/Pool';
 import { EnemyState_Spawn, IEnemyStateData_Spawn } from './enemy_states/EnemyState_Spawn';
+import { IUIBar, UIBarComponent } from '../CharacterComponent';
 
 export interface IEnemy extends ICharacter{
     shootPoint: IVectorPoint

@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
 import { COLLISION_CATEGORIES, Entity } from '../../Entity';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon, PLAYER_SPECIAL_POOL } from '../../projectiles/Projectile_Player';
-import { Character, UIBarComponent, ICharacter, IUIBar } from '../Character';
+import { Character, ICharacter } from '../Character';
 import { Projectile } from '../../projectiles/Projectile';
 import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
 import { ITexture } from '../../../scenes/UI';
@@ -11,6 +11,7 @@ import { emptyFunction, IFunctionDelegate } from '../../../plugins/Utilities';
 import { playAudio, SFX } from '../../../plugins/Audio';
 import { PoolManager } from '../../../plugins/Pool';
 import { IScalePatternData, PPatternScale } from '../../projectiles/patterns/Pattern_Scale';
+import { IUIBar, UIBarComponent } from '../CharacterComponent';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;

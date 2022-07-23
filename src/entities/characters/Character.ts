@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { eventsCenter } from '../../plugins/EventsCentre';
 import { IEntity, Entity, IVectorPoint } from '../Entity';
 import { ItemManager } from '../projectiles/items/Item';
-import { StateMachine } from '../../plugins/StateMachine';
+import { IState, StateMachine } from '../../plugins/StateMachine';
 import { PoolManager } from '../../plugins/Pool';
 import { ComponentService, IComponent } from '../../plugins/Component';
 
@@ -101,65 +101,35 @@ export class Character extends Entity{
     }
 }
 
-export abstract class CharacterComponent implements IComponent{
-    protected char!: Character;
-
-    init(go: Phaser.GameObjects.GameObject){
-        this.char = go as Character;
-    }
+export interface ICharacterStateData{
+    animKey?: string,
 }
 
-export interface IUIBar{
-    size: Phaser.Types.Math.Vector2Like,
-    offset: Phaser.Types.Math.Vector2Like,
-    fillColour?: number,
-}
+export abstract class CharacterState implements IState{
+    char: Character;
+    entData: ICharacter;
+    sData: ICharacterStateData;
+    enterTime: number;
 
-export class UIBarComponent extends CharacterComponent{
-    graphics?: Phaser.GameObjects.Graphics;
-    barData: IUIBar;
-
-    constructor(barData: IUIBar){
-        super();
-        this.barData = barData;
+    constructor(char: Character, entData: ICharacter, sData: ICharacterStateData){
+        this.char = char;
+        this.entData = entData;
+        this.sData = sData;
+        this.enterTime = 0;
     }
 
-    display(currValue = 0, maxValue = 1){
-        if(!this.graphics) { return; }
-
-        this.graphics.clear();
-
-        this.graphics.fillStyle(0xcfcfcf);
-        this.graphics.fillRect(0, 0, this.barData.size.x!, this.barData.size.y!);
-
-        let currBarSize = (this.barData.size.x!-4) * (currValue/maxValue);
-        this.graphics.fillStyle(this.barData.fillColour!);
-        this.graphics.fillRect(2, 2, currBarSize, this.barData.size.y!-4);
+    enter(): void {
+        this.enterTime = this.char.time();
+        this.char.anims.play(this.sData.animKey || '');
     }
 
-    start(){
-        const {scene} = this.char;
-        this.graphics = scene.add.graphics();
-    }
+    exit(): void { }
 
-    update(time: number, delta: number){
-        if(!this.graphics){ return; }
+    update(time: number, delta: number): void { }
 
-        this.graphics.x = this.char.x + this.barData.offset.x!;
-        this.graphics.y = this.char.y + this.barData.offset.y!;
-    }
+    preUpdate(time: number, delta: number): void { }
 
-    enable(){
-        if(!this.graphics){ return; }
-
-        this.graphics.setActive(true);
-        this.graphics.setVisible(true);
-    }
-
-    disable(){
-        if(!this.graphics){ return; }
-
-        this.graphics.setActive(false);
-        this.graphics.setVisible(false);
+    protected changeState(nextState: IState, savePrevious = false){
+        this.char.stateMachine.changeState(nextState, savePrevious);
     }
 }
