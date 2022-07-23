@@ -13,6 +13,7 @@ export interface IShootPoints{
 
 export const PLAYER_SHOOT_DELAY = 60;
 export const PLAYER_PROJECTILE_POOL = 60;
+export const PLAYER_SPECIAL_POOL = 10;
 
 export const DATA_PLAYER_P1 : IProjectileData = {
     texture: { key: 'card1', path: 'assets/sprites/touhou_test/card1.png' },

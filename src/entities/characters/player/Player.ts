@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
 import { COLLISION_CATEGORIES, Entity } from '../../Entity';
-import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
-import { Character, ICharacter } from '../Character';
+import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon, PLAYER_SPECIAL_POOL } from '../../projectiles/Projectile_Player';
+import { Character, UIBarComponent, ICharacter, IUIBar } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
 import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
 import { ITexture } from '../../../scenes/UI';
@@ -56,6 +56,12 @@ const SPECIAL_DATA : IScalePatternData = {
     scaleSpeed: 0.25,
 }
 
+const PLAYER_UI_BAR : IUIBar = {
+    size: { x: 50, y: 6 },
+    offset: { x: -25, y: 35 },
+    fillColour: 0x0000ff,
+}
+
 export class Player extends Character{
     actionDelegate : IFunctionDelegate;
     handlingPowerItemCollisionDelegate: IHandlingPCollisionDelegate;
@@ -91,6 +97,8 @@ export class Player extends Character{
         this.handlingSpecialItemCollisionDelegate = this.handlingSpecialItem;
         this.handlingProjectileCollisionDelegate = this.handleProjectileCollision;
 
+        this.components.addComponents(this, new UIBarComponent(PLAYER_UI_BAR));
+
         this.bodyOffset = new Phaser.Math.Vector2(this.x - this.body.x, this.y - this.body.y);
         
         this.hitbox = new Entity(scene, { pos: new Phaser.Math.Vector2(this.x, this.y), texture: HITBOX_TEXTURE }, true);
@@ -106,7 +114,7 @@ export class Player extends Character{
         this.disableInteractiveState = new PlayerState_DisableInteractive(this, PLAYER_DATA);
 
         this.currPower = 1.5;
-        this.currSpecial = 2;
+        this.currSpecial = 8;
         this.currExtraScore = 0;
         this.currGraze = 0;
 
@@ -115,7 +123,7 @@ export class Player extends Character{
         this.projectileManager = new PoolManager(scene);
         this.projectileManager.addGroup(DATA_PLAYER_P1.texture.key, PlayerShot1, PLAYER_PROJECTILE_POOL);
         this.projectileManager.addGroup(DATA_PLAYER_P2.texture.key, PlayerShot2, PLAYER_PROJECTILE_POOL);
-        this.projectileManager.addGroup(DATA_PLAYER_PMOON.texture.key, PlayerSpecialMoon, 4);
+        this.projectileManager.addGroup(DATA_PLAYER_PMOON.texture.key, PlayerSpecialMoon, PLAYER_SPECIAL_POOL);
         this.specialPattern = new PPatternScale(this, { pos: new Phaser.Math.Vector2(0, 30), theta: -90 }, this.projectileManager.getGroup(DATA_PLAYER_PMOON.texture.key), SPECIAL_DATA);
 
         this.stateMachine.initialize(this.spawnState);
@@ -137,10 +145,6 @@ export class Player extends Character{
         super.preUpdate(time, delta);
         // this.hitbox.setPosition(this.x, this.y);
         // this.modeIndicator.setPosition(this.x + MODE_IDICATOR_OFFSET.x, this.y + MODE_IDICATOR_OFFSET.y);
-    }
-
-    update(){
-        super.update();
     }
 
     displayHUDData(){
@@ -283,6 +287,7 @@ export class Player extends Character{
     }
 
     private updatePowerCount(){
+        (this.components.findComponents(this, UIBarComponent) as UIBarComponent).display(this.currSpecial, PLAYER_DATA.maxSpecial);
         eventsCenter.emit(GAMEPLAY_EVENTS.displayPowerCount, (Math.round(this.currPower * 10) / 10).toFixed(1), PLAYER_DATA.maxPower);
     }
 

@@ -51,9 +51,9 @@ export abstract class GameplayScene extends Scene {
 		this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
 	}
 
-	update() {
+	update(time: number, delta: number) {
 		this.dialog?.update(this, {});
-		this.player?.update();
+		this.player?.update(time, delta);
 
 		const {inputs} = InputHandler.Instance();
 
@@ -188,7 +188,6 @@ export class HUDScene extends Scene{
 		eventsCenter.on(GAMEPLAY_EVENTS.displayPowerCount, this.updatePowerCount, this);
 		eventsCenter.on(GAMEPLAY_EVENTS.displaySpecialCount, this.updateSpecialCount, this);
 
-		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, (player: Player) => { player.displayHUDDATA(); });
 		this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown);
 	}
 

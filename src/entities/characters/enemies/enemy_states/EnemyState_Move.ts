@@ -5,7 +5,8 @@ import { Enemy, IEnemy } from "../Enemy";
 import { EnemyState } from "./EnemyState";
 
 export interface IEnemyStateData_Move extends IStateData{
-    locations: Array<IVectorPoint>
+    locations: Array<IVectorPoint>,
+    duration: number,
 }
 
 export class EnemyState_Move extends EnemyState{
@@ -23,8 +24,8 @@ export class EnemyState_Move extends EnemyState{
         this.moveTo(this.getNextPos(), this.nextState.bind(this));
     }
 
-    update(){
-        super.update();
+    update(time: number, delta: number){
+        super.update(time, delta);
     }
 
     protected getNextPos() : IVectorPoint{
@@ -42,22 +43,22 @@ export class EnemyState_Move extends EnemyState{
     }
     
     protected async moveTo(point: IVectorPoint, completeFunc: Function){
-        let distance = point.pos.distance(new Phaser.Math.Vector2(this.char.x, this.char.y));
-        const movementDuration = (distance / this.entData.speed!) * 1000;
-        // const { movementDuration } = this.entData;
+        // let distance = point.pos.distance(new Phaser.Math.Vector2(this.char.x, this.char.y));
+        // const duration = (distance / this.entData.speed!) * 1000;
+        const { duration } = this.sData;
 
-        // console.log(movementDuration);
+        // console.log(duration);
 
         return this.char.scene.tweens.add({
             targets: this.char,
             x: point.pos.x,
             y: point.pos.y,
-            duration: movementDuration,
+            duration: duration,
             ease: 'Sine.easeInOut',
             onComplete: completeFunc(),
         });
 
-        // this.char.scene.physics.moveTo(this.char, point.pos.x, point.pos.y, this.entData.speed, movementDuration);
+        // this.char.scene.physics.moveTo(this.char, point.pos.x, point.pos.y, this.entData.speed, duration);
         // completeFunc();
     }
 }

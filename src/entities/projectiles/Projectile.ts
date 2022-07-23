@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { PoolGroup } from '../../@types/Pool';
+import { PoolGroup } from '../../plugins/Pool';
 import { IFunctionDelegate } from '../../plugins/Utilities';
 import { Character } from '../characters/Character';
 import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity } from '../Entity';
@@ -97,8 +97,8 @@ export class Projectile extends Entity{
         }
     }
 
-    update() {
-        super.update();
+    update(time: number, delta: number) {
+        super.update(time, delta);
 
         if(this.target) {
             this.scene.physics.moveToObject(this, this.target, this.tagertingSpeed);

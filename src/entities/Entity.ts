@@ -80,7 +80,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     preUpdate(time: number, delta: number){
     } 
 
-    update() {
+    update(time: number, delta: number) {
     }
 
     updateTransform(point: IVectorPoint){

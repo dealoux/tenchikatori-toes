@@ -3,7 +3,7 @@ import { Enemy, IEnemy } from './Enemy';
 import { IEntity, IVectorPoint } from '../../Entity';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy' 
 import { IWavePatternData, PPatternWave } from '../../projectiles/Projectile';
-import { IAnimation } from '../Character';
+import { IAnimation, IUIBar, UIBarComponent } from '../Character';
 import { IEnemyStateData_Idle } from './enemy_states/EnemyState_Idle';
 import { IEnemyStateData_Move } from './enemy_states/EnemyState_Move';
 import { IEnemyStateData_Attack } from './enemy_states/EnemyState_Attack';
@@ -35,6 +35,7 @@ const SDATA_IDLE_YOUSEI1: IEnemyStateData_Idle = {
 
 const SDATA_MOVE_YOUSEI1: IEnemyStateData_Move = {
     animKey: YOUSEI1_ANIMS.run,
+    duration: 2400,
 
     locations: [
         { pos: new Phaser.Math.Vector2(720, 300), theta: 0 },

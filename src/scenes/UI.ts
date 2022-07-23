@@ -71,7 +71,7 @@ export abstract class UIScene extends Phaser.Scene {
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
 	}
 
-	update() {
+	update(time: number, delta: number) {
 		const {inputs} = InputHandler.Instance();
 
 		if (inputs.Up) {

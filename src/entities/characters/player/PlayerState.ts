@@ -38,7 +38,7 @@ export class PlayerState_Spawn extends PlayerState{
         this.char.modeIndicator.setVisible(false);
         this.char.enableEntity(new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25));
         this.char.handlingProjectileCollisionDelegate = emptyFunction;
-        this.char.createInvulnerableEffect(100, 24, ()=>{}, ()=>{ this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
+        this.char.createInvulnerableEffect(100, 24, emptyFunction, ()=>{ this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
 
         this.char.scene.tweens.add({
             targets: this.char,
@@ -79,8 +79,8 @@ export class PlayerState_Interactive extends PlayerState{
         this.char.setVelocity(0, 0);
     }
 
-    update(): void {
-        super.update();
+    update(time: number, delta: number): void {
+        super.update(time, delta);
         this.inputHandling();
     }
 

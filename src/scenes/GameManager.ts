@@ -54,7 +54,7 @@ export default class GameManager extends Scene {
 		this.game.loop.wake();
 	}
 
-	update() {
+	update(time: number, delta: number) {
 		this.updateScoreDelegate();
 	}
 

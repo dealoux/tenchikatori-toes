@@ -7,7 +7,7 @@ import { Character, ICharacter } from "../entities/characters/Character";
 export interface IState{
     enter(): void;
     exit(): void;
-    update(): void;
+    update(time: number, delta: number): void;
     preUpdate(time: number, delta: number): void;
 }
 
@@ -35,7 +35,7 @@ export abstract class State implements IState{
 
     exit(): void { }
 
-    update(): void { }
+    update(time: number, delta: number): void { }
 
     preUpdate(time: number, delta: number): void { }
 
@@ -61,6 +61,7 @@ export class StateMachine{
     }
 
     initialize(startingState: IState){
+        this.states = new Array;
         this.states.push(startingState);
         this.currState().enter();
     }

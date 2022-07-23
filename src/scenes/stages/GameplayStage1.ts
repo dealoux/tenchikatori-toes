@@ -63,8 +63,8 @@ export default class GameplayStage1 extends GameplayScene {
 		this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, .2, true);
 		this.background = this.add.tileSprite(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT, BG_SKY.key).setOrigin(0, 0).setDepth(-1).setAlpha(.8);
 
-		this.handleMob();
 		this.handleBoss();
+		this.handleMob();
 
 		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
 		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
@@ -81,11 +81,11 @@ export default class GameplayStage1 extends GameplayScene {
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerSpecialItem, undefined, this);
 	}
 
-	update() {
-		super.update();
+	update(time: number, delta: number) {
+		super.update(time, delta);
 		this.backgroundScroll(.8);
-		// this.yousei1?.update();
-		// this.chilno?.update();
+		// this.yousei1?.update(time, delta);
+		this.chilno?.update(time, delta);
 	}
 
 	protected handleMob(){
@@ -95,6 +95,7 @@ export default class GameplayStage1 extends GameplayScene {
 		this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
+			this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			this.mobManager?.pList.forEach(eGroup => {
 				this.physics.add.overlap(eGroup, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			});

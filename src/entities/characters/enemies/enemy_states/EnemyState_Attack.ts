@@ -25,8 +25,8 @@ export class EnemyState_Attack extends EnemyState{
         this.currAttack = this.char.attacks.get('key');
     }
 
-    update(){
-        super.update();
+    update(time: number, delta: number){
+        super.update(time, delta);
 
         this.currAttack?.updatePattern();
 

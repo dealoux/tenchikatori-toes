@@ -55,8 +55,8 @@ export class MainMenu extends UIScene {
 		// this.buttons.push(new Button(this, STAGE3_BUTTON, this.stage1.bind(this), 1));
 	}
 
-	update() {
-		super.update();
+	update(time: number, delta: number) {
+		super.update(time, delta);
 	}
 
 	private startStage(stageName: string){
@@ -119,8 +119,8 @@ export class PauseScene extends UIScene {
 		this.buttons.push(new Button(this, MAIN_MENU_BUTTON, this.mainMenuButton.bind(this), 1));
 	}
 
-	update() {
-		super.update();
+	update(time: number, delta: number) {
+		super.update(time, delta);
 
 		const {inputs} = InputHandler.Instance();
 
@@ -150,7 +150,7 @@ export class OverMenu extends UIScene {
 		this.buttons.push(new Button(this, MAIN_MENU_BUTTON, this.mainMenuButton.bind(this), 1));
 	}
 
-	update() {
-		super.update();
+	update(time: number, delta: number) {
+		super.update(time, delta);
 	}
 }
