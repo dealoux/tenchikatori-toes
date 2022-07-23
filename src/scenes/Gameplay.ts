@@ -71,7 +71,7 @@ export abstract class GameplayScene extends Scene {
 	}
 
 	protected onCreate(){
-		this.scene.run(SCENE_NAMES.HUD); 
+		this.scene.run(SCENE_NAMES.HUD);
 		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart);
 	}
 
@@ -87,6 +87,7 @@ export abstract class GameplayScene extends Scene {
 	}
 
 	protected onShutdown(){
+		this.bgm?.stop();
 		this.scene.stop(SCENE_NAMES.HUD); 
 		InputHandler.Instance().reset(); 
 		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayEnd);
@@ -187,6 +188,7 @@ export class HUDScene extends Scene{
 		eventsCenter.on(GAMEPLAY_EVENTS.displayPowerCount, this.updatePowerCount, this);
 		eventsCenter.on(GAMEPLAY_EVENTS.displaySpecialCount, this.updateSpecialCount, this);
 
+		// eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, (player: Player) => { player.displayHUDDATA(); });
 		this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown);
 	}
 

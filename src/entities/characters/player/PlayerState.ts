@@ -45,7 +45,7 @@ export class PlayerState_Spawn extends PlayerState{
             y: GAMEPLAY_SIZE.HEIGHT*.85,
             duration: 1600,
             onStart: () => { },
-            onComplete: () => { this.char.setCollideWorldBounds(true); this.changeState(this.char.interactiveState); this.char.modeIndicator.setVisible(true); },
+            onComplete: () => { this.char.setCollideWorldBounds(true); this.changeState(this.char.interactiveState); this.char.modeIndicator.setVisible(true); this.char.displayHUDData(); },
         });
     }
 }

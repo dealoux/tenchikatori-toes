@@ -6,6 +6,7 @@ import { EMPTY_TEXTURE, GOD_SEES_ALL_BG, SCENE_NAMES, WINDOW_HEIGHT, WINDOW_WIDT
 import { loadAudio } from '../plugins/Audio';
 import { Item } from '../entities/projectiles/items/Item';
 import { emptyFunction, IFunctionDelegate } from '../plugins/Utilities';
+import { Player } from '../entities/characters/player/Player';
 
 export default class GameManager extends Scene {
 	static currStage: string;
@@ -38,7 +39,7 @@ export default class GameManager extends Scene {
 		this.game.events.on(Phaser.Core.Events.FOCUS, () => this.resume());
 
 		eventsCenter.on(GAMEPLAY_EVENTS.updateScore, (value: number) => this.currScore += value, this);
-		eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, () => this.updateScoreDelegate = this.updateScore);
+		eventsCenter.on(GAMEPLAY_EVENTS.gameplayStart, () => { this.updateScoreDelegate = this.updateScore });
 		eventsCenter.on(GAMEPLAY_EVENTS.gameplayResume, () => this.updateScoreDelegate = this.updateScore);
 		eventsCenter.on(GAMEPLAY_EVENTS.gameplayPause, () => this.updateScoreDelegate = emptyFunction);
 		eventsCenter.on(GAMEPLAY_EVENTS.gameplayEnd, () => { this.updateScoreDelegate = emptyFunction; this.currScore = 0 });

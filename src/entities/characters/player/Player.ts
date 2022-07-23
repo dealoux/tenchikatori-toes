@@ -119,12 +119,6 @@ export class Player extends Character{
         this.specialPattern = new PPatternScale(this, { pos: new Phaser.Math.Vector2(0, 30), theta: -90 }, this.projectileManager.getGroup(DATA_PLAYER_PMOON.texture.key), SPECIAL_DATA);
 
         this.stateMachine.initialize(this.spawnState);
-
-        this.updateHPCount();        
-        this.updateSpecialCount();
-        this.updatePowerCount();
-        eventsCenter.emit(GAMEPLAY_EVENTS.displayExtraScore, this.currExtraScore);
-        eventsCenter.emit(GAMEPLAY_EVENTS.displayGrazeCount, this.currGraze);
     }
 
     static preload(scene: Phaser.Scene) {
@@ -147,6 +141,14 @@ export class Player extends Character{
 
     update(){
         super.update();
+    }
+
+    displayHUDData(){
+        this.updateHPCount();
+        this.updateSpecialCount();
+        this.updatePowerCount();
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayExtraScore, this.currExtraScore);
+        eventsCenter.emit(GAMEPLAY_EVENTS.displayGrazeCount, this.currGraze);
     }
 
     setCollisionCategory(mode: number) {
