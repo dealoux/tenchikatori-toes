@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
 import { COLLISION_CATEGORIES, Entity } from '../../Entity';
-import { PoolManager } from '../../../@types/Pool';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon } from '../../projectiles/Projectile_Player';
 import { Character, ICharacter } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
@@ -9,6 +8,8 @@ import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Sp
 import { ITexture } from '../../../@types/UI';
 import { SCENE_NAMES } from '../../../constants';
 import { emptyFunction, IFunctionDelegate } from '../../../plugins/Utilities';
+import { playAudio, SFX } from '../../../plugins/Audio';
+import { PoolManager } from '../../../plugins/Pool';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
@@ -25,7 +26,7 @@ export const PLAYER_DATA : IPlayer = {
     texture: { key: 'enna', path: 'assets/sprites/touhouenna.png', },
     speed: 250,
     speedFocused: 250 *.5,
-    hp: 1,
+    hp: 3,
     maxHP: 10,
     maxPower: 4,
     maxSpecial: 10,
@@ -235,6 +236,8 @@ export class Player extends Character{
 
             this.updateHPCount();
 
+            playAudio(this.scene, SFX.player_vanish);
+
             if(this.hp > 0){
                 this.disableEntity();
 
@@ -266,6 +269,7 @@ export class Player extends Character{
                     this.actionDelegate = this.shoot3;
                 }
                 else{
+                    playAudio(this.scene, SFX.powerup);
                     this.currPower = PLAYER_DATA.maxPower;
                     this.actionDelegate = this.shoot4;
                     this.handlingPowerItemCollisionDelegate = emptyFunction;        

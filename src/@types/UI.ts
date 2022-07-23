@@ -4,11 +4,15 @@ import { IVectorPoint } from "../entities/Entity";
 import { eventsCenter, GAMEPLAY_EVENTS } from "../plugins/EventsCentre";
 import { InputHandler } from "../plugins/InputHandler";
 import GameManager from "../scenes/GameManager";
+import { playAudio, SFX } from "../plugins/Audio";
 
-export interface ITexture{
+export interface IAsset{
     key: string,
     path: string,
     json?: string,
+}
+
+export interface ITexture extends IAsset{
     frameWidth?: number,
     frameHeight?: number,
 }
@@ -71,12 +75,14 @@ export abstract class UIScene extends Phaser.Scene {
 		const {inputs} = InputHandler.Instance();
 
 		if (inputs.Up) {
+            playAudio(this, SFX.select);
 			this.buttons[this.currSelected--].setFrame(1);
 			this.currSelected = this.currSelected == -1 ? this.buttons.length-1 : this.currSelected;
 			this.buttons[this.currSelected].setFrame(0);
 			inputs.Up = false;
         }
         else if (inputs.Down) {
+            playAudio(this, SFX.select);
 			this.buttons[this.currSelected++].setFrame(1);
 			this.currSelected = this.currSelected == this.buttons.length ? 0 : this.currSelected;
 			this.buttons[this.currSelected].setFrame(0);
@@ -84,6 +90,7 @@ export abstract class UIScene extends Phaser.Scene {
         }
 
 		if(inputs.Shot) {
+            playAudio(this, SFX.confirm);
 			this.buttons[this.currSelected].setFrame(2);
 			this.buttons[this.currSelected].action();
 		}

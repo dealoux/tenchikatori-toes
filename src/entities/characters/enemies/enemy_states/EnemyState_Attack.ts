@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { IStateData } from "../../../../@types/StateMachine";
+import { IStateData } from "../../../../plugins/StateMachine";
 import { IVectorPoint } from "../../../Entity";
 import { PPattern } from "../../../projectiles/Projectile";
 import { Enemy, IEnemy } from "../Enemy";

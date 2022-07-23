@@ -8,15 +8,16 @@ import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM } fro
 import { Entity } from '../entities/Entity';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { addText, IText } from '../@types/UI';
-import { PoolManager } from '../@types/Pool';
 import { InputHandler } from '../plugins/InputHandler';
+import { playAudio, SFX } from '../plugins/Audio';
+import { PoolManager } from '../plugins/Pool';
 
 export abstract class GameplayScene extends Scene {
 	dialog?: IDialog;
 	player?: Player;
 	mobManager?: PoolManager;
 	bgm?: Phaser.Sound.BaseSound;
-	background?: unknown;
+	background?: Phaser.GameObjects.TileSprite;
 
 	constructor(name: string) {
 		super(name);
@@ -57,11 +58,16 @@ export abstract class GameplayScene extends Scene {
 		const {inputs} = InputHandler.Instance();
 
 		if(inputs.Pause){
+			playAudio(this, SFX.pause_resume);
 			// this.scene.switch(SCENE_NAMES.PauseMenu);
 			this.scene.pause();
 			this.scene.launch(SCENE_NAMES.PauseMenu);
 			eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, SCENE_NAMES.Stage1_Gameplay);
 		}
+	}
+
+	protected backgroundScroll(speedY = 0, speedX = 0){
+		this.background?.setTilePosition(this.background.tilePositionX + speedX, this.background.tilePositionY - speedY);
 	}
 
 	protected onCreate(){

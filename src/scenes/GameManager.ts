@@ -3,7 +3,7 @@ import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { DialogLine } from '../objects/DialogLine';
 import { InputHandler } from '../plugins/InputHandler';
 import { EMPTY_TEXTURE, GOD_SEES_ALL_BG, SCENE_NAMES, WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
-import { loadBGM } from '../@types/Audio';
+import { loadAudio } from '../plugins/Audio';
 import { Item } from '../entities/projectiles/items/Item';
 import { emptyFunction, IFunctionDelegate } from '../plugins/Utilities';
 
@@ -23,7 +23,7 @@ export default class GameManager extends Scene {
 		this.load.image(EMPTY_TEXTURE.key, EMPTY_TEXTURE.path);
 		this.load.image(GOD_SEES_ALL_BG.key, GOD_SEES_ALL_BG.path);
 
-		loadBGM(this);
+		loadAudio(this);
 		Item.preload(this);
 		DialogLine.preload(this);
 	}

@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { eventsCenter } from '../../plugins/EventsCentre';
 import { IEntity, Entity, IVectorPoint } from '../Entity';
-import { PoolManager } from '../../@types/Pool';
 import { ItemManager } from '../projectiles/items/Item';
-import { StateMachine } from '../../@types/StateMachine';
+import { StateMachine } from '../../plugins/StateMachine';
+import { PoolManager } from '../../plugins/Pool';
 
 export interface ICharacter extends IEntity{
     hp: number,

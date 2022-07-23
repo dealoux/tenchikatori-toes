@@ -2,9 +2,8 @@ import { DEFAULT_DIALOG_LINE_CREATE_OPTS } from '../../objects/DialogLine';
 import { GameplayScene } from '../Gameplay';
 import { Enemy } from '../../entities/characters/enemies/Enemy';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../entities/projectiles/Projectile_Enemy';
-import { PoolGroup, PoolManager } from '../../@types/Pool';
 import { Entity } from '../../entities/Entity';
-import { BGM, playAudio } from '../../@types/Audio';
+import { BGM, playAudio } from '../../plugins/Audio';
 import { Player } from '../../entities/characters/player/Player';
 import { Character } from '../../entities/characters/Character';
 import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../../entities/projectiles/items/Item';
@@ -13,8 +12,10 @@ import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Y
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 import { GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
 import { ITexture } from '../../@types/UI';
+import { PoolGroup } from '../../plugins/Pool';
 
-const BG_STAGE1: ITexture = { key: 'bgStage1', path: 'assets/sprites/touhou_test/bg2.png' }
+const BG_SKY: ITexture = { key: 'sky', path: 'assets/sprites/touhou_test/sky.png' }
+const BG_FIELD: ITexture = { key: 'field', path: 'assets/sprites/touhou_test/field.png' }
 
 //#region Dialogues
 const chant = [
@@ -47,7 +48,8 @@ export default class GameplayStage1 extends GameplayScene {
 		super.preload();
 		Yousei1.preload(this);
 		Chilno.preload(this);
-		this.load.image(BG_STAGE1.key, BG_STAGE1.path);
+		this.load.image(BG_SKY.key, BG_SKY.path);
+		this.load.image(BG_FIELD.key, BG_FIELD.path);
 	}
 
 	create() {
@@ -58,7 +60,8 @@ export default class GameplayStage1 extends GameplayScene {
 			text: chant,
 		});
 
-		// this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, true, .2);
+		this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, .2, true);
+		this.background = this.add.tileSprite(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT, BG_SKY.key).setOrigin(0, 0).setDepth(-1).setAlpha(.8);
 
 		this.handleMob();
 		this.handleBoss();
@@ -80,6 +83,7 @@ export default class GameplayStage1 extends GameplayScene {
 
 	update() {
 		super.update();
+		this.backgroundScroll(.8);
 		// this.yousei1?.update();
 		// this.chilno?.update();
 	}

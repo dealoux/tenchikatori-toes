@@ -1,11 +1,12 @@
 import Phaser from "phaser";
 import { eventsCenter } from '../../../plugins/EventsCentre';
-import { IStateData, State } from "../../../@types/StateMachine";
+import { IStateData, State } from "../../../plugins/StateMachine";
 import { IPlayer, Player } from "./Player";
 import { InputHandler, INPUT_EVENTS } from "../../../plugins/InputHandler";
 import { PLAYER_SHOOT_DELAY, SHOOTPOINTS_FOCUSED, SHOOTPOINTS_NORMAL } from "../../projectiles/Projectile_Player";
 import { GAMEPLAY_SIZE } from "../../../constants";
 import { emptyFunction } from "../../../plugins/Utilities";
+import { playAudio, SFX } from "../../../plugins/Audio";
 
 interface PlayerStateData extends IStateData{}
 const PLAYER_STATE_DATA: PlayerStateData = {};
@@ -132,6 +133,7 @@ export class PlayerState_Interactive extends PlayerState{
                 this.lastShotTime = this.char.time() + PLAYER_SHOOT_DELAY;
             }
             if(inputs.Special && this.char.currSpecial > 0){
+                playAudio(this.char.scene, SFX.powereffect);
                 this.special();
             }
         }

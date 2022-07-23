@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { eventsCenter } from '../../../plugins/EventsCentre';
-import { PoolManager } from '../../../@types/Pool';
 import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy';
 import { Character, ICharacter } from '../Character';
 import { PPattern, Projectile } from '../../projectiles/Projectile';
@@ -9,6 +8,8 @@ import { EnemyState_Idle, IEnemyStateData_Idle } from './enemy_states/EnemyState
 import { EnemyState_Move, IEnemyStateData_Move } from './enemy_states/EnemyState_Move';
 import { EnemyState_Attack, IEnemyStateData_Attack } from './enemy_states/EnemyState_Attack';
 import { EnemyState } from './enemy_states/EnemyState';
+import { playAudio, SFX } from '../../../plugins/Audio';
+import { PoolManager } from '../../../plugins/Pool';
 
 export interface IEnemy extends ICharacter{
     shootPoint: IVectorPoint
@@ -57,9 +58,8 @@ export class Enemy extends Character{
         if(this.hp <= 0){
             Character.itemManager.emitItemsEnemy(this.x, this.y);
             this.disableEntity();
+            playAudio(this.scene, SFX.enemy_vanish);
         }
-        
-        // console.log(this.hp);
     }
 
     public getBlueGroup(key: string){

@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { IStateData, State } from "../../../../@types/StateMachine";
+import { IStateData, State } from "../../../../plugins/StateMachine";
 import { Enemy, IEnemy } from "../Enemy";
 
 export class EnemyState extends State{

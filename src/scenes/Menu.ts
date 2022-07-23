@@ -4,6 +4,7 @@ import { FONT_NOKIA, SCENE_NAMES, TEXTURE_FLIXEL_BUTTON, WINDOW_HEIGHT, WINDOW_W
 import { Button, IButton, UIScene } from '../@types/UI';
 import { InputHandler } from '../plugins/InputHandler';
 import GameManager from './GameManager';
+import { playAudio, SFX } from '../plugins/Audio';
 
 const MAINMENU_UI_TEXT_SIZE = 32;
 const MAINMENU_UI_BUTTON_SCALE = { x: 6, y: 4.5 };
@@ -129,6 +130,7 @@ export class PauseScene extends UIScene {
 	}
 	
 	private resume(){
+		playAudio(this, SFX.pause_resume);
 		// this.scene.switch(GameManager.currStage);
 		this.scene.stop();
 		this.scene.resume(GameManager.currStage);
