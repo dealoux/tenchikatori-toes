@@ -1,4 +1,4 @@
-import { ITexture } from "./@types/UI";
+import { ITexture } from "./scenes/UI";
 
 export const TITLE = 'Tenchikatori ~ Testament of Empyrean Songbird';
 export const ALIAS = 'Tenchikatori-ToES';

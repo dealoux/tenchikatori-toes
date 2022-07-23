@@ -11,7 +11,7 @@ import { Projectile } from '../../entities/projectiles/Projectile';
 import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Yousei1';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 import { GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
-import { ITexture } from '../../@types/UI';
+import { ITexture } from '../UI';
 import { PoolGroup } from '../../plugins/Pool';
 
 const BG_SKY: ITexture = { key: 'sky', path: 'assets/sprites/touhou_test/sky.png' }

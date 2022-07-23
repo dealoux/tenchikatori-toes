@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { FONT_NOKIA, SCENE_NAMES, TEXTURE_FLIXEL_BUTTON, WINDOW_HEIGHT, WINDOW_WIDTH } from '../constants';
-import { Button, IButton, UIScene } from '../@types/UI';
+import { Button, IButton, UIScene } from './UI';
 import { InputHandler } from '../plugins/InputHandler';
 import GameManager from './GameManager';
 import { playAudio, SFX } from '../plugins/Audio';

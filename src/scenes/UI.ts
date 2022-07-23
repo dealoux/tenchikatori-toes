@@ -3,7 +3,7 @@ import { SCENE_NAMES } from "../constants";
 import { IVectorPoint } from "../entities/Entity";
 import { eventsCenter, GAMEPLAY_EVENTS } from "../plugins/EventsCentre";
 import { InputHandler } from "../plugins/InputHandler";
-import GameManager from "../scenes/GameManager";
+import GameManager from "./GameManager";
 import { playAudio, SFX } from "../plugins/Audio";
 
 export interface IAsset{

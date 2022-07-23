@@ -7,7 +7,7 @@ import { Character } from '../entities/characters/Character';
 import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM } from '../entities/projectiles/items/Item';
 import { Entity } from '../entities/Entity';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
-import { addText, IText } from '../@types/UI';
+import { addText, IText } from './UI';
 import { InputHandler } from '../plugins/InputHandler';
 import { playAudio, SFX } from '../plugins/Audio';
 import { PoolManager } from '../plugins/Pool';

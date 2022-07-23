@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { ITexture } from '../@types/UI';
+import { ITexture } from '../scenes/UI';
 import { EMPTY_TEXTURE } from '../constants';
 
 export interface IVectorPoint{

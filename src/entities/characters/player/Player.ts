@@ -5,7 +5,7 @@ import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTP
 import { Character, ICharacter } from '../Character';
 import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
 import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
-import { ITexture } from '../../../@types/UI';
+import { ITexture } from '../../../scenes/UI';
 import { SCENE_NAMES } from '../../../constants';
 import { emptyFunction, IFunctionDelegate } from '../../../plugins/Utilities';
 import { playAudio, SFX } from '../../../plugins/Audio';
