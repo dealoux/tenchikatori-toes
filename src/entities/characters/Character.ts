@@ -26,7 +26,7 @@ export class Character extends Entity{
 
     constructor(scene: Phaser.Scene, data: ICharacter){
         super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame }, true);
-        this.stateMachine = new StateMachine(this);
+        this.stateMachine = new StateMachine();
         this.hp = data.hp;
         this.entData = data;
         this.components = new ComponentService();
@@ -36,7 +36,6 @@ export class Character extends Entity{
     }
 
     time(){
-        //return this.scene.time.now;
         return this.scene.game.getTime();
     }
 

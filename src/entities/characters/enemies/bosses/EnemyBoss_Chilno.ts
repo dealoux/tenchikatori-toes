@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
 import { GAMEPLAY_SIZE } from '../../../../constants';
-import { IWavePatternData, PPatternWave } from '../../../projectiles/Projectile';
+import { IWavePatternData, PPatternWave } from '../../../projectiles/patterns/Pattern_Wave';
 import { DATA_SHOTBLUE } from '../../../projectiles/Projectile_Enemy';
 import { IAnimation } from '../../Character';
-import { Enemy, IEnemy } from '../Enemy';
+import { EnemyBoss, IEnemy } from '../Enemy';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
 import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
 import { IEnemyStateData_Move } from '../enemy_states/EnemyState_Move';
-import { EnemyState_Spawn, IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
+import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
 
 const DATA_CHILNO: IEnemy = {
     texture: { key: 'chilno', path: 'assets/sprites/touhou_test/chilno.png', json: 'assets/sprites/touhou_test/chilno.json' },
@@ -75,14 +75,11 @@ const WAVEPATTERN_CHILNO : IWavePatternData = {
     duration: 250,
 }
 
-export class Chilno extends Enemy{
+export class Chilno extends EnemyBoss{
     constructor(scene: Phaser.Scene){
-        super(scene, DATA_CHILNO, SDATA_IDLE_CHILNO, SDATA_MOVE_CHILNO, SDATA_ATTACK_CHILNO);
-
-        this.spawnState = new EnemyState_Spawn(this, DATA_CHILNO, SDATA_SPAWN_CHILNO);
+        super(scene, DATA_CHILNO, SDATA_IDLE_CHILNO, SDATA_ATTACK_CHILNO, SDATA_SPAWN_CHILNO, SDATA_MOVE_CHILNO);
 
         this.attacks.set('key', new PPatternWave(this, DATA_CHILNO.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), WAVEPATTERN_CHILNO));
-        this.stateMachine.initialize(this.spawnState!);
     }
 
     static preload(scene: Phaser.Scene) {

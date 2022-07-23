@@ -1,4 +1,4 @@
-import Phaser, { Scene } from 'phaser';
+import Phaser from 'phaser';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { DialogLine } from '../objects/DialogLine';
 import { InputHandler } from '../plugins/InputHandler';
@@ -6,9 +6,9 @@ import { EMPTY_TEXTURE, GOD_SEES_ALL_BG, SCENE_NAMES, WINDOW_HEIGHT, WINDOW_WIDT
 import { loadAudio } from '../plugins/Audio';
 import { Item } from '../entities/projectiles/items/Item';
 import { emptyFunction, IFunctionDelegate } from '../plugins/Utilities';
-import { Player } from '../entities/characters/player/Player';
+import { BaseScene } from './BaseScene';
 
-export default class GameManager extends Scene {
+export default class GameManager extends BaseScene {
 	static currStage: string;
 	currScore: number;
 	updateScoreDelegate: IFunctionDelegate;

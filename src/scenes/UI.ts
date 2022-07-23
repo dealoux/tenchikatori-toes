@@ -5,6 +5,7 @@ import { eventsCenter, GAMEPLAY_EVENTS } from "../plugins/EventsCentre";
 import { InputHandler } from "../plugins/InputHandler";
 import GameManager from "./GameManager";
 import { playAudio, SFX } from "../plugins/Audio";
+import { BaseScene } from "./BaseScene";
 
 export interface IAsset{
     key: string,
@@ -54,7 +55,7 @@ export class Button extends Phaser.GameObjects.Image{
     }
 }
 
-export abstract class UIScene extends Phaser.Scene {
+export abstract class UIScene extends BaseScene {
 	buttons: Array<Button>;
 	currSelected: number;
 
@@ -68,7 +69,7 @@ export abstract class UIScene extends Phaser.Scene {
 	}
 
 	create() {
-        this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
+        super.create();
 	}
 
 	update(time: number, delta: number) {
@@ -96,10 +97,10 @@ export abstract class UIScene extends Phaser.Scene {
 		}
 	}
     
-    protected onShutdown(){
+    protected onShutdown(): void {
         this.buttons = new Array();
         this.currSelected = 0;
-        InputHandler.Instance().reset();
+        InputHandler.Instance().reset();   
     }
 
     protected restartButton(){

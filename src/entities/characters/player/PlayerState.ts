@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { eventsCenter } from '../../../plugins/EventsCentre';
-import { IStateData, State } from "../../../plugins/StateMachine";
+import { IStateData, CharacterState } from "../../../plugins/StateMachine";
 import { IPlayer, Player } from "./Player";
 import { InputHandler, INPUT_EVENTS } from "../../../plugins/InputHandler";
 import { PLAYER_SHOOT_DELAY, SHOOTPOINTS_FOCUSED, SHOOTPOINTS_NORMAL } from "../../projectiles/Projectile_Player";
@@ -11,7 +11,7 @@ import { playAudio, SFX } from "../../../plugins/Audio";
 interface PlayerStateData extends IStateData{}
 const PLAYER_STATE_DATA: PlayerStateData = {};
 
-export class PlayerState extends State{
+export class PlayerState extends CharacterState{
     char: Player;
     entData: IPlayer;
 

@@ -3,13 +3,14 @@ import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
 import { COLLISION_CATEGORIES, Entity } from '../../Entity';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon, PLAYER_SPECIAL_POOL } from '../../projectiles/Projectile_Player';
 import { Character, UIBarComponent, ICharacter, IUIBar } from '../Character';
-import { IScalePatternData, PPatternScale, Projectile } from '../../projectiles/Projectile';
+import { Projectile } from '../../projectiles/Projectile';
 import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
 import { ITexture } from '../../../scenes/UI';
 import { SCENE_NAMES } from '../../../constants';
 import { emptyFunction, IFunctionDelegate } from '../../../plugins/Utilities';
 import { playAudio, SFX } from '../../../plugins/Audio';
 import { PoolManager } from '../../../plugins/Pool';
+import { IScalePatternData, PPatternScale } from '../../projectiles/patterns/Pattern_Scale';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
@@ -287,7 +288,6 @@ export class Player extends Character{
     }
 
     private updatePowerCount(){
-        (this.components.findComponents(this, UIBarComponent) as UIBarComponent).display(this.currSpecial, PLAYER_DATA.maxSpecial);
         eventsCenter.emit(GAMEPLAY_EVENTS.displayPowerCount, (Math.round(this.currPower * 10) / 10).toFixed(1), PLAYER_DATA.maxPower);
     }
 
@@ -324,6 +324,7 @@ export class Player extends Character{
     }
 
     updateSpecialCount(){
+        (this.components.findComponents(this, UIBarComponent) as UIBarComponent).display(this.currSpecial, PLAYER_DATA.maxSpecial);
         eventsCenter.emit(GAMEPLAY_EVENTS.displaySpecialCount, this.currSpecial, PLAYER_DATA.maxSpecial);
     }
 

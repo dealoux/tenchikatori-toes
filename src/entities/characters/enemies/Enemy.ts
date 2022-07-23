@@ -20,34 +20,32 @@ export interface IEnemy extends ICharacter{
 const ENEMY_HP_BAR : IUIBar = {
     size: { x: 50, y: 6 },
     offset: { x: -25, y: 35 },
-    fillColour: 0x0000ff,
+    fillColour: 0x00ff00,
 }
 
 export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
 
-    spawnState?: EnemyState;
+    spawnState: EnemyState;
     idleState: EnemyState;
-    moveState: EnemyState;
     attackState: EnemyState;
     disableInteractiveState: EnemyState;
 
     attacks: Map<string, PPattern>;
 
-    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Move: IEnemyStateData_Move, sData_Attack: IEnemyStateData_Attack){
+    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, spawnState: IEnemyStateData_Spawn){
         super(scene, data);
 
         this.attacks = new Map;
-
-        this.idleState = new EnemyState_Idle(this, data, sData_Idle);
-        this.moveState = new EnemyState_Move(this, data, sData_Move);
-        this.attackState = new EnemyState_Attack(this, data, sData_Attack);
-
         this.components.addComponents(this, new UIBarComponent(ENEMY_HP_BAR));
 
+        this.spawnState = new EnemyState_Spawn(this, data, spawnState);
+        this.idleState = new EnemyState_Idle(this, data, sData_Idle);
+        this.attackState = new EnemyState_Attack(this, data, sData_Attack);
         this.disableInteractiveState = new EnemyState(this, data, {});
-        this.stateMachine.initialize(this.idleState);
+
+        this.stateMachine.initialize(this.spawnState);
     }
 
     static preload(scene: Phaser.Scene) {
@@ -61,6 +59,10 @@ export class Enemy extends Character{
 
         Enemy.bluePManager.addGroup(DATA_SHOTBLUE.texture.key, EnemyPBlue, ENEMY_PROJECTILE_POOL);
         Enemy.redPManager.addGroup(DATA_SHOTRED.texture.key, EnemyPRed, ENEMY_PROJECTILE_POOL);
+    }
+
+    nextStage(noAttack: boolean): EnemyState{
+        return noAttack ? this.idleState : this.attackState;
     }
     
     handleCollision(p: Projectile) {
@@ -91,5 +93,18 @@ export class Enemy extends Character{
 
     public getRedGroup(key: string){
         return Enemy.redPManager.getGroup(key);
+    }
+}
+
+export class EnemyBoss extends Enemy{
+    moveState: EnemyState;
+
+    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, sData_Spawn: IEnemyStateData_Spawn, sData_Move: IEnemyStateData_Move){
+        super(scene, data, sData_Idle, sData_Attack, sData_Spawn);
+        this.moveState = new EnemyState_Move(this, data, sData_Move);
+    }
+
+    nextStage(noAttack: boolean): EnemyState{
+        return noAttack ? this.moveState : this.attackState;
     }
 }

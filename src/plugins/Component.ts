@@ -20,13 +20,11 @@ export class ComponentService{
     private queuedForStart: IComponent[] = [];
 
     addComponents(gobj: Phaser.GameObjects.GameObject, component: IComponent){
-        if(!gobj.name){
+        if(!gobj.name || this.componentsByGameObject.has(gobj.name)){
             gobj.name = short.generate();
         }
 
-        if(!this.componentsByGameObject.has(gobj.name)){
-            this.componentsByGameObject.set(gobj.name, []);
-        }
+        this.componentsByGameObject.set(gobj.name, []);
 
         const list = this.componentsByGameObject.get(gobj.name) as IComponent[];
         list.push(component);

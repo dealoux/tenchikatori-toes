@@ -15,17 +15,17 @@ export interface IStateData{
     animKey?: string,
 }
 
-export abstract class State implements IState{
+export abstract class CharacterState implements IState{
     char: Character;
     entData: ICharacter;
-    enterTime: number;
     sData: IStateData;
+    enterTime: number;
 
     constructor(char: Character, entData: ICharacter, sData: IStateData){
         this.char = char;
         this.entData = entData;
-        this.enterTime = 0;
         this.sData = sData;
+        this.enterTime = 0;
     }
 
     enter(): void {
@@ -47,11 +47,9 @@ export abstract class State implements IState{
 // Pushdown automata
 export class StateMachine{
     states : Array<IState>;
-    parent: Character
 
-    constructor(parent: Character){
+    constructor(){
         this.states = new Array;
-        this.parent = parent;
     }
 
     currState() : IState{

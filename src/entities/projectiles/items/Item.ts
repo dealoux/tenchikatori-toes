@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
-import { IUpdateArgs, IProjectileData, PPatternWave, Projectile } from '../Projectile';
+import { IUpdateArgs, IProjectileData, Projectile } from '../Projectile';
 import { Entity } from '../../Entity';
 import { PLAYER_DATA } from '../../characters/player/Player';
 import { PoolManager } from '../../../plugins/Pool';
+import { PPatternWave } from '../patterns/Pattern_Wave';
 
 export const DATA_POWER_ITEM : IProjectileData = {
     texture: { key: 'powerItem', path: 'assets/sprites/touhou_test/powerItem.png' },

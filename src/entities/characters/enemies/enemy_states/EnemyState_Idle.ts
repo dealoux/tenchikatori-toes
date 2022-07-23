@@ -24,23 +24,15 @@ export class EnemyState_Idle extends EnemyState{
 
         this.idleTime = Phaser.Math.Between(1, this.sData.maxIdleTime);
 
-        (this.char.components.findComponents(this.char, UIBarComponent) as UIBarComponent).display(this.char.hp, this.entData.hp);
-
-        // if(this.char.stateSequence.length == 0){
-            
-        // }
+        if(this.char.active)
+            (this.char.components.findComponents(this.char, UIBarComponent) as UIBarComponent).display(this.char.hp, this.entData.hp);
     }
 
     update(time: number, delta: number){
         super.update(time, delta)
 
         if(this.char.time() >= this.enterTime + this.idleTime){
-            if(Math.random() > this.sData.attackRate){
-                this.changeState(this.char.moveState);
-            }
-            else{
-                this.changeState(this.char.attackState);
-            }
+            this.changeState(this.char.nextStage(Math.random() > this.sData.attackRate));
         }
     }
 }
