@@ -21,18 +21,25 @@ export class PoolGroup extends Phaser.Physics.Arcade.Group{
         const instance = this.getFirstDead(false);
 
         if(instance){
-            if(point)
-                instance.updateTransform(point);
-            else{
-                instance.setStatus(true);
-            }
+            instance.updateTransform(point);
         }
 
         return instance;
     }
 
-    test(){
-        this.scene.physics.add.group()
+    launchGroup(pos: Phaser.Types.Math.Vector2Like, spacing : Phaser.Types.Math.Vector2Like, groupSize: number) {
+        const startingY = Phaser.Math.Between(pos.y! - spacing.y!, pos.y! + spacing.y!);
+
+        for (let i =0; i < groupSize; i++) {
+            const entity = this.getFirstDead(false);
+
+            if (entity) {
+                const startingX = pos.x! + spacing.x! * i;
+                entity.enableBody(true, startingX, startingY, true, true);
+                entity.body.velocity.x = -entity.entData.SPEED;
+                entity.body.velocity.y = Phaser.Math.Between(-300, 300);
+            }
+        }
     }
 }
 
