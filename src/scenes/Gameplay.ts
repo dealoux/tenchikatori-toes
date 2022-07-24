@@ -7,10 +7,12 @@ import { Character } from '../entities/characters/Character';
 import { Entity } from '../entities/Entity';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { InputHandler } from '../plugins/InputHandler';
-import { playAudio, SFX } from '../plugins/Audio';
 import { PoolManager } from '../plugins/Pool';
 import { BaseScene } from './BaseScene';
-import { IState, StateMachine } from '../plugins/StateMachine';
+import { StateMachine } from '../plugins/StateMachine';
+import { Item } from '../entities/projectiles/items/Item';
+import { Projectile } from '../entities/projectiles/Projectile';
+import { GameplayState, SceneState_Cutscene, SceneState_Interactive } from './GameplayState';
 
 export abstract class GameplayScene extends BaseScene {
 	dialog?: IDialog;
@@ -68,6 +70,78 @@ export abstract class GameplayScene extends BaseScene {
 		this.background?.setTilePosition(this.background.tilePositionX + speedX, this.background.tilePositionY - speedY);
 	}
 
+	protected callBack_hitPlayerEnemyProjectile(playerHitbox: unknown, p: unknown) {
+		this.hitPlayerEnemyProjectile(playerHitbox as Entity, p as Projectile);
+	}
+	protected hitPlayerEnemyProjectile(playerHitbox: Entity, p: Projectile) {
+		this.player?.handlingProjectileCollisionDelegate(p);
+		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
+		p.handleCollision(this.player!);	
+	}
+
+	protected callBack_hitGrazeEnemyProjectile(player: unknown, p: unknown) {
+		this.hitGrazeEnemyProjectile(player as Player, p as Projectile);
+	}
+	protected hitGrazeEnemyProjectile(player: Player, p: Projectile) {
+		player.handlingGrazeCount(p);
+	}
+
+	protected callBack_hitEnemyMob(enemy: unknown, p: unknown) {
+		this.hitEnemyMob(enemy as Enemy, p as Projectile);
+	}
+	protected hitEnemyMob(enemy: Enemy, p: Projectile) {
+		// this.score += enemy.points;
+		// this.scoreText.setText("SCORE:"+Phaser.Utils.String.Pad(this.score, 6, '0', 1));
+		enemy.handleCollision(p);
+		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
+		p.handleCollision(enemy);
+		
+		// this.explosion
+		//   .setSpeedX(0.2 * bullet.body.velocity.x)
+		//   .setSpeedY(0.2 * bullet.body.velocity.y)
+		//   .emitParticleAt(x, y);
+		// this.explodeSFX.play();
+	}
+
+	protected callBack_hitGrazeItem(player: unknown, i: unknown) {
+		this.hitGrazeItem(player as Player, i as Item);
+	}
+	protected hitGrazeItem(player: Player, i: Item){
+		i.handlingGrazeHBCollision(player);
+	}
+
+	protected callBack_hitPlayerPowerItem(playerHitbox: unknown, i: unknown) {
+		this.hitPlayerPowerItem(playerHitbox as Entity, i as Item);
+	}
+	protected hitPlayerPowerItem(playerHitbox: Entity, i: Item){
+		i.handleCollision();
+		this.player?.handlingPowerItemCollisionDelegate(i);
+	}
+
+	protected callBack_hitPlayerScoreItem(playerHitbox: unknown, i: unknown) {
+		this.hitPlayerScoreItem(playerHitbox as Entity, i as Item);
+	}
+	protected hitPlayerScoreItem(playerHitbox: Entity, i: Item){
+		i.handleCollision();
+		this.player?.handlingScoreItem(i);
+	}
+
+	protected callBack_hitPlayerHPItem(playerHitbox: unknown, i: unknown) {
+		this.hitPlayerHPItem(playerHitbox as Entity, i as Item);
+	}
+	protected hitPlayerHPItem(playerHitbox: Entity, i: Item){
+		i.handleCollision();
+		this.player?.handlingHPItemCollisionDelegate(i);
+	}
+
+	protected callBack_hitPlayerSpecialItem(playerHitbox: unknown, i: unknown) {
+		this.hitPlayerSpecialItem(playerHitbox as Entity, i as Item);
+	}
+	protected hitPlayerSpecialItem(playerHitbox: Entity, i: Item){
+		i.handleCollision();
+		this.player?.handlingSpecialItemCollisionDelegate(i);
+	}
+
 	protected onCreate(){
 		this.scene.run(SCENE_NAMES.HUD);
 		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayStart);
@@ -89,93 +163,5 @@ export abstract class GameplayScene extends BaseScene {
 		this.scene.stop(SCENE_NAMES.HUD); 
 		InputHandler.Instance().reset(); 
 		eventsCenter.emit(GAMEPLAY_EVENTS.gameplayEnd);
-	}
-}
-
-export class GameplayState implements IState{
-    scene: GameplayScene;
-    enterTime: number;
-
-    constructor(scene: GameplayScene){
-        this.scene = scene;
-        this.enterTime = 0;
-    }
-
-    enter(): void {
-        this.enterTime = this.scene.game.getTime();	
-    }
-
-    exit(): void { }
-
-	preUpdate(time: number, delta: number): void { }
-
-    update(time: number, delta: number): void { 
-		const {inputs} = InputHandler.Instance();
-
-		if(inputs.Pause){
-			playAudio(this.scene, SFX.pause_resume);
-			// this.scene.switch(SCENE_NAMES.PauseMenu);
-			this.scene.scene.pause();
-			this.scene.scene.launch(SCENE_NAMES.PauseMenu);
-			eventsCenter.emit(GAMEPLAY_EVENTS.gameplayPause, SCENE_NAMES.Stage1_Gameplay);
-		}
-	}
-
-	protected changeState(nextState: IState, savePrevious = false){
-        this.scene.stateMachine.changeState(nextState, savePrevious);
-    }
-}
-
-class SceneState_Interactive extends GameplayState{
-	constructor(scene: GameplayScene){
-		super(scene);
-	}
-
-	enter(): void {
-		super.enter();
-	}
-
-	exit(): void {
-		super.exit();
-	}
-
-	update(time: number, delta: number): void {
-		super.update(time, delta);
-		this.scene.updateInteractive(time, delta);
-	}
-}
-
-class SceneState_Cutscene extends GameplayState{
-	constructor(scene: GameplayScene){
-		super(scene);
-	}
-
-	enter(): void {
-		super.enter();
-		this.scene.mobManager?.pauseUpdate();
-		this.scene.input.on(Phaser.Input.Events.POINTER_DOWN, this.dialogUpdate, this);
-	}
-
-	exit(): void {
-		super.exit();
-		this.scene.mobManager?.resumeUpdate();
-		this.scene.input.off(Phaser.Input.Events.POINTER_DOWN, this.dialogUpdate, this);
-	}
-
-	update(time: number, delta: number): void {
-		super.update(time, delta);
-
-		this.scene.dialog?.update(this.scene, {});
-
-		const {inputs} = InputHandler.Instance();
-
-		if(inputs.Shot){
-			inputs.Shot = false;
-			this.dialogUpdate();
-		}
-	}
-
-	private dialogUpdate(){
-		this.scene.dialog?.update(this.scene, { dialogUpdate: DialogUpdateAction.PROGRESS });
 	}
 }
