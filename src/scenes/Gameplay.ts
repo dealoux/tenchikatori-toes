@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Dialog, DialogUpdateAction } from '../objects/Dialog';
-import { GAMEPLAY_SIZE, SCENE_NAMES } from '../constants';
+import { GAMEPLAY_SIZE, SCENE_NAMES, TEXT_BOX } from '../constants';
 import { Player } from '../entities/characters/player/Player';
 import { Enemy } from '../entities/characters/enemies/Enemy';
 import { Character } from '../entities/characters/Character';
@@ -34,6 +34,7 @@ export abstract class GameplayScene extends BaseScene {
 	preload() {
 		Player.preload(this);
 		Enemy.preload(this);
+		this.load.image(TEXT_BOX.key, TEXT_BOX.path);
 	}
 
 	create() {
@@ -41,6 +42,7 @@ export abstract class GameplayScene extends BaseScene {
 
 		this.mobManager = new PoolManager(this);
 		this.player = new Player(this);
+		this.cutsceneState.init();
 
 		Enemy.initPManagers(this);
 		Character.initManager(this);

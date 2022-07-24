@@ -5,10 +5,12 @@ import { ItemManager } from '../projectiles/items/Item';
 import { IState, StateMachine } from '../../plugins/StateMachine';
 import { PoolManager } from '../../plugins/Pool';
 import { ComponentService, IComponent } from '../../plugins/Component';
+import { ITexture } from '../../scenes/UI';
 
 export interface ICharacter extends IEntity{
     hp: number,
     speed?: number,
+    standTexture?: ITexture
 }
 
 export interface IAnimation{

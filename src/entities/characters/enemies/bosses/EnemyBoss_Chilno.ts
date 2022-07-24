@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAMEPLAY_SIZE } from '../../../../constants';
+import { CHILNO_STAND, CHILNO_TEXTURE, GAMEPLAY_SIZE } from '../../../../constants';
 import { IWavePatternData, PPatternWave } from '../../../projectiles/patterns/Pattern_Wave';
 import { DATA_SHOTBLUE } from '../../../projectiles/Projectile_Enemy';
 import { IAnimation } from '../../Character';
@@ -10,7 +10,8 @@ import { IEnemyStateData_Move } from '../enemy_states/EnemyState_Move';
 import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
 
 const DATA_CHILNO: IEnemy = {
-    texture: { key: 'chilno', path: 'assets/sprites/touhou_test/chilno.png', json: 'assets/sprites/touhou_test/chilno.json' },
+    texture: CHILNO_TEXTURE,
+    standTexture: CHILNO_STAND,
     shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, },
     hp: 200,
     speed: 200,
@@ -84,6 +85,7 @@ export class Chilno extends EnemyBoss{
 
     static preload(scene: Phaser.Scene) {
         scene.load.atlas(DATA_CHILNO.texture.key, DATA_CHILNO.texture.path, DATA_CHILNO.texture.json);
+        scene.load.image(DATA_CHILNO.standTexture!.key, DATA_CHILNO.standTexture!.path);
 	}
 
     create(){

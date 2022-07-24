@@ -6,7 +6,7 @@ import { Character, ICharacter } from '../Character';
 import { Projectile } from '../../projectiles/Projectile';
 import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
 import { ITexture } from '../../../scenes/UI';
-import { SCENE_NAMES } from '../../../constants';
+import { ENNA_STAND, ENNA_TEXTURE, SCENE_NAMES } from '../../../constants';
 import { emptyFunction, IFunctionDelegate } from '../../../plugins/Utilities';
 import { playAudio, SFX } from '../../../plugins/Audio';
 import { PoolManager } from '../../../plugins/Pool';
@@ -25,7 +25,8 @@ export interface IPlayer extends ICharacter{
 }
 
 export const PLAYER_DATA : IPlayer = {
-    texture: { key: 'enna', path: 'assets/sprites/touhouenna.png', },
+    texture: ENNA_TEXTURE,
+    standTexture: ENNA_STAND,
     speed: 250,
     speedFocused: 250 *.5,
     hp: 3,
@@ -133,6 +134,7 @@ export class Player extends Character{
 
     static preload(scene: Phaser.Scene) {
         scene.load.image(PLAYER_DATA.texture.key, PLAYER_DATA.texture.path);
+        scene.load.image(PLAYER_DATA.standTexture!.key, PLAYER_DATA.standTexture!.path);
 
         scene.load.image(HITBOX_TEXTURE.key, HITBOX_TEXTURE.path);
         scene.load.image(BLUE_MODE.key, BLUE_MODE.path);

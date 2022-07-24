@@ -18,15 +18,21 @@ export const HUD_SIZE = {
 	offset: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH + GAMEPLAY_SIZE.OFFSET + 30, GAMEPLAY_SIZE.OFFSET),
 };
 
-export const EMPTY_TEXTURE : ITexture = { key: 'empty', path: 'assets/sprites/empty.png' };
+export const EMPTY_TEXTURE: ITexture = { key: 'empty', path: 'assets/sprites/empty.png' };
 
-export const GOD_SEES_ALL_BG : ITexture = { key: 'godseesall', path: 'assets/sprites/godseesall.png' };
+export const GOD_SEES_ALL_BG: ITexture = { key: 'godseesall', path: 'assets/sprites/godseesall.png' };
 
 export const TEXTURE_FLIXEL_BUTTON: ITexture = { key:'flixelButton', path: 'assets/sprites/flixelButton.png', frameWidth: 80, frameHeight: 20 };
 
-export const FONT_INTER : ITexture = { key: 'inter', path: 'assets/fonts/inter/inter-regular-outline-2_0.png', json: 'assets/fonts/inter/inter-regular-outline-2.fnt' };
+export const FONT_INTER: ITexture = { key: 'inter', path: 'assets/fonts/inter/inter-regular-outline-2_0.png', json: 'assets/fonts/inter/inter-regular-outline-2.fnt' };
+export const FONT_NOKIA: ITexture = { key: 'nokia', path: 'assets/fonts/nokia/nokia16black.png', json: 'assets/fonts/nokia/nokia16black.xml' };
+export const TEXT_BOX: ITexture = { key: 'textbox', path: 'assets/sprites/textbox.png', };
 
-export const FONT_NOKIA : ITexture = { key: 'nokia', path: 'assets/fonts/nokia/nokia16black.png', json: 'assets/fonts/nokia/nokia16black.xml' };
+export const ENNA_TEXTURE: ITexture = { key: 'enna', path: 'assets/sprites/touhouenna.png', };
+export const ENNA_STAND: ITexture = { key: 'enna_stand', path: 'assets/sprites/enna_stand.png', };
+
+export const CHILNO_TEXTURE : ITexture = { key: 'chilno', path: 'assets/sprites/touhou_test/chilno.png', json: 'assets/sprites/touhou_test/chilno.json' };
+export const CHILNO_STAND: ITexture = { key: 'chilno_Stand', path: 'assets/sprites/touhou_test/chilno_stand.png' };
 
 export enum SCENE_NAMES {
 	GameManager = 'GameManager',
