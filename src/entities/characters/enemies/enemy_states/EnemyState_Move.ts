@@ -3,6 +3,7 @@ import { ICharacterStateData } from "../../Character";
 import { IVectorPoint } from "../../../Entity";
 import { Enemy, IEnemy } from "../Enemy";
 import { EnemyState } from "./EnemyState";
+import { emptyFunction } from "../../../../plugins/Utilities";
 
 export interface IEnemyStateData_Move extends ICharacterStateData{
     locations: Array<IVectorPoint>,
@@ -42,23 +43,12 @@ export class EnemyState_Move extends EnemyState{
         this.changeState(this.char.idleState);
     }
     
-    protected async moveTo(point: IVectorPoint, completeFunc: Function){
+    protected moveTo(point: IVectorPoint, onComplete: Function){
         // let distance = point.pos.distance(new Phaser.Math.Vector2(this.char.x, this.char.y));
         // const duration = (distance / this.entData.speed!) * 1000;
         const { duration } = this.sData;
-
         // console.log(duration);
 
-        return this.char.scene.tweens.add({
-            targets: this.char,
-            x: point.pos.x,
-            y: point.pos.y,
-            duration: duration,
-            ease: 'Sine.easeInOut',
-            onComplete: completeFunc(),
-        });
-
-        // this.char.scene.physics.moveTo(this.char, point.pos.x, point.pos.y, this.entData.speed, duration);
-        // completeFunc();
+        this.char.tweenMovement(point, duration, emptyFunction, onComplete);
     }
 }

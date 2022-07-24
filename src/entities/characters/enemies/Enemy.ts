@@ -12,6 +12,7 @@ import { playAudio, SFX } from '../../../plugins/Audio';
 import { PoolManager } from '../../../plugins/Pool';
 import { EnemyState_Spawn, IEnemyStateData_Spawn } from './enemy_states/EnemyState_Spawn';
 import { IUIBar, UIBarComponent } from '../CharacterComponent';
+import { EnemyState_Retreat, IEnemyStateData_Retreat } from './enemy_states/EnemyState_Retreat';
 
 export interface IEnemy extends ICharacter{
     shootPoint: IVectorPoint
@@ -28,8 +29,8 @@ export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
 
-    idleState: EnemyState;
-    attackState: EnemyState;
+    idleState: EnemyState_Idle;
+    attackState: EnemyState_Attack;
     disableInteractiveState: EnemyState;
 
     attacks: Map<string, PPattern>;
@@ -60,8 +61,20 @@ export class Enemy extends Character{
         Enemy.redPManager.addGroup(DATA_SHOTRED.texture.key, EnemyPRed, ENEMY_PROJECTILE_POOL);
     }
 
-    nextStage(noAttack: boolean): EnemyState{
+    decideNextStage(noAttack: boolean): EnemyState{
         return noAttack ? this.idleState : this.attackState;
+    }
+
+    tweenMovement(point: IVectorPoint, duration: number, onStart: Function, onComplete: Function){
+        this.scene.tweens.add({
+            targets: this,
+            x: point.pos.x,
+            y: point.pos.y,
+            duration: duration,
+            ease: 'Sine.easeInOut',
+            onStart: onStart(),
+            onComplete: onComplete(),
+        });
     }
     
     handleCollision(p: Projectile) {
@@ -85,34 +98,57 @@ export class Enemy extends Character{
         this.stateMachine.changeState(this.disableInteractiveState);
     }
 
-    public getBlueGroup(key: string){
+    getBlueGroup(key: string){
         return Enemy.bluePManager.getGroup(key);
     }
 
-    public getRedGroup(key: string){
+    getRedGroup(key: string){
         return Enemy.redPManager.getGroup(key);
     }
 }
 
 export class EnemyWithSpawn extends Enemy{
-    spawnState: EnemyState;
+    spawnState: EnemyState_Spawn;
+    retreatState: EnemyState_Retreat;
+    activeStartTime?: number;
 
-    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, sData_Spawn: IEnemyStateData_Spawn){
+    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, sData_Spawn: IEnemyStateData_Spawn, sData_Retreat: IEnemyStateData_Retreat){
         super(scene, data, sData_Idle, sData_Attack);
         this.spawnState = new EnemyState_Spawn(this, data, sData_Spawn);
+        this.retreatState = new EnemyState_Retreat(this, data, sData_Retreat);
+
         this.stateMachine.initialize(this.spawnState);
     }
+
+    decideNextStage(noAttack: boolean): EnemyState{
+        if(this.activeStartTime! + this.retreatState.sData.activeDuration < this.time()){
+            return this.retreatState;
+        }
+
+        return super.decideNextStage(noAttack);
+    }
+
+    onRetreat(){
+    }
+
 }
 
 export class EnemyBoss extends EnemyWithSpawn{
-    moveState: EnemyState;
+    moveState: EnemyState_Move;
 
-    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, sData_Spawn: IEnemyStateData_Spawn, sData_Move: IEnemyStateData_Move){
-        super(scene, data, sData_Idle, sData_Attack, sData_Spawn);
+    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, sData_Spawn: IEnemyStateData_Spawn, sData_Retreat: IEnemyStateData_Retreat, sData_Move: IEnemyStateData_Move){
+        super(scene, data, sData_Idle, sData_Attack, sData_Spawn, sData_Retreat);
         this.moveState = new EnemyState_Move(this, data, sData_Move);
     }
 
-    nextStage(noAttack: boolean): EnemyState{
+    decideNextStage(noAttack: boolean): EnemyState{
+        if(this.activeStartTime! + this.retreatState.sData.activeDuration < this.time()){
+            return this.retreatState;
+        }
+        
         return noAttack ? this.moveState : this.attackState;
+    }
+
+    onRetreat(){
     }
 }

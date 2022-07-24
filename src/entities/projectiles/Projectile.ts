@@ -91,12 +91,7 @@ export class Projectile extends Entity{
         if (this.scaleSpeed > 0) {
             this.scaleX += this.scaleSpeed;
             this.scaleY += this.scaleSpeed;
-        }
-      
-        // out of view check
-        if(!this.inCameraView()){
-            this.disableEntity();
-        }
+        }      
     }
 
     update(time: number, delta: number) {

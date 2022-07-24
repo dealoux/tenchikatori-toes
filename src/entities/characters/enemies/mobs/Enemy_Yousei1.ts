@@ -1,17 +1,16 @@
 import Phaser from 'phaser';
-import { Enemy, EnemyBoss, IEnemy } from '../Enemy';
+import { Enemy, IEnemy } from '../Enemy';
 import { IVectorPoint } from '../../../Entity';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../../projectiles/Projectile_Enemy' 
 import { IWavePatternData, PPatternWave } from '../../../projectiles/patterns/Pattern_Wave';
 import { IAnimation } from '../../Character';
 import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
-import { IEnemyStateData_Move } from '../enemy_states/EnemyState_Move';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
 import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
 import { GAMEPLAY_SIZE } from '../../../../constants';
 
 export const DATA_YOUSEI1: IEnemy = {
-    texture: { key: 'yousei1', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' },
+    texture: { key: 'youseis', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' },
     hp: 3,
     speed: 200,
     movementDuration: 1500,
@@ -50,10 +49,10 @@ const SDATA_ATTACK_YOUSEI1: IEnemyStateData_Attack = {
     animKey: YOUSEI1_ANIMS.idle,
 }
 
-const SDATA_SPAWN_YOUSEI1: IEnemyStateData_Spawn = {
-    spawnPoint: { pos: new Phaser.Math.Vector2(400, -100) },
-    targetPoint: { pos: new Phaser.Math.Vector2(400, 350) },
-    duration: 1800,
+export const SDATA_SPAWN_YOUSEI1: IEnemyStateData_Spawn = {
+    spawnPoint: { pos: new Phaser.Math.Vector2(700, -100) },
+    targetPoint: { pos: new Phaser.Math.Vector2(700, 250) },
+    duration: 2400,
 }
 
 const WAVEPATTERN_YOUSEI1 : IWavePatternData = {

@@ -16,7 +16,7 @@ export class PoolGroup extends Phaser.Physics.Arcade.Group{
         scene.add.existing(this);
     }
 
-    getInstance(point?: IVectorPoint){
+    spawnInstance(point?: IVectorPoint){
         const instance = this.getFirstDead(false);
 
         if(instance){
@@ -65,7 +65,7 @@ export class PoolManager extends Phaser.Physics.Arcade.Factory{
         const group = this.pList.get(name);
 
         if(group){
-            instance = group.getInstance(point);
+            instance = group.spawnInstance(point);
         }
 
         return instance;

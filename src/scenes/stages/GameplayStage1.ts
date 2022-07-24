@@ -7,11 +7,13 @@ import { BGM, playAudio } from '../../plugins/Audio';
 import { Player } from '../../entities/characters/player/Player';
 import { Character } from '../../entities/characters/Character';
 import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../../entities/projectiles/items/Item';
-import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/mobs/Enemy_Yousei1';
+import { DATA_YOUSEI1, SDATA_SPAWN_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/mobs/Enemy_Yousei1';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 import { GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
 import { ITexture } from '../UI';
 import { PoolGroup } from '../../plugins/Pool';
+import { DATA_YOUSEI2, SDATA_SPAWN_YOUSEI2, Yousei2 } from '../../entities/characters/enemies/mobs/Enemy_Yousei2';
+import { emptyFunction } from '../../plugins/Utilities';
 
 const BG_SKY: ITexture = { key: 'sky', path: 'assets/sprites/touhou_test/sky.png' }
 const BG_FIELD: ITexture = { key: 'field', path: 'assets/sprites/touhou_test/field.png' }
@@ -92,10 +94,15 @@ export default class GameplayStage1 extends GameplayScene {
 	}
 
 	protected handleMob(){
-		this.mobManager?.addGroup(DATA_YOUSEI1.texture.key, Yousei1, 4);
+		this.mobManager?.addGroup('yousei1', Yousei1, 4);
+		this.mobManager?.addGroup('yousei2', Yousei2, 4);
 
-		this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
-		this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
+		this.mobManager?.spawnInstance('yousei2', SDATA_SPAWN_YOUSEI2.spawnPoint);
+		this.yousei1 = this.mobManager?.spawnInstance('yousei1', SDATA_SPAWN_YOUSEI1.spawnPoint);
+		this.yousei1?.tweenMovement(SDATA_SPAWN_YOUSEI1.targetPoint, SDATA_SPAWN_YOUSEI1.duration, emptyFunction, emptyFunction);
+
+		// this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
+		// this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);

@@ -32,7 +32,7 @@ export class EnemyState_Idle extends EnemyState{
         super.update(time, delta)
 
         if(this.char.time() >= this.enterTime + this.idleTime){
-            this.changeState(this.char.nextStage(Math.random() > this.sData.attackRate));
+            this.changeState(this.char.decideNextStage(Math.random() > this.sData.attackRate));
         }
     }
 }

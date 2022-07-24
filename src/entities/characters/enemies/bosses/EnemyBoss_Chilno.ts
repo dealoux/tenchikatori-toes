@@ -9,6 +9,7 @@ import { EnemyBoss, IEnemy } from '../Enemy';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
 import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
 import { IEnemyStateData_Move } from '../enemy_states/EnemyState_Move';
+import { IEnemyStateData_Retreat } from '../enemy_states/EnemyState_Retreat';
 import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
 
 const DATA_CHILNO: IEnemy = {
@@ -70,6 +71,10 @@ const SDATA_SPAWN_CHILNO: IEnemyStateData_Spawn = {
     duration: 1800,
 }
 
+const SDATA_RETREAT_CHILNO: IEnemyStateData_Retreat = {
+    activeDuration: 60000,
+}
+
 const WAVEPATTERN_CHILNO : IWavePatternData = {
     pSpeed: 250,
     fireRate: 30,
@@ -92,10 +97,9 @@ const SCATTERPATTERN_CHILNO: IScatterPatternData = {
     scatterDistance: {x: 25, y: 0},
 }
 
-
 export class Chilno extends EnemyBoss{
     constructor(scene: Phaser.Scene){
-        super(scene, DATA_CHILNO, SDATA_IDLE_CHILNO, SDATA_ATTACK_CHILNO, SDATA_SPAWN_CHILNO, SDATA_MOVE_CHILNO);
+        super(scene, DATA_CHILNO, SDATA_IDLE_CHILNO, SDATA_ATTACK_CHILNO, SDATA_SPAWN_CHILNO, SDATA_RETREAT_CHILNO, SDATA_MOVE_CHILNO);
 
         this.attacks.set('wave', new PPatternWave(this, DATA_CHILNO.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), WAVEPATTERN_CHILNO));
         this.attacks.set('split', new PPatternSplit(this, DATA_CHILNO.shootPoint, this.getRedGroup(DATA_SHOTRED.texture.key), SPLITPATTERN_CHILNO));

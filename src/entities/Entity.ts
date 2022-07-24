@@ -78,6 +78,10 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     }
 
     preUpdate(time: number, delta: number){
+        // out of view check
+        if(!this.inCameraView()){
+            this.disableEntity();
+        }        
     } 
 
     update(time: number, delta: number) {

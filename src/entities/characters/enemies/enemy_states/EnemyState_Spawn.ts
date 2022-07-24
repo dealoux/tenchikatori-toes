@@ -1,8 +1,9 @@
 import Phaser from "phaser";
 import { ICharacterStateData } from "../../Character";
 import { IVectorPoint } from "../../../Entity";
-import { Enemy, IEnemy } from "../Enemy";
+import { Enemy, EnemyWithSpawn, IEnemy } from "../Enemy";
 import { EnemyState } from "./EnemyState";
+import { emptyFunction } from "../../../../plugins/Utilities";
 
 export interface IEnemyStateData_Spawn extends ICharacterStateData{
     spawnPoint: IVectorPoint;
@@ -11,24 +12,27 @@ export interface IEnemyStateData_Spawn extends ICharacterStateData{
 }
 
 export class EnemyState_Spawn extends EnemyState{
+    char: EnemyWithSpawn;
     sData: IEnemyStateData_Spawn;
 
-    constructor(char: Enemy, data: IEnemy, sData: IEnemyStateData_Spawn){
+    constructor(char: EnemyWithSpawn, data: IEnemy, sData: IEnemyStateData_Spawn){
         super(char, data, sData);
+        this.char = char;
         this.sData = sData;
     }
 
     enter(){
-        this.char.enableEntity(this.sData.spawnPoint.pos);
+        this.spawn(this.sData, emptyFunction, this.nextState.bind(this));
         this.char.createInvulnerableEffect(100, 24);
+    }
 
-        this.char.scene.tweens.add({
-            targets: this.char,
-            x: this.sData.targetPoint.pos.x,
-            y: this.sData.targetPoint.pos.y,
-            duration: this.sData.duration,
-            onStart: () => { },
-            onComplete: () => { this.changeState(this.char.idleState); },
-        });
+    protected spawn(sData: IEnemyStateData_Spawn, onStart: Function, onComplete: Function){
+        this.char.updateTransform(sData.spawnPoint);
+        this.char.tweenMovement(sData.targetPoint, sData.duration, onStart, onComplete);
+    }
+
+    protected nextState(){
+        this.changeState(this.char.idleState);
+        this.char.activeStartTime = this.char.time();
     }
 }
