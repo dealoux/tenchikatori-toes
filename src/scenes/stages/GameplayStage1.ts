@@ -7,7 +7,7 @@ import { BGM, playAudio } from '../../plugins/Audio';
 import { Player } from '../../entities/characters/player/Player';
 import { Character } from '../../entities/characters/Character';
 import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../../entities/projectiles/items/Item';
-import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/Enemy_Yousei1';
+import { DATA_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/mobs/Enemy_Yousei1';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 import { GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
 import { ITexture } from '../UI';
@@ -78,7 +78,7 @@ export default class GameplayStage1 extends GameplayScene {
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerScoreItem, undefined, this);
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_HP_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerHPItem, undefined, this);
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerSpecialItem, undefined, this);
-		this.stateMachine.initialize(this.cutsceneState);
+		// this.stateMachine.initialize(this.cutsceneState);
 	}
 
 	update(time: number, delta: number) {

@@ -8,6 +8,9 @@ export enum GAMEPLAY_EVENTS{
     gameplayResume = 'gameplayResume',
     gameplayEnd = 'gameplayEnd',
 
+    requestPlayer = 'requestPlayer',
+    retrievePlayer = 'retrievePlayyer',
+
     special = 'special',
     updateScore = 'updateScore',
     displayScore = 'displayScore',

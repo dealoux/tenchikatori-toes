@@ -129,6 +129,8 @@ export class Player extends Character{
         this.projectileManager.addGroup(DATA_PLAYER_PMOON.texture.key, PlayerSpecialMoon, PLAYER_SPECIAL_POOL);
         this.specialPattern = new PPatternScale(this, { pos: new Phaser.Math.Vector2(0, 30), theta: -90 }, this.projectileManager.getGroup(DATA_PLAYER_PMOON.texture.key), SPECIAL_DATA);
 
+        eventsCenter.on(GAMEPLAY_EVENTS.requestPlayer, () => { eventsCenter.emit(GAMEPLAY_EVENTS.retrievePlayer, this) }, this);
+
         this.stateMachine.initialize(this.spawnState);
     }
 

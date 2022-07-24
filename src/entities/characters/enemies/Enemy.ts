@@ -28,25 +28,23 @@ export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
 
-    spawnState: EnemyState;
     idleState: EnemyState;
     attackState: EnemyState;
     disableInteractiveState: EnemyState;
 
     attacks: Map<string, PPattern>;
 
-    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, spawnState: IEnemyStateData_Spawn){
+    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack){
         super(scene, data);
 
         this.attacks = new Map;
         this.components.addComponents(this, new UIBarComponent(ENEMY_HP_BAR));
 
-        this.spawnState = new EnemyState_Spawn(this, data, spawnState);
         this.idleState = new EnemyState_Idle(this, data, sData_Idle);
         this.attackState = new EnemyState_Attack(this, data, sData_Attack);
         this.disableInteractiveState = new EnemyState(this, data, {});
 
-        this.stateMachine.initialize(this.spawnState);
+        this.stateMachine.initialize(this.idleState);
     }
 
     static preload(scene: Phaser.Scene) {
@@ -80,7 +78,6 @@ export class Enemy extends Character{
 
     enableEntity(pos: Phaser.Math.Vector2): void {
         super.enableEntity(pos);
-        this.stateMachine.changeState(this.idleState);
     }
 
     disableEntity(): void {
@@ -97,7 +94,17 @@ export class Enemy extends Character{
     }
 }
 
-export class EnemyBoss extends Enemy{
+export class EnemyWithSpawn extends Enemy{
+    spawnState: EnemyState;
+
+    constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, sData_Spawn: IEnemyStateData_Spawn){
+        super(scene, data, sData_Idle, sData_Attack);
+        this.spawnState = new EnemyState_Spawn(this, data, sData_Spawn);
+        this.stateMachine.initialize(this.spawnState);
+    }
+}
+
+export class EnemyBoss extends EnemyWithSpawn{
     moveState: EnemyState;
 
     constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack, sData_Spawn: IEnemyStateData_Spawn, sData_Move: IEnemyStateData_Move){

@@ -1,12 +1,17 @@
 import Phaser from 'phaser';
 import { PoolGroup } from '../../plugins/Pool';
-import { IFunctionDelegate } from '../../plugins/Utilities';
 import { Character } from '../characters/Character';
 import { IEntity, IVectorPoint, COLLISION_CATEGORIES, Entity } from '../Entity';
 
 export interface IProjectileData extends IEntity{
     speed: number,
     value: number,
+}
+
+export interface IPPatternData{
+    fireRate: number;
+    pSpeed: number;
+    duration?: number;
 }
 
 export interface IUpdateArgs{
@@ -18,7 +23,7 @@ export interface IUpdateArgs{
     angularDrag?: number,
     gx?: number,
     gy?: number,
-    tracking?: boolean,
+    directionTracking?: boolean,
     scaleSpeed?: number,
     target?: Entity, 
 }
@@ -28,9 +33,7 @@ export class Projectile extends Entity{
     entData: IProjectileData;
 
     scaleSpeed: integer;
-    tracking?: boolean;
-    target?: Entity;
-    tagertingSpeed?: number;
+    directionTracking?: boolean;
 
     constructor(scene: Phaser.Scene, data: IProjectileData){
         super(scene, { pos: data.pos, texture: data.texture, hitSize: data.hitSize, frame: data.frame });
@@ -45,44 +48,44 @@ export class Projectile extends Entity{
         this.disableEntity();
     }
 
-    updateProjectileE({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, tracking, scaleSpeed, target} : IUpdateArgs) {
-        //this.scene.shootSFX.play();
+    updateProjectileE({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, directionTracking, scaleSpeed, target} : IUpdateArgs) {
         this.enableEntity(new Phaser.Math.Vector2(x, y));
-        return this.updateProjectile({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, tracking, scaleSpeed, target});
+        return this.updateProjectile({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, directionTracking, scaleSpeed, target});
     }
 
-    updateProjectile({x = this.x, y = this.y, speed = this.entData.speed, angle = 0, angularVelocity = 0, angularDrag = 0, gx = 0, gy = 0, tracking = false, scaleSpeed = 0, target} : IUpdateArgs) {
+    updateProjectile({x = this.x, y = this.y, speed = this.entData.speed, angle = 0, angularVelocity = 0, angularDrag = 0, gx = 0, gy = 0, directionTracking = false, scaleSpeed = 0, target} : IUpdateArgs) {
         this.setScale(1);
         this.setAngle(this.angle);
         this.setAngularVelocity(angularVelocity);
         this.setAngularDrag(angularDrag);
 
-        this.tracking = tracking;
+        this.directionTracking = directionTracking;
         this.scaleSpeed = scaleSpeed;
         this.body.gravity.set(gx, gy); // apply gravity to the physics body
 
-        if(target) {
-            this.target = target;
-            this.tagertingSpeed = speed;
-        } 
-        else {
-            this.scene.physics.velocityFromAngle(angle, speed, this.body.velocity);    
-        }
+        this.getDirection({ x: this.x, y: this.y, angle, target, speed });
 
         return this;
     }
 
+    getDirection({ angle = 0, target, speed }: IUpdateArgs){
+        if(target) {
+            this.scene.physics.moveToObject(this, target, speed);
+        } 
+        else {
+            this.scene.physics.velocityFromAngle(angle, speed, this.body.velocity);    
+        }
+    }
+
     protected resetProperties(){
         this.scaleSpeed = 0;
-        this.tracking = false;
-        this.target = undefined;
-        this.tagertingSpeed = 0;
+        this.directionTracking = false;
     }
 
     preUpdate(time: number, delta: number): void {
         super.preUpdate(time, delta);
 
-        if (this.tracking) {      
+        if (this.directionTracking) {      
             this.rotation = this.body.velocity.angle();
         }    
         if (this.scaleSpeed > 0) {
@@ -98,17 +101,38 @@ export class Projectile extends Entity{
 
     update(time: number, delta: number) {
         super.update(time, delta);
+    }
+}
 
+export class HomeingProjectile extends Projectile{
+    target?: Entity;
+    tagertingSpeed?: number;
+
+    getDirection({ angle = 0, target, speed }: IUpdateArgs){
+        if(target) {
+            this.target = target;
+            this.tagertingSpeed = speed;
+        } 
+        else {
+            this.scene.physics.velocityFromAngle(angle, speed, this.body.velocity);    
+        }
+    }
+
+    update(time: number, delta: number): void {
         if(this.target) {
             this.scene.physics.moveToObject(this, this.target, this.tagertingSpeed);
         }
     }
+
+    protected resetProperties(){
+        super.resetProperties();
+        this.target = undefined;
+        this.tagertingSpeed = 0;
+    }
 }
 
-export interface IPPatternData{
-    fireRate: number;
-    pSpeed: number;
-    duration?: number;
+interface IUpdatePatternDelegate{
+    (target?: Entity): void;
 }
 
 export abstract class PPattern{
@@ -116,7 +140,7 @@ export abstract class PPattern{
     parent: Character;
     projectile: PoolGroup | undefined;
     pPoint: IVectorPoint;
-    updatePattern: IFunctionDelegate;
+    updatePattern: IUpdatePatternDelegate;
     patternData: IPPatternData;
 
     constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IPPatternData){

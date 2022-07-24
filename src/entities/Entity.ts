@@ -7,6 +7,11 @@ export interface IVectorPoint{
     theta?: number;
 }
 
+export const DEFAULT_VECTOR_POINT : IVectorPoint ={
+    pos: new Phaser.Math.Vector2(0, 0),
+    theta: 0,
+}
+
 export interface IEntity{
     pos?: Phaser.Math.Vector2,
     texture: ITexture,
@@ -62,11 +67,6 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
         return Entity.worldsEdge.contains(this.x, this.y);
     }
 
-    protected setStatus(status: boolean | false){
-        this.setActive(status);
-        this.setVisible(status);
-    }
-
     static setWorldsEdge(scene: Phaser.Scene){
         const { worldView } = scene.cameras.main;
         const offset = new Phaser.Math.Vector2(worldView.width * .125, worldView.height * .125);
@@ -83,15 +83,20 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
     update(time: number, delta: number) {
     }
 
-    updateTransform(point: IVectorPoint){
-        this.setPosition(point.pos.x, point.pos.y);
+    getBody(){ return this.body as Phaser.Physics.Arcade.Body; }
+
+    updateTransform(point: IVectorPoint = DEFAULT_VECTOR_POINT){
+        // this.setPosition(point.pos.x, point.pos.y);
         this.setRotation(point.theta);
         this.enableEntity(point.pos);
     }
 
-    getBody(){ return this.body as Phaser.Physics.Arcade.Body; }
+    setStatus(status: boolean | false){
+        this.setActive(status);
+        this.setVisible(status);
+    }
 
-    enableEntity(pos: Phaser.Math.Vector2){
+    enableEntity(pos = DEFAULT_VECTOR_POINT.pos){
         this.setStatus(true);
         this.enableBody(true, pos.x, pos.y, true, true);
     }

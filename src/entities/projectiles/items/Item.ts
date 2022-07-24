@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { IUpdateArgs, IProjectileData, Projectile } from '../Projectile';
+import { IUpdateArgs, IProjectileData, HomeingProjectile } from '../Projectile';
 import { Entity } from '../../Entity';
 import { PLAYER_DATA } from '../../characters/player/Player';
 import { PoolManager } from '../../../plugins/Pool';
@@ -106,7 +106,7 @@ export class ItemManager extends PoolManager{
     }
 }
 
-export class Item extends Projectile{
+export class Item extends HomeingProjectile{
     pData: IProjectileData;
 
     constructor(scene: Phaser.Scene, pData: IProjectileData){

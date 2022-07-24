@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import { CHILNO_STAND, CHILNO_TEXTURE, GAMEPLAY_SIZE } from '../../../../constants';
+import { IScatterPatternData, PPatternScatter } from '../../../projectiles/patterns/Pattern_Scatter';
+import { ISplitPatternData, PPatternSplit } from '../../../projectiles/patterns/Pattern_Split';
 import { IWavePatternData, PPatternWave } from '../../../projectiles/patterns/Pattern_Wave';
-import { DATA_SHOTBLUE } from '../../../projectiles/Projectile_Enemy';
+import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../../projectiles/Projectile_Enemy';
 import { IAnimation } from '../../Character';
 import { EnemyBoss, IEnemy } from '../Enemy';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
@@ -69,18 +71,35 @@ const SDATA_SPAWN_CHILNO: IEnemyStateData_Spawn = {
 }
 
 const WAVEPATTERN_CHILNO : IWavePatternData = {
-    pSpeed : 250,
-    fireRate : 30,
+    pSpeed: 250,
+    fireRate: 30,
+    duration: 250,
     wave: PPatternWave.generateWaveArray(400, 16),
     waveIndex: 0,
-    duration: 250,
 }
+
+const SPLITPATTERN_CHILNO: ISplitPatternData = {
+    pSpeed: 250,
+    fireRate: 30,
+    duration: 250,
+    splitDrag: 200,
+}
+
+const SCATTERPATTERN_CHILNO: IScatterPatternData = {
+    pSpeed: 250,
+    fireRate: 30,
+    duration: 250,
+    scatterDistance: {x: 25, y: 0},
+}
+
 
 export class Chilno extends EnemyBoss{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_CHILNO, SDATA_IDLE_CHILNO, SDATA_ATTACK_CHILNO, SDATA_SPAWN_CHILNO, SDATA_MOVE_CHILNO);
 
-        this.attacks.set('key', new PPatternWave(this, DATA_CHILNO.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), WAVEPATTERN_CHILNO));
+        this.attacks.set('wave', new PPatternWave(this, DATA_CHILNO.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), WAVEPATTERN_CHILNO));
+        this.attacks.set('split', new PPatternSplit(this, DATA_CHILNO.shootPoint, this.getRedGroup(DATA_SHOTRED.texture.key), SPLITPATTERN_CHILNO));
+        this.attacks.set('scatter', new PPatternScatter(this, DATA_CHILNO.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), SCATTERPATTERN_CHILNO));
     }
 
     static preload(scene: Phaser.Scene) {

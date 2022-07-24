@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { PoolGroup } from '../../../plugins/Pool';
 import { Character } from '../../characters/Character';
-import { IVectorPoint } from '../../Entity';
+import { Entity, IVectorPoint } from '../../Entity';
 import { IPPatternData, PPattern } from '../Projectile';
 
 export interface IWavePatternData extends IPPatternData{
@@ -19,12 +19,12 @@ export class PPatternWave extends PPattern{
         this.updatePattern = Math.abs(pPoint.theta!) == 90 ? this.waveVertical : this.waveHorizontal;
     }
 
-    private waveBase(gx = 0, gy = 0){
+    private waveBase(gx = 0, gy = 0, target?: Entity){
         if(this.parent.time() < this.nextFire) { return; }
 
         const x = this.parent.x + this.pPoint.pos.x;
         const y = this.parent.y + this.pPoint.pos.y;
-        this.projectile?.getFirstDead(false).updateProjectileE({ x: x, y: y, speed : this.patternData.pSpeed, angle: this.pPoint.theta, gx: gx, gy: gy });
+        this.projectile?.getFirstDead(false).updateProjectileE({ x: x, y: y, speed : this.patternData.pSpeed, angle: this.pPoint.theta, gx: gx, gy: gy, target });
         this.patternData.waveIndex++;
         if (this.patternData.waveIndex === this.patternData.wave.length) {
             this.patternData.waveIndex = 0;
@@ -33,12 +33,12 @@ export class PPatternWave extends PPattern{
         this.nextFire = this.parent.time() + this.patternData.fireRate;
     }
 
-    waveVertical() {
-        this.waveBase(this.patternData.wave[this.patternData.waveIndex]);
+    waveVertical(target?: Entity) {
+        this.waveBase(this.patternData.wave[this.patternData.waveIndex], 0, target);
     }
 
-    waveHorizontal() {
-        this.waveBase(0, this.patternData.wave[this.patternData.waveIndex]);
+    waveHorizontal(target?: Entity) {
+        this.waveBase(0, this.patternData.wave[this.patternData.waveIndex], target);
     }
 
     static generateWaveArray(value: number, step : number){

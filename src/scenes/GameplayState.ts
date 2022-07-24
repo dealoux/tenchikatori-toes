@@ -94,11 +94,6 @@ export class SceneState_Cutscene extends GameplayState{
 		super.exit();
 		this.scene.mobManager?.resumeUpdate();
 		this.scene.input.off(Phaser.Input.Events.POINTER_DOWN, this.dialogUpdate, this);
-
-		this.leftChar?.setVisible(false);
-		this.rightChar?.setVisible(false);
-		this.leftTextBox?.setVisible(false);
-		this.rightTextBox?.setVisible(false);
 	}
 
 	update(time: number, delta: number): void {

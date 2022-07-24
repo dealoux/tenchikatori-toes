@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { IVectorPoint } from '../entities/Entity';
 
-export class PoolGroup extends Phaser.GameObjects.Group{
+export class PoolGroup extends Phaser.Physics.Arcade.Group{
     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
-        super(scene, undefined, { enable: false } as Phaser.Types.Physics.Arcade.PhysicsGroupConfig);
+        super(scene.physics.world, scene, { enable: false, runChildUpdate: true } as Phaser.Types.Physics.Arcade.PhysicsGroupConfig);
 
         this.createMultiple({
             key: name,
@@ -13,19 +13,26 @@ export class PoolGroup extends Phaser.GameObjects.Group{
             visible: false,
         });
 
-        this.runChildUpdate = true;
         scene.add.existing(this);
-        this.children.each((c : any) => c.disableEntity());
+        // this.children.each((c : any) => c.disableEntity());
     }
 
-    getInstance(point : IVectorPoint){
+    getInstance(point?: IVectorPoint){
         const instance = this.getFirstDead(false);
 
         if(instance){
-            instance.updateTransform(point);
+            if(point)
+                instance.updateTransform(point);
+            else{
+                instance.setStatus(true);
+            }
         }
 
         return instance;
+    }
+
+    test(){
+        this.scene.physics.add.group()
     }
 }
 
@@ -47,7 +54,7 @@ export class PoolManager extends Phaser.Physics.Arcade.Factory{
         return this.pList.get(name);
     }
 
-    spawnInstance(name:string, point : IVectorPoint){
+    spawnInstance(name:string, point?: IVectorPoint){
         let instance = undefined;
         const group = this.pList.get(name);
 
