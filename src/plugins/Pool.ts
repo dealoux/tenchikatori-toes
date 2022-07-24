@@ -57,4 +57,21 @@ export class PoolManager extends Phaser.Physics.Arcade.Factory{
 
         return instance;
     }
+
+    protected setUpdateStatus(value: boolean, groupName?: string){
+        if(groupName && this.pList.has(groupName)){
+            this.getGroup(groupName)!.runChildUpdate = value;
+        }
+        else{
+            this.pList.forEach(pGroup => { pGroup.runChildUpdate = value; });
+        }
+    }
+
+    pauseUpdate(groupName?: string){
+        this.setUpdateStatus(false, groupName);
+    }
+
+    resumeUpdate(groupName?: string){
+        this.setUpdateStatus(true, groupName);
+    }
 }

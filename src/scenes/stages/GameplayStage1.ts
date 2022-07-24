@@ -84,7 +84,10 @@ export default class GameplayStage1 extends GameplayScene {
 	update(time: number, delta: number) {
 		super.update(time, delta);
 		this.backgroundScroll(.8);
-		// this.yousei1?.update(time, delta);
+	}
+
+	updateInteractive(time: number, delta: number): void {
+		super.updateInteractive(time, delta);
 		this.chilno?.update(time, delta);
 	}
 
