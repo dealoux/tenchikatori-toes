@@ -3,7 +3,7 @@ import { IVectorPoint } from '../entities/Entity';
 
 export class PoolGroup extends Phaser.Physics.Arcade.Group{
     constructor(scene: Phaser.Scene, name: string, type: Function, quantity: number = 1){
-        super(scene.physics.world, scene, { enable: false, runChildUpdate: true } as Phaser.Types.Physics.Arcade.PhysicsGroupConfig);
+        super(scene.physics.world, scene, { enable: false, runChildUpdate: true });
 
         this.createMultiple({
             key: name,
@@ -14,7 +14,6 @@ export class PoolGroup extends Phaser.Physics.Arcade.Group{
         });
 
         scene.add.existing(this);
-        // this.children.each((c : any) => c.disableEntity());
     }
 
     getInstance(point?: IVectorPoint){
@@ -36,8 +35,8 @@ export class PoolGroup extends Phaser.Physics.Arcade.Group{
             if (entity) {
                 const startingX = pos.x! + spacing.x! * i;
                 entity.enableBody(true, startingX, startingY, true, true);
-                entity.body.velocity.x = -entity.entData.SPEED;
-                entity.body.velocity.y = Phaser.Math.Between(-300, 300);
+                // entity.body.velocity.x = -entity.entData.SPEED;
+                // entity.body.velocity.y = Phaser.Math.Between(-300, 300);
             }
         }
     }
