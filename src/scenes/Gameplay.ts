@@ -57,6 +57,8 @@ export abstract class GameplayScene extends BaseScene {
 		this.events.on(Phaser.Scenes.Events.PAUSE, this.onPause, this);
 		this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
+		eventsCenter.on(GAMEPLAY_EVENTS.playerDamaged, () => { this.clearActiveMobs(); });
+
 		this.stateMachine.initialize(this.interactiveState);
 	}
 
@@ -70,6 +72,17 @@ export abstract class GameplayScene extends BaseScene {
 
 	protected backgroundScroll(speedY = 0, speedX = 0){
 		this.background?.setTilePosition(this.background.tilePositionX + speedX, this.background.tilePositionY - speedY);
+	}
+
+	protected clearActiveMobs(){
+		this.mobManager?.pList.forEach(pGroup => {
+			let element: Enemy = pGroup.getFirstAlive();
+
+			while(element){
+				element.handleDamage(element.hp);
+				element = pGroup.getFirstAlive();
+			}
+		});
 	}
 
 	protected callBack_hitPlayerEnemyProjectile(playerHitbox: unknown, p: unknown) {
@@ -94,7 +107,7 @@ export abstract class GameplayScene extends BaseScene {
 	protected hitEnemyMob(enemy: Enemy, p: Projectile) {
 		// this.score += enemy.points;
 		// this.scoreText.setText("SCORE:"+Phaser.Utils.String.Pad(this.score, 6, '0', 1));
-		enemy.handleCollision(p);
+		enemy.handleDamage(p.entData.value);
 		const { x, y } = p.body.center; // set x and y constants to the bullet's body (for use later)
 		p.handleCollision(enemy);
 		

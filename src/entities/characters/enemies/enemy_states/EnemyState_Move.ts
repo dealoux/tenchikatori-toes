@@ -43,12 +43,12 @@ export class EnemyState_Move extends EnemyState{
         this.changeState(this.char.idleState);
     }
     
-    protected moveTo(point: IVectorPoint, onComplete: Function){
+    protected moveTo(point: IVectorPoint, onComplete = emptyFunction){
         // let distance = point.pos.distance(new Phaser.Math.Vector2(this.char.x, this.char.y));
         // const duration = (distance / this.entData.speed!) * 1000;
         const { duration } = this.sData;
         // console.log(duration);
 
-        this.char.tweenMovement(point, duration, emptyFunction, onComplete);
+        this.char.tweenMovement(point, duration, onComplete);
     }
 }

@@ -85,13 +85,18 @@ export class Projectile extends Entity{
     preUpdate(time: number, delta: number): void {
         super.preUpdate(time, delta);
 
+        // out of view check
+        if(!this.inCameraView()){
+            this.disableEntity();
+        }                
+
         if (this.directionTracking) {      
             this.rotation = this.body.velocity.angle();
         }    
         if (this.scaleSpeed > 0) {
             this.scaleX += this.scaleSpeed;
             this.scaleY += this.scaleSpeed;
-        }      
+        }
     }
 
     update(time: number, delta: number) {

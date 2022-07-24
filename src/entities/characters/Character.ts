@@ -6,6 +6,7 @@ import { IState, StateMachine } from '../../plugins/StateMachine';
 import { PoolManager } from '../../plugins/Pool';
 import { ComponentService, IComponent } from '../../plugins/Component';
 import { ITexture } from '../../scenes/UI';
+import { emptyFunction } from '../../plugins/Utilities';
 
 export interface ICharacter extends IEntity{
     hp: number,
@@ -60,7 +61,7 @@ export class Character extends Entity{
         this.components.update(time, delta);
     }
 
-    createInvulnerableEffect(duration = 50, repeat = 6, onStart = () => { }, onComplete =  () => { this.setAlpha(1); }) {
+    createInvulnerableEffect(duration = 50, repeat = 6, onComplete = () => { this.setAlpha(1); }, onStart = emptyFunction) {
         this.scene.tweens.add({
             targets: this,
             duration: duration,

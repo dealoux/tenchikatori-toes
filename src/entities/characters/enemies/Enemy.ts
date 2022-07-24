@@ -13,6 +13,7 @@ import { PoolManager } from '../../../plugins/Pool';
 import { EnemyState_Spawn, IEnemyStateData_Spawn } from './enemy_states/EnemyState_Spawn';
 import { IUIBar, UIBarComponent } from '../CharacterComponent';
 import { EnemyState_Retreat, IEnemyStateData_Retreat } from './enemy_states/EnemyState_Retreat';
+import { emptyFunction } from '../../../plugins/Utilities';
 
 export interface IEnemy extends ICharacter{
     shootPoint: IVectorPoint
@@ -65,21 +66,21 @@ export class Enemy extends Character{
         return noAttack ? this.idleState : this.attackState;
     }
 
-    tweenMovement(point: IVectorPoint, duration: number, onStart: Function, onComplete: Function){
+    tweenMovement(point: IVectorPoint, duration: number, onComplete = emptyFunction, onStart = emptyFunction){
         this.scene.tweens.add({
             targets: this,
             x: point.pos.x,
             y: point.pos.y,
             duration: duration,
             ease: 'Sine.easeInOut',
-            onStart: onStart(),
-            onComplete: onComplete(),
+            onStart: onStart,
+            onComplete: onComplete,
         });
     }
     
-    handleCollision(p: Projectile) {
+    handleDamage(value: number) {
         this.createInvulnerableEffect();
-        this.hp -= p.entData.value;
+        this.hp -= value;
         (this.components.findComponents(this, UIBarComponent) as UIBarComponent).display(this.hp, this.entData.hp);
 
         if(this.hp <= 0){
@@ -129,6 +130,7 @@ export class EnemyWithSpawn extends Enemy{
     }
 
     onRetreat(){
+        this.disableEntity();
     }
 
 }
@@ -145,7 +147,7 @@ export class EnemyBoss extends EnemyWithSpawn{
         if(this.activeStartTime! + this.retreatState.sData.activeDuration < this.time()){
             return this.retreatState;
         }
-        
+
         return noAttack ? this.moveState : this.attackState;
     }
 

@@ -98,8 +98,7 @@ export default class GameplayStage1 extends GameplayScene {
 		this.mobManager?.addGroup('yousei2', Yousei2, 4);
 
 		this.mobManager?.spawnInstance('yousei2', SDATA_SPAWN_YOUSEI2.spawnPoint);
-		this.yousei1 = this.mobManager?.spawnInstance('yousei1', SDATA_SPAWN_YOUSEI1.spawnPoint);
-		this.yousei1?.tweenMovement(SDATA_SPAWN_YOUSEI1.targetPoint, SDATA_SPAWN_YOUSEI1.duration, emptyFunction, emptyFunction);
+		this.yousei1 = this.mobManager?.spawnInstance('yousei1', SDATA_SPAWN_YOUSEI1.targetPoint);
 
 		// this.yousei1 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-400), theta: 0 });
 		// this.yousei2 = this.mobManager?.spawnInstance(DATA_YOUSEI1.texture.key, { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT/2-200), theta: 0 });

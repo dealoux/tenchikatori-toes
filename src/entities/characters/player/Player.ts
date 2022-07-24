@@ -24,6 +24,18 @@ export interface IPlayer extends ICharacter{
     maxSpecial: number,
 }
 
+
+const HITBOX_TEXTURE: ITexture = {
+    key: 'hitbox', path: 'assets/sprites/hitbox.png',
+};
+const HITBOX_SIZE = 8;
+const HITBOX_OFFSET = -HITBOX_SIZE/2;
+
+export const GRAZEHB_SIZE = 60;
+
+const MODE_IDICATOR_SIZE = 20;
+const MODE_IDICATOR_OFFSET = new Phaser.Math.Vector2(-MODE_IDICATOR_SIZE/2, GRAZEHB_SIZE -MODE_IDICATOR_SIZE/2);
+
 export const PLAYER_DATA : IPlayer = {
     texture: ENNA_TEXTURE,
     standTexture: ENNA_STAND,
@@ -33,18 +45,8 @@ export const PLAYER_DATA : IPlayer = {
     maxHP: 10,
     maxPower: 4,
     maxSpecial: 10,
+    hitSize: new Phaser.Math.Vector2(GRAZEHB_SIZE, GRAZEHB_SIZE),
 }
-
-const HITBOX_TEXTURE: ITexture = {
-    key: 'hitbox', path: 'assets/sprites/hitbox.png',
-};
-const HITBOX_SIZE = 8;
-const HITBOX_OFFSET = -HITBOX_SIZE/2;
-
-const GRAZEHB_SIZE = 60;
-
-const MODE_IDICATOR_SIZE = 20;
-const MODE_IDICATOR_OFFSET = new Phaser.Math.Vector2(-MODE_IDICATOR_SIZE/2, GRAZEHB_SIZE -MODE_IDICATOR_SIZE/2);
 
 const BLUE_MODE: ITexture = {
     key: 'bluemode', path: 'assets/sprites/bluemode.png',
@@ -249,6 +251,8 @@ export class Player extends Character{
             this.updateHPCount();
 
             playAudio(this.scene, SFX.player_vanish);
+
+            eventsCenter.emit(GAMEPLAY_EVENTS.playerDamaged);
 
             if(this.hp > 0){
                 this.disableEntity();

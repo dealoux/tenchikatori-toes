@@ -11,6 +11,8 @@ export enum GAMEPLAY_EVENTS{
     requestPlayer = 'requestPlayer',
     retrievePlayer = 'retrievePlayyer',
 
+    playerDamaged = 'playerDamaged',
+
     special = 'special',
     updateScore = 'updateScore',
     displayScore = 'displayScore',

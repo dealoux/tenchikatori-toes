@@ -22,13 +22,13 @@ export class EnemyState_Spawn extends EnemyState{
     }
 
     enter(){
-        this.spawn(this.sData, emptyFunction, this.nextState.bind(this));
+        this.spawn(this.sData, () => this.nextState());
         this.char.createInvulnerableEffect(100, 24);
     }
 
-    protected spawn(sData: IEnemyStateData_Spawn, onStart: Function, onComplete: Function){
+    protected spawn(sData: IEnemyStateData_Spawn, onComplete = emptyFunction, onStart = emptyFunction){
         this.char.updateTransform(sData.spawnPoint);
-        this.char.tweenMovement(sData.targetPoint, sData.duration, onStart, onComplete);
+        this.char.tweenMovement(sData.targetPoint, sData.duration, onComplete, onStart );
     }
 
     protected nextState(){

@@ -20,6 +20,6 @@ export class EnemyState_Retreat extends EnemyState{
     }
 
     enter(){
-        this.char.tweenMovement({pos: new Phaser.Math.Vector2(this.char.x, Entity.worldsEdge.top-1) }, 2400, emptyFunction, this.char.onRetreat.bind(this.char));
+        this.char.tweenMovement({ pos: new Phaser.Math.Vector2(this.char.x, Entity.worldsEdge.top-1) }, 2400, () => this.char.onRetreat() );
     }
 }

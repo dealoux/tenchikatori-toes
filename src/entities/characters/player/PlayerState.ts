@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { eventsCenter } from '../../../plugins/EventsCentre';
-import { IPlayer, Player } from "./Player";
+import { GRAZEHB_SIZE, IPlayer, Player } from "./Player";
 import { InputHandler, INPUT_EVENTS } from "../../../plugins/InputHandler";
 import { PLAYER_SHOOT_DELAY, SHOOTPOINTS_FOCUSED, SHOOTPOINTS_NORMAL } from "../../projectiles/Projectile_Player";
 import { GAMEPLAY_SIZE } from "../../../constants";
@@ -37,16 +37,22 @@ export class PlayerState_Spawn extends PlayerState{
         this.char.setCollideWorldBounds(false);
         this.char.modeIndicator.setVisible(false);
         this.char.enableEntity(new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25));
+        // this.char.getBody().setSize(GAMEPLAY_SIZE.WIDTH*2, GAMEPLAY_SIZE.WIDTH*2);
         this.char.handlingProjectileCollisionDelegate = emptyFunction;
-        this.char.createInvulnerableEffect(100, 24, emptyFunction, ()=>{ this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
+        this.char.createInvulnerableEffect(100, 24, () => { this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
 
         this.char.scene.tweens.add({
             targets: this.char,
             y: GAMEPLAY_SIZE.HEIGHT*.85,
             duration: 1600,
-            onStart: () => { },
+            onStart: emptyFunction,
             onComplete: () => { this.char.setCollideWorldBounds(true); this.changeState(this.char.interactiveState); this.char.modeIndicator.setVisible(true); this.char.displayHUDData(); },
         });
+    }
+
+    exit(){
+        // collects all items on death prototype, also needs to disable graze collision count
+        // this.char.getBody().setSize(GRAZEHB_SIZE, GRAZEHB_SIZE);
     }
 }
 
