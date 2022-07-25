@@ -5,7 +5,7 @@ import { FONT_NOKIA, GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
 import { BGM, playAudio } from '../../plugins/Audio';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 import { DATA_YOUSEI1, SDATA_SPAWN_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/mobs/Enemy_Yousei1';
-import { SDATA_SPAWN_YOUSEI2, Yousei2 } from '../../entities/characters/enemies/mobs/Enemy_Yousei2';
+import { SDATA_SPAWN_YOUSEI2, Yousei2, Yousei31 } from '../../entities/characters/enemies/mobs/Enemy_Yousei2';
 
 const BG_SKY: ITexture = { key: 'sky', path: 'assets/sprites/touhou_test/sky.png' }
 
@@ -20,7 +20,7 @@ const chant: Array<IDialogText> = [
 	{ text: '*Waipa*', font: FONT_NOKIA.key, swapChar: true } ,
 ];
 
-const chant2 = [
+const chant2: Array<IDialogText> = [
 	{ text: 'Faiya, Faiya', font: FONT_NOKIA.key } , 
 	{ text: 'Tora Tora Kara Kina', font: FONT_NOKIA.key } ,
 	{ text: 'Chape Ape Fama', font: FONT_NOKIA.key } ,
@@ -49,18 +49,18 @@ export default class GameplayStage1 extends GameplayScene {
 		this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, .2, true);
 		this.background = this.add.tileSprite(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT, BG_SKY.key).setOrigin(0, 0).setDepth(-1).setAlpha(.8);
 
-		this.handleBoss();
-		this.handleMob();
-
 		this.cutsceneState.init();
-
-		this.addPlayerDialog(chant2);
 		this.addBossDialog(chant);
+		this.addPlayerDialog(chant2);
 
 		this.currSpeakerDialog = this.dialogBoss;
 		this.nextDialog();
 
-		this.stateMachine.initialize(this.cutsceneState);
+		this.stateMachine.initialize(this.interactiveState);
+
+		this.time.delayedCall(1500, () => {
+			this.handleMob();
+		}, [], this);
 	}
 
 	update(time: number, delta: number) {
@@ -74,23 +74,55 @@ export default class GameplayStage1 extends GameplayScene {
 	}
 
 	protected async handleMob(){
-		this.mobManager?.addGroup('yousei1', Yousei1, 6);
+		this.mobManager?.addGroup('yousei1', Yousei1, 10);
 		this.mobManager?.addGroup('yousei2', Yousei2, 4);
-
-		this.mobManager?.spawnGroup('yousei1', {x: GAMEPLAY_SIZE.WIDTH + 100, y: 50}, {x: 50, y: 30}, {x: -DATA_YOUSEI1.speed!, y: 0}, 4)
-
-		this.mobManager?.spawnInstance('yousei2', SDATA_SPAWN_YOUSEI2.spawnPoint);
-		// this.mobManager?.spawnInstance('yousei1', SDATA_SPAWN_YOUSEI1.targetPoint);
+		this.mobManager?.addGroup('yousei3', Yousei31, 4);
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
-			this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);
+			// this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			this.mobManager?.pList.forEach(eGroup => {
 				this.physics.add.overlap(eGroup, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			});
 		});
+
+		this.time.delayedCall(100, () => {
+			this.mobManager?.spawnGroup('yousei1', {x: GAMEPLAY_SIZE.WIDTH + 100, y: 50}, {x: 50, y: 30}, {x: -DATA_YOUSEI1.speed!, y: 0}, 4);
+		}, [], this);
+
+		this.time.delayedCall(10000, () => {
+			this.mobManager?.spawnInstance('yousei2');
+		}, [], this);
+
+		this.time.delayedCall(15000, () => {
+			this.mobManager?.spawnInstance('yousei3');
+		}, [], this);
+
+		this.time.delayedCall(20000, () => {
+			this.mobManager?.spawnGroup('yousei1', {x: 0 - 100, y: 50}, {x: 50, y: 30}, {x: DATA_YOUSEI1.speed!, y: 0}, 4);
+		}, [], this);
+
+		this.time.delayedCall(30000, () => {
+			this.mobManager?.spawnInstance('yousei2');
+			this.mobManager?.spawnInstance('yousei3');
+		}, [], this);
+
+		this.time.delayedCall(35000, () => {
+			this.mobManager?.spawnGroup('yousei1', {x: GAMEPLAY_SIZE.WIDTH + 100, y: 50}, {x: 50, y: 30}, {x: -DATA_YOUSEI1.speed!, y: 0}, 4);
+			this.mobManager?.spawnGroup('yousei1', {x: 0 - 100, y: 50}, {x: 50, y: 30}, {x: DATA_YOUSEI1.speed!, y: 0}, 4);
+		}, [], this);
+
+		this.time.delayedCall(45000, () => {
+			this.handleBoss();
+		}, [], this);
 	}
 
 	protected handleBoss(){
 		this.chilno = new Chilno(this);
+
+		this.player?.projectileManager.pList.forEach(pGroup => {
+			this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);
+		});
+
+		this.stateMachine.changeState(this.cutsceneState);
 	}
 }

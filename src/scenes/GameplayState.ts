@@ -8,7 +8,7 @@ import { IState } from '../plugins/StateMachine';
 import { GameplayScene } from './Gameplay';
 import { IVectorPoint } from '../entities/Entity';
 import { DialogLineCreateOpts } from '../objects/DialogLine';
-import { emptyFunction } from '../plugins/Utilities';
+import { emptyFunction, IFunctionDelegate } from '../plugins/Utilities';
 
 export class GameplayState implements IState{
     scene: GameplayScene;
@@ -85,6 +85,7 @@ export const TEXT_OPTS: DialogLineCreateOpts = {
 };
 
 export class SceneState_Cutscene extends GameplayState{
+	sceneUpdateDelegate: IFunctionDelegate;
 	sData: ICutsceneData;
 	leftChar?: Phaser.GameObjects.Image;
 	rightChar?: Phaser.GameObjects.Image;
@@ -97,6 +98,7 @@ export class SceneState_Cutscene extends GameplayState{
 	constructor(scene: GameplayScene){
 		super(scene);
 		this.sData = TEST_CUTSCENE;
+		this.sceneUpdateDelegate = emptyFunction;
 	}
 
 	init(right = false){
@@ -118,17 +120,23 @@ export class SceneState_Cutscene extends GameplayState{
 	enter(): void {
 		super.enter();
 		this.scene.mobManager?.pauseUpdate();
+		this.scene.clearActiveProjectiles();
+		this.scene.player?.stateMachine.changeState(this.scene.player.disableInteractiveState);
+
+		this.setStatus(true);
 		this.scene.input.on(Phaser.Input.Events.POINTER_DOWN, this.dialogUpdate, this);
 		eventsCenter.on(CUTSCENE_EVENTS.changeSpeaker, this.swapSpeaker, this);
 
-		this.setStatus(true);
+		this.scene.time.delayedCall(2000, () => {
+			this.scene.physics.pause();
+		}, [], this);
 	}
 
 	exit(): void {
 		super.exit();
 		this.scene.mobManager?.resumeUpdate();
-		this.scene.input.off(Phaser.Input.Events.POINTER_DOWN, this.dialogUpdate, this);
-		eventsCenter.off(CUTSCENE_EVENTS.changeSpeaker, this.swapSpeaker);
+		this.scene.physics.resume();
+		this.scene.player?.stateMachine.changeState(this.scene.player.interactiveState);
 
 		this.leftChar?.setPosition(this.sData.leftChar.spawnPoint.pos.x, this.sData.leftChar.spawnPoint.pos.y);
 		this.rightChar?.setPosition(this.sData.rightChar.spawnPoint.pos.x, this.sData.rightChar.spawnPoint.pos.y);
@@ -137,11 +145,21 @@ export class SceneState_Cutscene extends GameplayState{
 		this.rightChar?.setVisible(false);
 		this.leftTextBox?.setVisible(false);
 		this.rightTextBox?.setVisible(false);
+
+		this.scene.input.off(Phaser.Input.Events.POINTER_DOWN, this.dialogUpdate, this);
+		eventsCenter.off(CUTSCENE_EVENTS.changeSpeaker, this.swapSpeaker);
 	}
 
 	update(time: number, delta: number): void {
 		super.update(time, delta);
+		this.sceneUpdateDelegate();
+	}
 
+	protected dialogUpdate(){
+		this.scene.dialog?.update(this.scene, { dialogUpdate: DialogUpdateAction.PROGRESS });
+	}
+
+	protected sceneUpdate(){
 		this.scene.dialog?.update(this.scene, {});
 
 		const {inputs} = InputHandler.Instance();
@@ -150,10 +168,6 @@ export class SceneState_Cutscene extends GameplayState{
 			inputs.Shot = false;
 			this.dialogUpdate();
 		}
-	}
-
-	protected dialogUpdate(){
-		this.scene.dialog?.update(this.scene, { dialogUpdate: DialogUpdateAction.PROGRESS });
 	}
 
 	protected addChar(charData: ICutsceneCharacterData){
@@ -180,7 +194,10 @@ export class SceneState_Cutscene extends GameplayState{
 		
 		if(value){
 			let tempPoint = (this.currChar == this.rightChar) ? this.sData.rightChar.point : this.sData.leftChar.point;
-			this.tweenMovement(this.currChar!, tempPoint, 1000, () => {this.currTextBox?.setVisible(value);});
+			this.tweenMovement(this.currChar!, tempPoint, 2000, () => {
+				this.currTextBox?.setVisible(value);
+				this.sceneUpdateDelegate = this.sceneUpdate;
+			}, () => { this.sceneUpdateDelegate = emptyFunction; });
 		}
 		else{
 			let tempPoint = (this.currChar == this.rightChar) ? this.sData.rightChar.spawnPoint : this.sData.leftChar.spawnPoint;

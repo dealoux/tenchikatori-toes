@@ -8,7 +8,7 @@ import { PPatternWave } from '../patterns/Pattern_Wave';
 export const DATA_POWER_ITEM : IProjectileData = {
     texture: { key: 'powerItem', path: 'assets/sprites/touhou_test/powerItem.png' },
     speed: 140,
-    value: .5,
+    value: .2,
 }
 
 export const DATA_SCORE_ITEM : IProjectileData = {
@@ -29,10 +29,10 @@ export const DATA_SPECIAL_ITEM : IProjectileData = {
     value: 1,
 }
 
-export const ITEM_POOL = 40;
-export const SPECIAL_POOL = 10;
-const SPECIAL_ITEM_DROP_RATE = .5;
-const HP_ITEM_DROP_RATE = .5;
+export const ITEM_POOL = 80;
+export const SPECIAL_POOL = 14;
+const SPECIAL_ITEM_DROP_RATE = .2;
+const HP_ITEM_DROP_RATE = .2;
 const LAUNCH_ANGULAR_VELOCITY = 1200;
 const LAUNCH_TIME = 8;
 const LAUNCH_TIME_MS = LAUNCH_TIME*100;
@@ -126,8 +126,8 @@ export class Item extends HomeingProjectile{
         this.scene.time.delayedCall(LAUNCH_TIME_MS, () => { this.updateProjectile({ x: this.x, y: this.y, angle: 90 }); this.setAngle(0); });
     }
 
-    handlingGrazeHBCollision(hitbox: Entity){
-        this.updateProjectile({ x: this.x, y: this.y, speed: PLAYER_DATA.speed, target: hitbox });
+    handlingGrazeHBCollision(hitbox: Entity, speed = PLAYER_DATA.speed){
+        this.updateProjectile({ x: this.x, y: this.y, speed: speed, target: hitbox });
     }
 }
 

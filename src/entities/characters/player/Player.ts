@@ -6,12 +6,13 @@ import { Character, ICharacter } from '../Character';
 import { Projectile } from '../../projectiles/Projectile';
 import { PlayerState_DisableInteractive, PlayerState_Interactive, PlayerState_Spawn } from './PlayerState';
 import { ITexture } from '../../../scenes/UI';
-import { ENNA_STAND, ENNA_TEXTURE, SCENE_NAMES } from '../../../constants';
+import { ENNA_STAND, ENNA_TEXTURE, GAMEPLAY_SIZE, SCENE_NAMES } from '../../../constants';
 import { emptyFunction, IFunctionDelegate } from '../../../plugins/Utilities';
 import { playAudio, SFX } from '../../../plugins/Audio';
 import { PoolManager } from '../../../plugins/Pool';
 import { IScalePatternData, PPatternScale } from '../../projectiles/patterns/Pattern_Scale';
 import { IUIBar, UIBarComponent } from '../CharacterComponent';
+import { InputHandler } from '../../../plugins/InputHandler';
 
 interface IHandlingPCollisionDelegate{
     (p: Projectile) : void;
@@ -23,7 +24,6 @@ export interface IPlayer extends ICharacter{
     maxPower: number,
     maxSpecial: number,
 }
-
 
 const HITBOX_TEXTURE: ITexture = {
     key: 'hitbox', path: 'assets/sprites/hitbox.png',
@@ -194,6 +194,24 @@ export class Player extends Character{
         this.hitbox.enableEntity(pos);
         this.modeIndicator.enableEntity(pos);
         this.hitbox.setVisible(false);
+    }
+    
+    startInterative(){
+        this.handlingProjectileCollisionDelegate = this.handleProjectileCollision;
+    }
+
+    stopInteractive(){
+        this.handlingProjectileCollisionDelegate = emptyFunction;
+        this.collectItems();
+    }
+
+    collectItems(){
+        InputHandler.Instance().reset();
+        this.setVelocity(0, 0);
+        this.setCollideWorldBounds(false);
+        this.getBody().setSize(GAMEPLAY_SIZE.WIDTH*4, GAMEPLAY_SIZE.HEIGHT*4);
+        PLAYER_DATA.speed! *= 2;
+        this.scene.time.delayedCall(100, () => { this.getBody().setSize(GRAZEHB_SIZE, GRAZEHB_SIZE); this.setCollideWorldBounds(true); PLAYER_DATA.speed! *= .5; }, [], this);
     }
 
     moveHorizontally(x: number){

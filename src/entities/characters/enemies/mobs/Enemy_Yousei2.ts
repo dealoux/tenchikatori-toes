@@ -8,11 +8,12 @@ import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
 import { IEnemyStateData_Retreat } from '../enemy_states/EnemyState_Retreat';
 import { GAMEPLAY_SIZE, YOUSEI_SPRITES } from '../../../../constants';
 import { I8WayPatternData, PPattern8Way } from '../../../projectiles/patterns/Pattern_8Way';
+import { YOUSEI3_ANIMS, YOUSEI3_ANIMS_DATA } from './Enemy_YouseiTest';
 
 export const DATA_YOUSEI2: IEnemy = {
     texture: YOUSEI_SPRITES,
-    hp: 10,
-    speed: 200,
+    hp: 18,
+    speed: 250,
     movementDuration: 1500,
     shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, }
 }
@@ -39,8 +40,8 @@ const SDATA_ATTACK_YOUSEI2: IEnemyStateData_Attack = {
 }
 
 export const SDATA_SPAWN_YOUSEI2: IEnemyStateData_Spawn = {
-    spawnPoint: { pos: new Phaser.Math.Vector2(400, -100) },
-    targetPoint: { pos: new Phaser.Math.Vector2(400, 250) },
+    spawnPoint: { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH*.2, -100) },
+    targetPoint: { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH*.2, 250) },
     duration: 2400,
 }
 
@@ -66,5 +67,23 @@ export class Yousei2 extends EnemyWithSpawn{
     create(){
         super.create();
         this.createAnimation(YOUSEI2_ANIMS_DATA, DATA_YOUSEI2.texture.key);
+    }
+}
+
+export const SDATA_SPAWN_YOUSEI3: IEnemyStateData_Spawn = {
+    spawnPoint: { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH*.8, -100) },
+    targetPoint: { pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH*.8, 250) },
+    duration: 2400,
+}
+
+export class Yousei31 extends EnemyWithSpawn{
+    constructor(scene: Phaser.Scene){
+        super(scene, DATA_YOUSEI2, {...SDATA_IDLE_YOUSEI2, animKey: YOUSEI3_ANIMS.idle }, {...SDATA_ATTACK_YOUSEI2, animKey: YOUSEI3_ANIMS.idle}, SDATA_SPAWN_YOUSEI3, SDATA_RETREAT_YOUSEI2);
+        this.attacks.set('8way', new PPattern8Way(this, DATA_YOUSEI2.shootPoint, this.getBlueGroup(DATA_SHOTBLUE.texture.key), PATTERN_8WAY_YOUSEI));
+    }
+
+    create(){
+        super.create();
+        this.createAnimation(YOUSEI3_ANIMS_DATA, DATA_YOUSEI2.texture.key);
     }
 }

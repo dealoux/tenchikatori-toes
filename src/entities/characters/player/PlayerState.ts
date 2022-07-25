@@ -26,6 +26,16 @@ export class PlayerState_DisableInteractive extends PlayerState{
     constructor(char: Player, entData: IPlayer){
         super(char, entData);
     }
+
+    enter(): void {
+        super.enter();
+        this.char.stopInteractive();
+    }
+
+    exit(): void {
+        super.exit();
+        this.char.startInterative();
+    }
 }
 
 export class PlayerState_Spawn extends PlayerState{
@@ -37,9 +47,9 @@ export class PlayerState_Spawn extends PlayerState{
         this.char.setCollideWorldBounds(false);
         this.char.modeIndicator.setVisible(false);
         this.char.enableEntity(new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25));
-        // this.char.getBody().setSize(GAMEPLAY_SIZE.WIDTH*2, GAMEPLAY_SIZE.WIDTH*2);
         this.char.handlingProjectileCollisionDelegate = emptyFunction;
         this.char.createInvulnerableEffect(100, 24, () => { this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
+        // this.char.collectItems();
 
         this.char.scene.tweens.add({
             targets: this.char,
@@ -48,11 +58,6 @@ export class PlayerState_Spawn extends PlayerState{
             onStart: emptyFunction,
             onComplete: () => { this.char.setCollideWorldBounds(true); this.changeState(this.char.interactiveState); this.char.modeIndicator.setVisible(true); this.char.displayHUDData(); },
         });
-    }
-
-    exit(){
-        // collects all items on death prototype, also needs to disable graze collision count
-        // this.char.getBody().setSize(GRAZEHB_SIZE, GRAZEHB_SIZE);
     }
 }
 

@@ -1,8 +1,6 @@
 import Phaser from 'phaser';
 import { Enemy, IEnemy } from '../Enemy';
-import { IVectorPoint } from '../../../Entity';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../../projectiles/Projectile_Enemy' 
-import { IWavePatternData, PPatternWave } from '../../../projectiles/patterns/Pattern_Wave';
 import { IAnimation } from '../../Character';
 import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
@@ -12,7 +10,7 @@ import { IScatterPatternData, PPatternScatter } from '../../../projectiles/patte
 
 export const DATA_YOUSEI1: IEnemy = {
     texture: YOUSEI_SPRITES,
-    hp: 3,
+    hp: 10,
     speed: 110,
     movementDuration: 1500,
     shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, }
@@ -33,17 +31,6 @@ const SDATA_IDLE_YOUSEI1: IEnemyStateData_Idle = {
     maxIdleTime: 4000,
     attackRate: .85,
 }
-
-// const SDATA_MOVE_YOUSEI1: IEnemyStateData_Move = {
-//     animKey: YOUSEI1_ANIMS.run,
-//     duration: 2400,
-
-//     locations: [
-//         { pos: new Phaser.Math.Vector2(720, 300), theta: 0 },
-//         { pos: new Phaser.Math.Vector2(1020, 200), theta: 0 },
-//         { pos: new Phaser.Math.Vector2(420, 200), theta: 0 },
-//     ],
-// }
 
 const SDATA_ATTACK_YOUSEI1: IEnemyStateData_Attack = {
     animKey: YOUSEI1_ANIMS.idle,
@@ -75,9 +62,6 @@ export class Yousei1 extends Enemy{
 
     create(){
         super.create();
-
         this.createAnimation(YOUSEI1_ANIMS_DATA, DATA_YOUSEI1.texture.key);
-        // this.anims.create({ key: YOUSEI1_ANIMS.idle, frames: this.anims.generateFrameNames(DATA_YOUSEI1.texture.key, { prefix: YOUSEI1_ANIMS.idle, end: 2, zeroPad: 4}), repeat: -1});
-        // this.anims.create({ key: YOUSEI1_ANIMS.run, frames: this.anims.generateFrameNames(DATA_YOUSEI1.texture.key, { prefix: YOUSEI1_ANIMS.run, end: 3, zeroPad: 4}), repeat: -1});
     }    
 }

@@ -13,8 +13,8 @@ import { StateMachine } from '../plugins/StateMachine';
 import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../entities/projectiles/items/Item';
 import { Projectile } from '../entities/projectiles/Projectile';
 import { GameplayState, SceneState_Cutscene, SceneState_Interactive, TEXT_BOX_RIGHT, TEXT_LEFT, TEXT_OPTS, TEXT_RIGHT } from './GameplayState';
-import { DATA_SHOTBLUE, DATA_SHOTRED } from '../entities/projectiles/Projectile_Enemy';
-import { DEFAULT_DIALOG_LINE_CREATE_OPTS, DialogLineCreateOpts } from '../objects/DialogLine';
+import { DATA_SHOTBLUE, DATA_SHOTRED, EnemyProjectile } from '../entities/projectiles/Projectile_Enemy';
+import { DialogLineCreateOpts } from '../objects/DialogLine';
 
 
 export abstract class GameplayScene extends BaseScene {
@@ -67,7 +67,7 @@ export abstract class GameplayScene extends BaseScene {
 		this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
 		eventsCenter.on(GAMEPLAY_EVENTS.playerDamaged, this.clearActiveMobs, this);
-		eventsCenter.on(GAMEPLAY_EVENTS.stageBossVanished, () => { this.time.delayedCall(2500, () => { this.scene.start(SCENE_NAMES.OverMenu); }); });
+		// eventsCenter.on(GAMEPLAY_EVENTS.stageBossVanished, () => { this.time.delayedCall(2500, () => { this.scene.start(SCENE_NAMES.OverMenu); }); });
 		eventsCenter.on(CUTSCENE_EVENTS.changeSpeaker, this.switchSpeaker, this);
 		eventsCenter.on(CUTSCENE_EVENTS.dialogEnds, this.nextDialog, this);
 
@@ -86,11 +86,6 @@ export abstract class GameplayScene extends BaseScene {
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerSpecialItem, undefined, this);
 
 		this.stateMachine.initialize(this.interactiveState);
-
-		// this.dialog = this.add.dialog({
-		// 	...DEFAULT_DIALOG_LINE_CREATE_OPTS,
-		// 	text: ['test','test','test','communication'],
-		// });
 	}
 
 	update(time: number, delta: number) {
@@ -107,13 +102,42 @@ export abstract class GameplayScene extends BaseScene {
 
 	protected clearActiveMobs(){
 		this.mobManager?.pList.forEach(pGroup => {
-			let element: Enemy = pGroup.getFirstAlive();
+			let element: Enemy = pGroup.getFirstAlive(false);
 
 			while(element){
 				element.handleDamage(element.hp);
 				element = pGroup.getFirstAlive();
 			}
 		});
+	}
+
+	async clearActiveProjectiles(){
+		Enemy.bluePManager?.pList.forEach(pGroup => {
+			let element: EnemyProjectile = pGroup.getFirstAlive(false);
+
+			while(element){
+				element.disableEntity();
+				element = pGroup.getFirstAlive();
+			}
+		});
+
+		Enemy.redPManager?.pList.forEach(pGroup => {
+			let element: EnemyProjectile = pGroup.getFirstAlive(false);
+
+			while(element){
+				element.disableEntity();
+				element = pGroup.getFirstAlive();
+			}
+		});
+
+		// Character.itemManager.pList.forEach(pGroup => {
+		// 	let element: Item = pGroup.getFirstAlive(false);
+
+		// 	while(element){
+		// 		element.handlingGrazeHBCollision(this.player!);
+		// 		element = pGroup.getFirstAlive();
+		// 	}
+		// });
 	}
 
 	protected switchSpeaker(){
