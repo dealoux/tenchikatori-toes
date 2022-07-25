@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { emptyFunction } from "../../../../plugins/Utilities";
 import { CharacterState, ICharacterStateData } from "../../Character";
 import { Enemy, IEnemy } from "../Enemy";
 

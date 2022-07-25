@@ -30,7 +30,7 @@ export const DATA_PLAYER_P2 : IProjectileData = {
 export const DATA_PLAYER_PMOON : IProjectileData = {
     hitSize: new Phaser.Math.Vector2(24, 10),
     texture: { key: 'moon', path: 'assets/sprites/touhou_test/moon.png', frameWidth: 32, frameHeight: 16 },
-    speed: 400,
+    speed: 700,
     value: 3,
 }
 

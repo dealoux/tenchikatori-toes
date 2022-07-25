@@ -7,10 +7,10 @@ import { IAnimation } from '../../Character';
 import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
 import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
-import { GAMEPLAY_SIZE } from '../../../../constants';
+import { GAMEPLAY_SIZE, YOUSEI_SPRITES } from '../../../../constants';
 
 export const DATA_YOUSEI1: IEnemy = {
-    texture: { key: 'youseis', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' },
+    texture: YOUSEI_SPRITES,
     hp: 3,
     speed: 200,
     movementDuration: 1500,
@@ -29,8 +29,7 @@ const YOUSEI1_ANIMS_DATA: Array<IAnimation> = [
 
 const SDATA_IDLE_YOUSEI1: IEnemyStateData_Idle = {
     animKey: YOUSEI1_ANIMS.idle,
-
-    maxIdleTime: 800,
+    maxIdleTime: 1800,
     attackRate: .85,
 }
 
@@ -60,7 +59,7 @@ const WAVEPATTERN_YOUSEI1 : IWavePatternData = {
     fireRate : 30,
     wave: PPatternWave.generateWaveArray(400, 16),
     waveIndex: 0,
-    duration: 250,
+    duration: 1000,
 }
 
 export class Yousei1 extends Enemy{
@@ -72,7 +71,6 @@ export class Yousei1 extends Enemy{
     }
 
     static preload(scene: Phaser.Scene) {
-        scene.load.atlas(DATA_YOUSEI1.texture.key, DATA_YOUSEI1.texture.path, DATA_YOUSEI1.texture.json);
 	}
 
     create(){

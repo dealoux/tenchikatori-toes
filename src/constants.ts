@@ -28,6 +28,8 @@ export const FONT_INTER: ITexture = { key: 'inter', path: 'assets/fonts/inter/in
 export const FONT_NOKIA: ITexture = { key: 'nokia', path: 'assets/fonts/nokia/nokia16black.png', json: 'assets/fonts/nokia/nokia16black.xml' };
 export const TEXT_BOX: ITexture = { key: 'textbox', path: 'assets/sprites/textbox.png', };
 
+export const YOUSEI_SPRITES: ITexture = { key: 'youseis', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' };
+
 export const ENNA_TEXTURE: ITexture = { key: 'enna', path: 'assets/sprites/touhouenna.png', };
 export const ENNA_STAND: ITexture = { key: 'enna_stand', path: 'assets/sprites/enna_stand.png', };
 
@@ -41,4 +43,5 @@ export enum SCENE_NAMES {
 	OverMenu = 'OverMenu',
 	HUD = 'HUD',
 	Stage1_Gameplay = 'Stage1_Gameplay',
+	Stage2_Gameplay = 'Stage2_Gameplay',
 }

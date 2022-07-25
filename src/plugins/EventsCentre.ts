@@ -12,6 +12,7 @@ export enum GAMEPLAY_EVENTS{
     retrievePlayer = 'retrievePlayyer',
 
     playerDamaged = 'playerDamaged',
+    stageBossVanished = 'stageBossVanished',
 
     special = 'special',
     updateScore = 'updateScore',
@@ -21,4 +22,9 @@ export enum GAMEPLAY_EVENTS{
     displayHPCount = 'updateHPCount',
     displayGrazeCount = 'updateGrazeCount',
     displayExtraScore = 'updateExtraScore',
+}
+
+export enum DEMO_EVENTS{
+    stage2_spawn = 'stage2_spawn',
+    stage2_spawn2 = 'stage2_spawn2',
 }

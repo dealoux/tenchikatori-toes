@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { eventsCenter } from '../../../plugins/EventsCentre';
+import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
 import { ENEMY_PROJECTILE_POOL, EnemyPBlue, EnemyPRed, DATA_SHOTBLUE, DATA_SHOTRED } from '../../projectiles/Projectile_Enemy';
 import { Character, ICharacter } from '../Character';
 import { PPattern, Projectile } from '../../projectiles/Projectile';
@@ -14,10 +14,15 @@ import { EnemyState_Spawn, IEnemyStateData_Spawn } from './enemy_states/EnemySta
 import { IUIBar, UIBarComponent } from '../CharacterComponent';
 import { EnemyState_Retreat, IEnemyStateData_Retreat } from './enemy_states/EnemyState_Retreat';
 import { emptyFunction } from '../../../plugins/Utilities';
+import { YOUSEI_SPRITES } from '../../../constants';
 
 export interface IEnemy extends ICharacter{
     shootPoint: IVectorPoint
     movementDuration: number,
+}
+
+interface IHandlingDamageDelegate{
+    (value: number) : void;
 }
 
 const ENEMY_HP_BAR : IUIBar = {
@@ -30,6 +35,8 @@ export class Enemy extends Character{
     static bluePManager : PoolManager;
     static redPManager : PoolManager;
 
+    // handleDamage: IHandlingDamageDelegate;
+
     idleState: EnemyState_Idle;
     attackState: EnemyState_Attack;
     disableInteractiveState: EnemyState;
@@ -39,6 +46,7 @@ export class Enemy extends Character{
     constructor(scene: Phaser.Scene, data: IEnemy, sData_Idle: IEnemyStateData_Idle, sData_Attack: IEnemyStateData_Attack){
         super(scene, data);
 
+        // this. handleDamage = this.handleDamageHelper;
         this.attacks = new Map;
         this.components.addComponents(this, new UIBarComponent(ENEMY_HP_BAR));
 
@@ -52,6 +60,7 @@ export class Enemy extends Character{
     static preload(scene: Phaser.Scene) {
         scene.load.image(DATA_SHOTBLUE.texture.key, DATA_SHOTBLUE.texture.path);
         scene.load.image(DATA_SHOTRED.texture.key, DATA_SHOTRED.texture.path);
+        scene.load.atlas(YOUSEI_SPRITES.key, YOUSEI_SPRITES.path, YOUSEI_SPRITES.json);
 	}
 
     static initPManagers(scene: Phaser.Scene){
@@ -60,6 +69,14 @@ export class Enemy extends Character{
 
         Enemy.bluePManager.addGroup(DATA_SHOTBLUE.texture.key, EnemyPBlue, ENEMY_PROJECTILE_POOL);
         Enemy.redPManager.addGroup(DATA_SHOTRED.texture.key, EnemyPRed, ENEMY_PROJECTILE_POOL);
+    }
+
+    preUpdate(time: number, delta: number): void {
+        super.preUpdate(time, delta);
+        // out of view check
+        if(!this.inCameraView()){
+            this.disableEntity();
+        }                        
     }
 
     decideNextStage(noAttack: boolean): EnemyState{
@@ -85,13 +102,20 @@ export class Enemy extends Character{
 
         if(this.hp <= 0){
             Character.itemManager.emitItemsEnemy(this.x, this.y);
-            this.disableEntity();
             playAudio(this.scene, SFX.enemy_vanish);
+            this.disableEntity();
         }
+    }
+
+    updateTransform(point?: IVectorPoint): void {
+        super.updateTransform(point);
+        this.stateMachine.changeState(this.idleState);
     }
 
     enableEntity(pos: Phaser.Math.Vector2): void {
         super.enableEntity(pos);
+        // reset properties here
+        this.hp = this.entData.hp;
     }
 
     disableEntity(): void {
@@ -129,10 +153,13 @@ export class EnemyWithSpawn extends Enemy{
         return super.decideNextStage(noAttack);
     }
 
-    onRetreat(){
-        this.disableEntity();
+    updateTransform(point?: IVectorPoint): void {
+        super.updateTransform(point);
+        this.stateMachine.changeState(this.spawnState);
     }
 
+    onRetreat(){
+    }
 }
 
 export class EnemyBoss extends EnemyWithSpawn{
@@ -151,6 +178,13 @@ export class EnemyBoss extends EnemyWithSpawn{
         return noAttack ? this.moveState : this.attackState;
     }
 
+    disableEntity(): void {
+        super.disableEntity();
+        eventsCenter.emit(GAMEPLAY_EVENTS.stageBossVanished);
+    }
+
     onRetreat(){
+        super.onRetreat();
+        eventsCenter.emit(GAMEPLAY_EVENTS.stageBossVanished);
     }
 }

@@ -44,7 +44,7 @@ const CHILNO_ANIMS_DATA: Array<IAnimation> = [
 ]
 
 const SDATA_IDLE_CHILNO: IEnemyStateData_Idle = {
-    maxIdleTime: 800,
+    maxIdleTime: 900,
     attackRate: .85,
     animKey: CHILNO_ANIMS.idle,
 }
@@ -78,7 +78,7 @@ const SDATA_RETREAT_CHILNO: IEnemyStateData_Retreat = {
 const WAVEPATTERN_CHILNO : IWavePatternData = {
     pSpeed: 250,
     fireRate: 30,
-    duration: 250,
+    duration: 1000,
     wave: PPatternWave.generateWaveArray(400, 16),
     waveIndex: 0,
 }
@@ -86,14 +86,14 @@ const WAVEPATTERN_CHILNO : IWavePatternData = {
 const SPLITPATTERN_CHILNO: ISplitPatternData = {
     pSpeed: 250,
     fireRate: 30,
-    duration: 250,
+    duration: 500,
     splitDrag: 200,
 }
 
 const SCATTERPATTERN_CHILNO: IScatterPatternData = {
     pSpeed: 250,
     fireRate: 30,
-    duration: 250,
+    duration: 500,
     scatterDistance: {x: 25, y: 0},
 }
 

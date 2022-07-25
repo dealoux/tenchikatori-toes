@@ -1,16 +1,16 @@
 import Phaser from 'phaser';
 import { EnemyWithSpawn, IEnemy } from '../Enemy';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../../../projectiles/Projectile_Enemy' 
-import { IWavePatternData, PPatternWave } from '../../../projectiles/patterns/Pattern_Wave';
 import { IAnimation } from '../../Character';
 import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
 import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
 import { IEnemyStateData_Retreat } from '../enemy_states/EnemyState_Retreat';
-import { GAMEPLAY_SIZE } from '../../../../constants';
+import { GAMEPLAY_SIZE, YOUSEI_SPRITES } from '../../../../constants';
+import { I8WayPatternData, PPattern8Way } from '../../../projectiles/patterns/Pattern_8Way';
 
 export const DATA_YOUSEI2: IEnemy = {
-    texture: { key: 'youseis', path: 'assets/sprites/touhou_test/youseis.png', json: 'assets/sprites/touhou_test/youseis.json' },
+    texture: YOUSEI_SPRITES,
     hp: 3,
     speed: 200,
     movementDuration: 1500,
@@ -29,13 +29,13 @@ const YOUSEI2_ANIMS_DATA: Array<IAnimation> = [
 
 const SDATA_IDLE_YOUSEI2: IEnemyStateData_Idle = {
     animKey: YOUSEI2_ANIMS.idle,
-
-    maxIdleTime: 800,
+    maxIdleTime: 1800,
     attackRate: .85,
 }
 
 const SDATA_ATTACK_YOUSEI2: IEnemyStateData_Attack = {
     animKey: YOUSEI2_ANIMS.idle,
+    neutral: true,
 }
 
 export const SDATA_SPAWN_YOUSEI2: IEnemyStateData_Spawn = {
@@ -48,20 +48,16 @@ const SDATA_RETREAT_YOUSEI2: IEnemyStateData_Retreat = {
     activeDuration: 4000,
 }
 
-const WAVEPATTERN_YOUSEI2 : IWavePatternData = {
-    pSpeed : 250,
-    fireRate : 30,
-    wave: PPatternWave.generateWaveArray(400, 16),
-    waveIndex: 0,
-    duration: 250,
+const PATTERN_8WAY_YOUSEI: I8WayPatternData = {
+    fireRate: 100,
+    pSpeed: 250,
+    duration: 1000,
 }
 
 export class Yousei2 extends EnemyWithSpawn{
     constructor(scene: Phaser.Scene){
         super(scene, DATA_YOUSEI2, SDATA_IDLE_YOUSEI2, SDATA_ATTACK_YOUSEI2, SDATA_SPAWN_YOUSEI2, SDATA_RETREAT_YOUSEI2);
-        this.setScale(2);
-
-        this.attacks.set('wave', new PPatternWave(this, DATA_YOUSEI2.shootPoint, this.getRedGroup(DATA_SHOTRED.texture.key), WAVEPATTERN_YOUSEI2));
+        this.attacks.set('8way', new PPattern8Way(this, DATA_YOUSEI2.shootPoint, this.getRedGroup(DATA_SHOTRED.texture.key), PATTERN_8WAY_YOUSEI));
     }
 
     static preload(scene: Phaser.Scene) {
