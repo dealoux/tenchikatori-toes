@@ -17,7 +17,7 @@ server by running `npm run dev` and navigate to localhost.
 
 ## Production
 
-After running `npm run build`, the files you need for production will be on the `dist` folder. To the build, run `npm run serve` and navigate to the your localhost link
+After running `npm run build`, the files you need for production will be on the `dist` folder. To the build, run `npm run serve` and navigate to localhost
 
 ## Important Links
 
