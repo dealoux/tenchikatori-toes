@@ -3,7 +3,7 @@ declare interface IDialogCreateOpts {
 	bounds: Phaser.Types.Math.Vector2Like;
 	size: number;
 	step: number;
-	text: string[];
+	dialog: IDialogText[];
 }
 
 declare interface IDialog extends Phaser.GameObjects.Container {

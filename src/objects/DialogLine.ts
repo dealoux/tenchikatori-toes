@@ -9,7 +9,7 @@ export interface DialogLineCreateOpts {
 	bounds: Phaser.Types.Math.Vector2Like;
 	size: number;
 	step: number;
-	text: string;
+	dialog: IDialogText;
 }
 
 export enum DialogLineState {
@@ -63,7 +63,7 @@ export const DEFAULT_DIALOG_LINE_CREATE_OPTS: DialogLineCreateOpts = {
 	bounds: {x : WINDOW_WIDTH * 3 / 4},
 	size: 32,
 	step: 100,
-	text: 'Lorem ipsum dolor sit amet.',
+	dialog: { text: 'Lorem ipsum dolor sit amet.', font: FONT_INTER.key },
 };
 
 export interface DialogLineUpdateOpts {
@@ -80,15 +80,15 @@ export class DialogLine extends Phaser.GameObjects.Container implements IDialog 
 		scene.load.bitmapFont(FONT_NOKIA.key, FONT_NOKIA.path, FONT_NOKIA.json);
 	}
 
-	constructor(scene: Phaser.Scene, { pos, bounds, size, step, text }: DialogLineCreateOpts) {
+	constructor(scene: Phaser.Scene, { pos, bounds, size, step, dialog }: DialogLineCreateOpts) {
 		super(scene);
 
 		const timerEvent = scene.time.addEvent({ delay: VERY_LONG_TIME, repeat: 0 });
 		this.timerEvent = timerEvent;
 
-		const lastI = text.length;
-		const textToRender = `${text}‣`;
-		const textObject = scene.add.dynamicBitmapText(pos.x, pos.y, 'inter', textToRender, size);
+		const lastI = dialog.text.length;
+		const textToRender = `${dialog.text}‣`;
+		const textObject = scene.add.dynamicBitmapText(pos.x, pos.y, dialog.font, textToRender, size).setTint(dialog.textTint);
 		textObject.setMaxWidth(bounds.x!);
 		textObject.setDisplayCallback(displayCallbackFactory({ timerEvent, step, lastI, getState: () => this.state, transitionState: this.transitionState.bind(this) }));
 		this.text = textObject;

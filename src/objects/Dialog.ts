@@ -1,3 +1,4 @@
+import { CUTSCENE_EVENTS, eventsCenter } from "../plugins/EventsCentre";
 import { DialogLine, DialogLineState, DialogLineUpdateAction } from "./DialogLine";
 
 export interface DialogCreateOpts {
@@ -5,7 +6,7 @@ export interface DialogCreateOpts {
 	bounds: Phaser.Types.Math.Vector2Like;
 	size: number;
 	step: number;
-	text: string[];
+	dialog: IDialogText[];
 }
 export interface DialogUpdateOpts {
 	dialogUpdate?: DialogUpdateAction;
@@ -20,15 +21,15 @@ export class Dialog extends Phaser.GameObjects.Container {
 	static preload = DialogLine.preload;
 
 	lines: IDialogLine[] = [];
-	text: string[];
+	dialog: IDialogText[];
 	size: number;
 	step: number;
 	nextPos: Phaser.Math.Vector2;
 	bounds: Phaser.Types.Math.Vector2Like;
 
-	constructor(scene: Phaser.Scene, { pos, bounds, size, step, text }: DialogCreateOpts) {
+	constructor(scene: Phaser.Scene, { pos, bounds, size, step, dialog }: DialogCreateOpts) {
 		super(scene);
-		this.text = text;
+		this.dialog = dialog;
 		this.bounds = bounds;
 		this.size = size;
 		this.step = step;
@@ -47,11 +48,17 @@ export class Dialog extends Phaser.GameObjects.Container {
 			}
 			// When all the lines have been displayed and we want to progress,
 			//   progress means destroying the dialog.
-			if (length === this.text.length) {
+			if (length === this.dialog.length) {
+				if(this.dialog[length-1].swapChar){
+					eventsCenter.emit(CUTSCENE_EVENTS.changeSpeaker);
+				}
+
 				this.destroy();
+
+				eventsCenter.emit(CUTSCENE_EVENTS.dialogEnds);
 				return;
 			}
-			const dialogLine = scene.add.dialogLine({ pos: this.nextPos, bounds: this.bounds, size: this.size, step: this.step, text: this.text[length] });
+			const dialogLine = scene.add.dialogLine({ pos: this.nextPos, bounds: this.bounds, size: this.size, step: this.step, dialog: this.dialog[length] });
 			if(this.nextPos.y + dialogLine.getBounds().height < this.bounds.y!){
 				this.nextPos.y += dialogLine.getBounds().height;
 			}

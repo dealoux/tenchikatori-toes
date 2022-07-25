@@ -24,6 +24,11 @@ export enum GAMEPLAY_EVENTS{
     displayExtraScore = 'updateExtraScore',
 }
 
+export enum CUTSCENE_EVENTS{
+    changeSpeaker = 'changeSpeaker',
+    dialogEnds = 'dialogEnds',
+}
+
 export enum DEMO_EVENTS{
     stage2_spawn = 'stage2_spawn',
     stage2_spawn2 = 'stage2_spawn2',

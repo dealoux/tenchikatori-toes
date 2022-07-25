@@ -18,21 +18,24 @@ export interface ITexture extends IAsset{
     frameHeight?: number,
 }
 
-export interface IText{
+export interface ITextBase{
     text: string,
     font: string,
-    point: IVectorPoint,
-    textSize?: number,
     textTint?: number,
 }
 
-export function addText(scene: Phaser.Scene, textData: IText): Phaser.GameObjects.BitmapText;
-export function addText(scene: Phaser.Scene, { text, font, point, textSize: size, textTint: tint }: IText): Phaser.GameObjects.BitmapText;
-export function addText(scene: Phaser.Scene, textData: IText){
+export interface ITextHUD extends ITextBase{
+    point: IVectorPoint,
+    textSize?: number,
+}
+
+export function addText(scene: Phaser.Scene, textData: ITextHUD): Phaser.GameObjects.BitmapText;
+export function addText(scene: Phaser.Scene, { text, font, point, textSize: size, textTint: tint }: ITextHUD): Phaser.GameObjects.BitmapText;
+export function addText(scene: Phaser.Scene, textData: ITextHUD){
     return scene.add.bitmapText(textData.point.pos.x, textData.point.pos.y, textData.font, textData.text, textData.textSize).setTintFill(textData.textTint);
 };
 
-export interface IButton extends IText{
+export interface IButton extends ITextHUD{
     buttonTexture: ITexture,
     buttonScale: Phaser.Types.Math.Vector2Like;
 }

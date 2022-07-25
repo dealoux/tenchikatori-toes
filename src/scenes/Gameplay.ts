@@ -5,7 +5,7 @@ import { Player } from '../entities/characters/player/Player';
 import { Enemy } from '../entities/characters/enemies/Enemy';
 import { Character } from '../entities/characters/Character';
 import { Entity } from '../entities/Entity';
-import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
+import { CUTSCENE_EVENTS, eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
 import { InputHandler } from '../plugins/InputHandler';
 import { PoolGroup, PoolManager } from '../plugins/Pool';
 import { BaseScene } from './BaseScene';
@@ -23,11 +23,12 @@ export abstract class GameplayScene extends BaseScene {
 	bgm?: Phaser.Sound.BaseSound;
 	background?: Phaser.GameObjects.TileSprite;
 	stateMachine: StateMachine;
-	interactiveState: GameplayState;
-	cutsceneState: GameplayState;
+	interactiveState: SceneState_Interactive;
+	cutsceneState: SceneState_Cutscene;
 
 	dialogPlayer: Array<IDialog>;
 	dialogBoss: Array<IDialog>
+	currSpeakerDialog?: Array<IDialog>;
 	dialog?: IDialog;
 
 	constructor(name: string) {
@@ -51,7 +52,6 @@ export abstract class GameplayScene extends BaseScene {
 
 		this.mobManager = new PoolManager(this);
 		this.player = new Player(this);
-		this.cutsceneState.init();
 
 		Enemy.initPManagers(this);
 		Character.initManager(this);
@@ -66,8 +66,10 @@ export abstract class GameplayScene extends BaseScene {
 		this.events.on(Phaser.Scenes.Events.PAUSE, this.onPause, this);
 		this.events.on(Phaser.Scenes.Events.RESUME, this.onResume, this);
 
-		eventsCenter.on(GAMEPLAY_EVENTS.playerDamaged, () => { this.clearActiveMobs(); });
+		eventsCenter.on(GAMEPLAY_EVENTS.playerDamaged, this.clearActiveMobs, this);
 		eventsCenter.on(GAMEPLAY_EVENTS.stageBossVanished, () => { this.time.delayedCall(2500, () => { this.scene.start(SCENE_NAMES.OverMenu); }); });
+		eventsCenter.on(CUTSCENE_EVENTS.changeSpeaker, this.switchSpeaker, this);
+		eventsCenter.on(CUTSCENE_EVENTS.dialogEnds, this.nextDialog, this);
 
 		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
 		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
@@ -95,7 +97,7 @@ export abstract class GameplayScene extends BaseScene {
 		this.stateMachine.currState().update(time, delta);
 	}
 
-	updateInteractive(time: number, delta: number){ 
+	updateInteractive(time: number, delta: number){
 		this.player?.update(time, delta);
 	}
 
@@ -114,15 +116,26 @@ export abstract class GameplayScene extends BaseScene {
 		});
 	}
 
-	protected addDialog(storage: Array<IDialog>, opts: DialogLineCreateOpts, dialog: string[]){
-		storage.push(this.add.dialog({ ...opts, text: dialog, }));
+	protected switchSpeaker(){
+		this.currSpeakerDialog = (this.currSpeakerDialog == this.dialogPlayer) ? this.dialogBoss : this.dialogPlayer;
 	}
 
-	protected addPlayerDialog(dialog: string[]){
+	protected nextDialog(){
+		if(this.currSpeakerDialog?.length! == 0)
+			return this.stateMachine.changeState(this.interactiveState);
+		
+		this.dialog = this.currSpeakerDialog?.shift();
+	}
+
+	protected addDialog(storage: Array<IDialog>, opts: DialogLineCreateOpts, dialog: IDialogText[]){
+		storage.push(this.add.dialog({ ...opts, dialog: dialog, }));
+	}
+
+	protected addPlayerDialog(dialog: IDialogText[]){
 		this.addDialog(this.dialogPlayer, { ...TEXT_OPTS, pos: TEXT_RIGHT }, dialog);
 	}
 
-	protected addBossDialog(dialog: string[]){
+	protected addBossDialog(dialog: IDialogText[]){
 		this.addDialog(this.dialogBoss, { ...TEXT_OPTS, pos: TEXT_LEFT }, dialog);
 	}
 

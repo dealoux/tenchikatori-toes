@@ -3,7 +3,7 @@ import { FONT_NOKIA, FONT_INTER, HUD_SIZE, SCENE_NAMES } from '../constants';
 import { PLAYER_DATA } from '../entities/characters/player/Player';
 import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM } from '../entities/projectiles/items/Item';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
-import { addText, IText } from './UI';
+import { addText, ITextHUD } from './UI';
 import { BaseScene } from './BaseScene';
 
 const HUD_LINE_SPACING = HUD_SIZE.height*.1;
@@ -14,7 +14,7 @@ const HUD_TEXT_SIZE = 25;
 const HUD_FRONT = FONT_NOKIA.key;
 const HUD_TEXT_TINT = 0xFFFFFF;
 
-const HUD_HISCORE: IText = {
+const HUD_HISCORE: ITextHUD = {
 	text: 'High Score',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
@@ -22,7 +22,7 @@ const HUD_HISCORE: IText = {
 	point: { pos: new Phaser.Math.Vector2(HUD_LINE_BASE.x + HUD_LINE_SPACING, HUD_LINE_BASE.y + HUD_LINE_SPACING) },
 }
 
-const HUD_SCORE: IText = {
+const HUD_SCORE: ITextHUD = {
 	text: 'Score',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
@@ -30,7 +30,7 @@ const HUD_SCORE: IText = {
 	point: { pos: new Phaser.Math.Vector2(HUD_LINE_BASE.x + HUD_LINE_SPACING, HUD_LINE_BASE.y + HUD_LINE_SPACING*2) },
 }
 
-const HUD_LIVES_COUNT: IText = {
+const HUD_LIVES_COUNT: ITextHUD = {
 	text: 'HP',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
@@ -38,7 +38,7 @@ const HUD_LIVES_COUNT: IText = {
 	point: { pos: new Phaser.Math.Vector2(HUD_LINE_BASE.x + HUD_LINE_SPACING, HUD_LINE_BASE.y + HUD_LINE_SPACING*3) },
 }
 
-const HUD_SPECIAL_COUNT: IText = {
+const HUD_SPECIAL_COUNT: ITextHUD = {
 	text: 'Special',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
@@ -46,7 +46,7 @@ const HUD_SPECIAL_COUNT: IText = {
 	point: { pos: new Phaser.Math.Vector2(HUD_LINE_BASE.x + HUD_LINE_SPACING, HUD_LINE_BASE.y + HUD_LINE_SPACING*4) },
 }
 
-const HUD_POWER: IText = {
+const HUD_POWER: ITextHUD = {
 	text: 'Power',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
@@ -54,7 +54,7 @@ const HUD_POWER: IText = {
 	point: { pos: new Phaser.Math.Vector2(HUD_LINE_BASE.x + HUD_LINE_SPACING, HUD_LINE_BASE.y + HUD_LINE_SPACING*5) },
 }
 
-const HUD_EXTRA_SCORE: IText = {
+const HUD_EXTRA_SCORE: ITextHUD = {
 	text: 'Extra Score',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
@@ -62,7 +62,7 @@ const HUD_EXTRA_SCORE: IText = {
 	point: { pos: new Phaser.Math.Vector2(HUD_LINE_BASE.x + HUD_LINE_SPACING, HUD_LINE_BASE.y + HUD_LINE_SPACING*6) },
 }
 
-const HUD_GRAZE_COUNT: IText = {
+const HUD_GRAZE_COUNT: ITextHUD = {
 	text: 'Graze Count',
 	font: HUD_FRONT,
 	textSize: HUD_TEXT_SIZE,
@@ -127,12 +127,12 @@ export class HUDScene extends BaseScene{
 		this.updateTextMax(this.specialCount!, value, PLAYER_DATA.maxSpecial.toString());
 	}
 
-	protected displayText(textData: IText){
+	protected displayText(textData: ITextHUD){
 		addText(this, textData);
 		return addText(this, { text: '', font: textData.font, textSize: textData.textSize, textTint: textData.textTint, point: { pos: new Phaser.Math.Vector2(textData.point.pos.x + HUD_VALUE_OFFSET_X, textData.point.pos.y) } });
 	}
 
-	protected displayTextItem(textData: IText, icon: string){
+	protected displayTextItem(textData: ITextHUD, icon: string){
 		this.add.image(textData.point.pos.x-HUD_ICON_OFFSET.x, textData.point.pos.y+HUD_ICON_OFFSET.y, icon);
 		return this.displayText(textData);
 	}
