@@ -4,26 +4,29 @@ import { ITexture } from '../UI';
 import { GAMEPLAY_SIZE, SCENE_NAMES } from '../../constants';
 import { BGM, playAudio } from '../../plugins/Audio';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
-import { SDATA_SPAWN_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/mobs/Enemy_Yousei1';
+import { DATA_YOUSEI1, SDATA_SPAWN_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/mobs/Enemy_Yousei1';
 import { SDATA_SPAWN_YOUSEI2, Yousei2 } from '../../entities/characters/enemies/mobs/Enemy_Yousei2';
 
 const BG_SKY: ITexture = { key: 'sky', path: 'assets/sprites/touhou_test/sky.png' }
 
 //#region Dialogues
 const chant = [
-	'Jinzou Faiya Faibo Waipa', 
-	'Taiga, Taiga, T-T-T-T-Taiga', 
+	'Jinzou Faiya Faibo Waipa' , 
+	'Taiga, Taiga, T-T-T-T-Taiga' , 
 	'Chape Ape Kara Kina' ,
 	'Chape Ape Kara Kina' ,
 	'Myouhontusuke' ,
 	'*Clap*', 
-	'Waipa!',
-	'Faiya, Faiya' ,
-	'Tora Tora Kara Kina',
-	'Chape Ape Fama',
-	'Ama Ama Jyasupa',
-	'Tora Taiga, Tora Taiga',
-	'Jinzou Sen\'i Iettaiga!'
+	'Waipa!' ,
+];
+
+const chant2 = [
+	['Faiya, Faiya'] ,
+	['Tora Tora Kara Kina'] ,
+	['Chape Ape Fama'] ,
+	['Ama Ama Jyasupa'] ,
+	['Tora Taiga, Tora Taiga'] ,
+	['Jinzou Sen\'i Iettaiga!'] ,
 ];
 //#endregion
 
@@ -43,17 +46,21 @@ export default class GameplayStage1 extends GameplayScene {
 	create() {
 		super.create();
 
-		this.dialog = this.add.dialog({
-			...DEFAULT_DIALOG_LINE_CREATE_OPTS,
-			text: chant,
-		});
+		this.stateMachine.initialize(this.cutsceneState);
 
 		this.bgm = playAudio(this, BGM.god_sees_wish_of_this_mystia, .2, true);
 		this.background = this.add.tileSprite(0, 0, GAMEPLAY_SIZE.WIDTH, GAMEPLAY_SIZE.HEIGHT, BG_SKY.key).setOrigin(0, 0).setDepth(-1).setAlpha(.8);
 
 		this.handleBoss();
 		this.handleMob();
-		// this.stateMachine.initialize(this.cutsceneState);
+
+		this.addPlayerDialog(chant);
+
+		chant2.forEach(element => {
+			this.addPlayerDialog(element);
+		});
+
+		this.dialog = this.dialogPlayer.shift();
 	}
 
 	update(time: number, delta: number) {
@@ -67,11 +74,13 @@ export default class GameplayStage1 extends GameplayScene {
 	}
 
 	protected async handleMob(){
-		this.mobManager?.addGroup('yousei1', Yousei1, 4);
+		this.mobManager?.addGroup('yousei1', Yousei1, 6);
 		this.mobManager?.addGroup('yousei2', Yousei2, 4);
 
+		this.mobManager?.spawnGroup('yousei1', {x: GAMEPLAY_SIZE.WIDTH + 100, y: 50}, {x: 50, y: 30}, {x: -DATA_YOUSEI1.speed!, y: 0}, 4)
+
 		this.mobManager?.spawnInstance('yousei2', SDATA_SPAWN_YOUSEI2.spawnPoint);
-		this.mobManager?.spawnInstance('yousei1', SDATA_SPAWN_YOUSEI1.targetPoint);
+		// this.mobManager?.spawnInstance('yousei1', SDATA_SPAWN_YOUSEI1.targetPoint);
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
 			this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);

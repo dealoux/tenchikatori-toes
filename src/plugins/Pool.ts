@@ -27,13 +27,13 @@ export class PoolGroup extends Phaser.Physics.Arcade.Group{
     }
 
     spawnGroup(pos: Phaser.Types.Math.Vector2Like, spacing : Phaser.Types.Math.Vector2Like, speed: Phaser.Types.Math.Vector2Like, groupSize: number) {
-        const startingY = Phaser.Math.Between(pos.y! - spacing.y!, pos.y! + spacing.y!);
         let temp = new Array();
 
         for (let i =0; i < groupSize; i++) {
             const entity = this.getFirstDead(false);
 
             if (entity) {
+                const startingY = Phaser.Math.Between(pos.y! - spacing.y!, pos.y! + spacing.y!);
                 const startingX = pos.x! + spacing.x! * i;
                 entity.enableBody(true, startingX, startingY, true, true);
                 entity.body.velocity.x = speed.x;

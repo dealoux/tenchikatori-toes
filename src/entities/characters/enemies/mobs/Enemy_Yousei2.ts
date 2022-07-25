@@ -11,7 +11,7 @@ import { I8WayPatternData, PPattern8Way } from '../../../projectiles/patterns/Pa
 
 export const DATA_YOUSEI2: IEnemy = {
     texture: YOUSEI_SPRITES,
-    hp: 3,
+    hp: 10,
     speed: 200,
     movementDuration: 1500,
     shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, }

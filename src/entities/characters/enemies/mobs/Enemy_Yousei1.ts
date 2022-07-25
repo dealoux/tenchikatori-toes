@@ -8,11 +8,12 @@ import { IEnemyStateData_Idle } from '../enemy_states/EnemyState_Idle';
 import { IEnemyStateData_Attack } from '../enemy_states/EnemyState_Attack';
 import { IEnemyStateData_Spawn } from '../enemy_states/EnemyState_Spawn';
 import { GAMEPLAY_SIZE, YOUSEI_SPRITES } from '../../../../constants';
+import { IScatterPatternData, PPatternScatter } from '../../../projectiles/patterns/Pattern_Scatter';
 
 export const DATA_YOUSEI1: IEnemy = {
     texture: YOUSEI_SPRITES,
     hp: 3,
-    speed: 200,
+    speed: 110,
     movementDuration: 1500,
     shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, }
 }
@@ -29,7 +30,7 @@ const YOUSEI1_ANIMS_DATA: Array<IAnimation> = [
 
 const SDATA_IDLE_YOUSEI1: IEnemyStateData_Idle = {
     animKey: YOUSEI1_ANIMS.idle,
-    maxIdleTime: 1800,
+    maxIdleTime: 4000,
     attackRate: .85,
 }
 
@@ -54,12 +55,11 @@ export const SDATA_SPAWN_YOUSEI1: IEnemyStateData_Spawn = {
     duration: 2400,
 }
 
-const WAVEPATTERN_YOUSEI1 : IWavePatternData = {
-    pSpeed : 250,
+const PATTERN_SCATTER_YOUSEI1 : IScatterPatternData = {
+    pSpeed : 80,
     fireRate : 30,
-    wave: PPatternWave.generateWaveArray(400, 16),
-    waveIndex: 0,
-    duration: 1000,
+    scatterDistance: {x: 25, y: 0},
+    duration: 250,
 }
 
 export class Yousei1 extends Enemy{
@@ -67,7 +67,7 @@ export class Yousei1 extends Enemy{
         super(scene, DATA_YOUSEI1, SDATA_IDLE_YOUSEI1, SDATA_ATTACK_YOUSEI1);
         this.setScale(2);
 
-        this.attacks.set('wave', new PPatternWave(this, DATA_YOUSEI1.shootPoint, this.getRedGroup(DATA_SHOTRED.texture.key), WAVEPATTERN_YOUSEI1));
+        this.attacks.set('wave', new PPatternScatter(this, DATA_YOUSEI1.shootPoint, this.getRedGroup(DATA_SHOTRED.texture.key), PATTERN_SCATTER_YOUSEI1));
     }
 
     static preload(scene: Phaser.Scene) {

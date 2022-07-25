@@ -5,9 +5,8 @@ const VERY_LONG_TIME = 1000 * 30; // 30 mins
 const VERY_FAR_AWAY = WINDOW_HEIGHT * 5;
 
 export interface DialogLineCreateOpts {
-	x: number;
-	y: number;
-	width: number;
+	pos: Phaser.Math.Vector2;
+	bounds: Phaser.Types.Math.Vector2Like;
 	size: number;
 	step: number;
 	text: string;
@@ -60,9 +59,8 @@ const displayCallbackFactory: DisplayCallbackFactory = ({ timerEvent, step, last
 };
 
 export const DEFAULT_DIALOG_LINE_CREATE_OPTS: DialogLineCreateOpts = {
-	x: WINDOW_WIDTH / 8,
-	y: WINDOW_HEIGHT / 8,
-	width: WINDOW_WIDTH * 3 / 4,
+	pos: new Phaser.Math.Vector2(0, 0),
+	bounds: {x : WINDOW_WIDTH * 3 / 4},
 	size: 32,
 	step: 100,
 	text: 'Lorem ipsum dolor sit amet.',
@@ -82,7 +80,7 @@ export class DialogLine extends Phaser.GameObjects.Container implements IDialog 
 		scene.load.bitmapFont(FONT_NOKIA.key, FONT_NOKIA.path, FONT_NOKIA.json);
 	}
 
-	constructor(scene: Phaser.Scene, { x, y, width, size, step, text }: DialogLineCreateOpts) {
+	constructor(scene: Phaser.Scene, { pos, bounds, size, step, text }: DialogLineCreateOpts) {
 		super(scene);
 
 		const timerEvent = scene.time.addEvent({ delay: VERY_LONG_TIME, repeat: 0 });
@@ -90,8 +88,8 @@ export class DialogLine extends Phaser.GameObjects.Container implements IDialog 
 
 		const lastI = text.length;
 		const textToRender = `${text}‣`;
-		const textObject = scene.add.dynamicBitmapText(x, y, 'inter', textToRender, size);
-		textObject.setMaxWidth(width);
+		const textObject = scene.add.dynamicBitmapText(pos.x, pos.y, 'inter', textToRender, size);
+		textObject.setMaxWidth(bounds.x!);
 		textObject.setDisplayCallback(displayCallbackFactory({ timerEvent, step, lastI, getState: () => this.state, transitionState: this.transitionState.bind(this) }));
 		this.text = textObject;
 	}

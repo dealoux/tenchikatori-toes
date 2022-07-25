@@ -1,9 +1,8 @@
 import { DialogLine, DialogLineState, DialogLineUpdateAction } from "./DialogLine";
 
 export interface DialogCreateOpts {
-	x: number;
-	y: number;
-	width: number;
+	pos: Phaser.Math.Vector2;
+	bounds: Phaser.Types.Math.Vector2Like;
 	size: number;
 	step: number;
 	text: string[];
@@ -18,7 +17,6 @@ export enum DialogUpdateAction {
 }
 
 export class Dialog extends Phaser.GameObjects.Container {
-
 	static preload = DialogLine.preload;
 
 	lines: IDialogLine[] = [];
@@ -26,14 +24,15 @@ export class Dialog extends Phaser.GameObjects.Container {
 	size: number;
 	step: number;
 	nextPos: Phaser.Math.Vector2;
+	bounds: Phaser.Types.Math.Vector2Like;
 
-	constructor(scene: Phaser.Scene, { x, y, width, size, step, text }: DialogCreateOpts) {
+	constructor(scene: Phaser.Scene, { pos, bounds, size, step, text }: DialogCreateOpts) {
 		super(scene);
 		this.text = text;
-		this.width = width;
+		this.bounds = bounds;
 		this.size = size;
 		this.step = step;
-		this.nextPos = new Phaser.Math.Vector2(0, 0);
+		this.nextPos = pos;
 	}
 
 	update<T extends DialogUpdateOpts>(scene: Phaser.Scene, { dialogUpdate }: T) {
@@ -52,9 +51,14 @@ export class Dialog extends Phaser.GameObjects.Container {
 				this.destroy();
 				return;
 			}
-			const dialogLine = scene.add.dialogLine({ ...this.nextPos, width: this.width, size: 32, step: 100, text: this.text[length] });
+			const dialogLine = scene.add.dialogLine({ pos: this.nextPos, bounds: this.bounds, size: this.size, step: this.step, text: this.text[length] });
+			if(this.nextPos.y + dialogLine.getBounds().height < this.bounds.y!){
+				this.nextPos.y += dialogLine.getBounds().height;
+			}
+			else{
+				this.destroy();
+			}
 			this.lines.push(dialogLine);
-			this.nextPos.y += dialogLine.getBounds().height;
 		}
 	}
 

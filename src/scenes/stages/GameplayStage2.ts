@@ -40,8 +40,8 @@ export default class GameplayStage2 extends GameplayScene {
 	}
 
 	protected async handleMob(){
-		this.mobManager?.addGroup('yousei3', Yousei3, 10);
-		this.mobManager?.addGroup('yousei4', Yousei4, 10);
+		this.mobManager?.addGroup('yousei3', Yousei3, 4);
+		this.mobManager?.addGroup('yousei4', Yousei4, 4);
 
 		this.spawnY3();
 		this.spawnY4();

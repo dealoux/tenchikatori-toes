@@ -1,7 +1,6 @@
 declare interface IDialogCreateOpts {
-	x: number;
-	y: number;
-	width: number;
+	pos: Phaser.Math.Vector2;
+	bounds: Phaser.Types.Math.Vector2Like;
 	size: number;
 	step: number;
 	text: string[];

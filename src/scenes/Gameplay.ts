@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { Dialog, DialogUpdateAction } from '../objects/Dialog';
+import { Dialog } from '../objects/Dialog';
 import { GAMEPLAY_SIZE, SCENE_NAMES, TEXT_BOX } from '../constants';
 import { Player } from '../entities/characters/player/Player';
 import { Enemy } from '../entities/characters/enemies/Enemy';
@@ -12,11 +12,12 @@ import { BaseScene } from './BaseScene';
 import { StateMachine } from '../plugins/StateMachine';
 import { DATA_HP_ITEM, DATA_POWER_ITEM, DATA_SCORE_ITEM, DATA_SPECIAL_ITEM, Item } from '../entities/projectiles/items/Item';
 import { Projectile } from '../entities/projectiles/Projectile';
-import { GameplayState, SceneState_Cutscene, SceneState_Interactive } from './GameplayState';
+import { GameplayState, SceneState_Cutscene, SceneState_Interactive, TEXT_BOX_RIGHT, TEXT_LEFT, TEXT_OPTS, TEXT_RIGHT } from './GameplayState';
 import { DATA_SHOTBLUE, DATA_SHOTRED } from '../entities/projectiles/Projectile_Enemy';
+import { DEFAULT_DIALOG_LINE_CREATE_OPTS, DialogLineCreateOpts } from '../objects/DialogLine';
+
 
 export abstract class GameplayScene extends BaseScene {
-	dialog?: IDialog;
 	player?: Player;
 	mobManager?: PoolManager;
 	bgm?: Phaser.Sound.BaseSound;
@@ -25,11 +26,18 @@ export abstract class GameplayScene extends BaseScene {
 	interactiveState: GameplayState;
 	cutsceneState: GameplayState;
 
+	dialogPlayer: Array<IDialog>;
+	dialogBoss: Array<IDialog>
+	dialog?: IDialog;
+
 	constructor(name: string) {
 		super(name);
 		this.stateMachine = new StateMachine();
 		this.interactiveState = new SceneState_Interactive(this);
 		this.cutsceneState  = new SceneState_Cutscene(this);
+
+		this.dialogPlayer = new Array;
+		this.dialogBoss = new Array;
 	}
 
 	preload() {
@@ -76,6 +84,11 @@ export abstract class GameplayScene extends BaseScene {
 		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerSpecialItem, undefined, this);
 
 		this.stateMachine.initialize(this.interactiveState);
+
+		// this.dialog = this.add.dialog({
+		// 	...DEFAULT_DIALOG_LINE_CREATE_OPTS,
+		// 	text: ['test','test','test','communication'],
+		// });
 	}
 
 	update(time: number, delta: number) {
@@ -99,6 +112,18 @@ export abstract class GameplayScene extends BaseScene {
 				element = pGroup.getFirstAlive();
 			}
 		});
+	}
+
+	protected addDialog(storage: Array<IDialog>, opts: DialogLineCreateOpts, dialog: string[]){
+		storage.push(this.add.dialog({ ...opts, text: dialog, }));
+	}
+
+	protected addPlayerDialog(dialog: string[]){
+		this.addDialog(this.dialogPlayer, { ...TEXT_OPTS, pos: TEXT_RIGHT }, dialog);
+	}
+
+	protected addBossDialog(dialog: string[]){
+		this.addDialog(this.dialogBoss, { ...TEXT_OPTS, pos: TEXT_LEFT }, dialog);
 	}
 
 	protected callBack_hitPlayerEnemyProjectile(playerHitbox: unknown, p: unknown) {
