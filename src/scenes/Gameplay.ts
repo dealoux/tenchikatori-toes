@@ -102,31 +102,37 @@ export abstract class GameplayScene extends BaseScene {
 
 	protected clearActiveMobs(){
 		this.mobManager?.pList.forEach(pGroup => {
-			let element: Enemy = pGroup.getFirstAlive(false);
+			if(pGroup){
+				let element: Enemy = pGroup.getFirstAlive(false);
 
-			while(element){
-				element.handleDamage(element.hp);
-				element = pGroup.getFirstAlive();
+				while(element){
+					element.handleDamage(element.hp);
+					element = pGroup.getFirstAlive();
+				}	
 			}
 		});
 	}
 
 	async clearActiveProjectiles(){
 		Enemy.bluePManager?.pList.forEach(pGroup => {
-			let element: EnemyProjectile = pGroup.getFirstAlive(false);
+			if(pGroup){
+				let element: EnemyProjectile = pGroup.getFirstAlive(false);
 
-			while(element){
-				element.disableEntity();
-				element = pGroup.getFirstAlive();
+				while(element){
+					element.disableEntity();
+					element = pGroup.getFirstAlive();
+				}
 			}
 		});
 
 		Enemy.redPManager?.pList.forEach(pGroup => {
-			let element: EnemyProjectile = pGroup.getFirstAlive(false);
+			if(pGroup){
+				let element: EnemyProjectile = pGroup.getFirstAlive(false);
 
-			while(element){
-				element.disableEntity();
-				element = pGroup.getFirstAlive();
+				while(element){
+					element.disableEntity();
+					element = pGroup.getFirstAlive();
+				}	
 			}
 		});
 
