@@ -1,5 +1,6 @@
 # Tenchikatori ~ Testament of Empyrean Songbird
-An [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed danmaku fangame.
+- An [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed danmaku fangame.
+- [Play](https://ennacord.github.io/tenchikatori-toes/).
 
 ## Available Commands
 

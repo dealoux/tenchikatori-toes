@@ -109,18 +109,18 @@ export class Enemy extends Character{
 
     updateTransform(point?: IVectorPoint): void {
         super.updateTransform(point);
-        this.stateMachine.changeState(this.idleState);
+        this.stateMachine.initialize(this.idleState);
     }
 
     enableEntity(pos: Phaser.Math.Vector2): void {
         super.enableEntity(pos);
-        // reset properties here
-        this.hp = this.entData.hp;
     }
 
     disableEntity(): void {
         super.disableEntity();
-        this.stateMachine.changeState(this.disableInteractiveState);
+        this.stateMachine.initialize(this.disableInteractiveState);
+        // reset properties here
+        this.hp = this.entData.hp;
     }
 
     getBlueGroup(key: string){
@@ -155,7 +155,7 @@ export class EnemyWithSpawn extends Enemy{
 
     updateTransform(point?: IVectorPoint): void {
         super.updateTransform(point);
-        this.stateMachine.changeState(this.spawnState);
+        this.stateMachine.initialize(this.spawnState);
     }
 
     onRetreat(){
@@ -171,7 +171,7 @@ export class EnemyBoss extends EnemyWithSpawn{
     }
 
     decideNextStage(noAttack: boolean): EnemyState{
-        if(this.activeStartTime! + this.retreatState.sData.activeDuration < this.time()){
+        if(!this.active || (this.activeStartTime! + this.retreatState.sData.activeDuration < this.time())){
             return this.retreatState;
         }
 

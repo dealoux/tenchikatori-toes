@@ -63,7 +63,6 @@ export interface ICutsceneData{
 	leftChar: ICutsceneCharacterData,
 }
 
-
 export const TEST_CUTSCENE: ICutsceneData = {
 	rightChar: { key: ENNA_STAND.key, scale: {x: .17, y: .17}, point: { pos: new Phaser.Math.Vector2(1200, 740) }, spawnPoint: { pos: new Phaser.Math.Vector2(1500, 740) } },
 	leftChar: { key: CHILNO_STAND.key, scale: {x: 1, y: 1}, point: { pos: new Phaser.Math.Vector2(150, 680) }, spawnPoint: { pos: new Phaser.Math.Vector2(-150, 740) } }

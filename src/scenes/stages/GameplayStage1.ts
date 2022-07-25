@@ -75,11 +75,10 @@ export default class GameplayStage1 extends GameplayScene {
 
 	protected async handleMob(){
 		this.mobManager?.addGroup('yousei1', Yousei1, 10);
-		this.mobManager?.addGroup('yousei2', Yousei2, 4);
-		this.mobManager?.addGroup('yousei3', Yousei31, 4);
+		this.mobManager?.addGroup('yousei2', Yousei2, 3);
+		this.mobManager?.addGroup('yousei3', Yousei31, 3);
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
-			// this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			this.mobManager?.pList.forEach(eGroup => {
 				this.physics.add.overlap(eGroup, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			});

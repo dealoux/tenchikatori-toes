@@ -113,14 +113,9 @@ export class Chilno extends EnemyBoss{
 
     create(){
         super.create();
-
         this.createAnimation(CHILNO_ANIMS_DATA, DATA_CHILNO.texture.key);
     }
 
     static initPManagers(scene: Phaser.Scene){
     }
-    
-    // handleCollision(p: Projectile) {
-        
-    // }
 }
