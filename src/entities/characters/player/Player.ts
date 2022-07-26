@@ -264,27 +264,31 @@ export class Player extends Character{
 
     handleProjectileCollision(p: Projectile) {
         if(p.collisionCategory == this.collisionCategory){
-            this.hp--;
+            this.takeDamage();
+        }
+    }
 
-            this.updateHPCount();
+    takeDamage(){
+        this.hp--;
 
-            playAudio(this.scene, SFX.player_vanish);
+        this.updateHPCount();
 
-            eventsCenter.emit(GAMEPLAY_EVENTS.playerDamaged);
+        playAudio(this.scene, SFX.player_vanish);
 
-            if(this.hp > 0){
-                this.disableEntity();
+        eventsCenter.emit(GAMEPLAY_EVENTS.playerDamaged);
 
-                const delta = (this.currPower>1.8) ? .8 : (this.currPower-1);
-                this.currPower -= delta;
-                Character.itemManager.emitItemsPlayer(this.x, this.y, delta*10);
-                this.updatePowerCount();
-                
-                this.stateMachine.changeState(this.spawnState);
-            }
-            else{
-                this.scene.scene.start(SCENE_NAMES.OverMenu);
-            }
+        if(this.hp > 0){
+            this.disableEntity();
+
+            const delta = (this.currPower>1.8) ? .8 : (this.currPower-1);
+            this.currPower -= delta;
+            Character.itemManager.emitItemsPlayer(this.x, this.y, delta*10);
+            this.updatePowerCount();
+            
+            this.stateMachine.changeState(this.spawnState);
+        }
+        else{
+            this.scene.scene.start(SCENE_NAMES.OverMenu);
         }
     }
 

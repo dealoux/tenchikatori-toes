@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { Dialog } from '../objects/Dialog';
 import { GAMEPLAY_SIZE, SCENE_NAMES, TEXT_BOX } from '../constants';
 import { Player } from '../entities/characters/player/Player';
-import { Enemy } from '../entities/characters/enemies/Enemy';
+import { Enemy, EnemyBoss } from '../entities/characters/enemies/Enemy';
 import { Character } from '../entities/characters/Character';
 import { Entity } from '../entities/Entity';
 import { CUTSCENE_EVENTS, eventsCenter, GAMEPLAY_EVENTS } from '../plugins/EventsCentre';
@@ -19,6 +19,7 @@ import { DialogLineCreateOpts } from '../objects/DialogLine';
 
 export abstract class GameplayScene extends BaseScene {
 	player?: Player;
+	boss?: EnemyBoss;
 	mobManager?: PoolManager;
 	bgm?: Phaser.Sound.BaseSound;
 	background?: Phaser.GameObjects.TileSprite;
@@ -167,6 +168,13 @@ export abstract class GameplayScene extends BaseScene {
 
 	protected addBossDialog(dialog: IDialogText[]){
 		this.addDialog(this.dialogBoss, { ...TEXT_OPTS, pos: TEXT_LEFT }, dialog);
+	}
+
+	protected callBack_hitPlayerEnemy(playerHitbox: unknown, enemy: unknown) {
+		this.hitPlayerEnemy(playerHitbox as Entity, enemy as Enemy);
+	}
+	protected hitPlayerEnemy(playerHitbox: Entity, enemy: Enemy) {
+		this.player?.takeDamage();
 	}
 
 	protected callBack_hitPlayerEnemyProjectile(playerHitbox: unknown, p: unknown) {

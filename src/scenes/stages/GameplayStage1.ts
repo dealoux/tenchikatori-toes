@@ -6,6 +6,7 @@ import { BGM, playAudio } from '../../plugins/Audio';
 import { Chilno } from '../../entities/characters/enemies/bosses/EnemyBoss_Chilno';
 import { DATA_YOUSEI1, SDATA_SPAWN_YOUSEI1, Yousei1 } from '../../entities/characters/enemies/mobs/Enemy_Yousei1';
 import { SDATA_SPAWN_YOUSEI2, Yousei2, Yousei31 } from '../../entities/characters/enemies/mobs/Enemy_Yousei2';
+import { Entity } from '../../entities/Entity';
 
 const BG_SKY: ITexture = { key: 'sky', path: 'assets/sprites/touhou_test/sky.png' }
 
@@ -30,9 +31,7 @@ const chant2: Array<IDialogText> = [
 ];
 //#endregion
 
-export default class GameplayStage1 extends GameplayScene {
-	chilno?: Chilno;
-	
+export default class GameplayStage1 extends GameplayScene {	
 	constructor() {
 		super(SCENE_NAMES.Stage1_Gameplay);
 	}
@@ -70,7 +69,7 @@ export default class GameplayStage1 extends GameplayScene {
 
 	updateInteractive(time: number, delta: number): void {
 		super.updateInteractive(time, delta);
-		this.chilno?.update(time, delta);
+		this.boss?.update(time, delta);
 	}
 
 	protected async handleMob(){
@@ -78,10 +77,11 @@ export default class GameplayStage1 extends GameplayScene {
 		this.mobManager?.addGroup('yousei2', Yousei2, 3);
 		this.mobManager?.addGroup('yousei3', Yousei31, 3);
 
-		this.player?.projectileManager.pList.forEach(pGroup => {
-			this.mobManager?.pList.forEach(eGroup => {
+		this.mobManager?.pList.forEach(eGroup => {
+			this.player?.projectileManager.pList.forEach(pGroup => {
 				this.physics.add.overlap(eGroup, pGroup, this.callBack_hitEnemyMob, undefined, this);
 			});
+			this.physics.add.overlap(this.player?.hitbox as Entity, eGroup, this.callBack_hitPlayerEnemy, undefined, this);
 		});
 
 		this.time.delayedCall(100, () => {
@@ -116,11 +116,12 @@ export default class GameplayStage1 extends GameplayScene {
 	}
 
 	protected handleBoss(){
-		this.chilno = new Chilno(this);
+		this.boss = new Chilno(this);
 
 		this.player?.projectileManager.pList.forEach(pGroup => {
-			this.physics.add.overlap(this.chilno as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);
+			this.physics.add.overlap(this.boss as Chilno, pGroup, this.callBack_hitEnemyMob, undefined, this);
 		});
+		this.physics.add.overlap(this.player?.hitbox as Entity, this.boss, this.callBack_hitPlayerEnemy, undefined, this);
 
 		this.stateMachine.changeState(this.cutsceneState);
 	}

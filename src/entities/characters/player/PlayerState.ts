@@ -47,8 +47,8 @@ export class PlayerState_Spawn extends PlayerState{
         this.char.setCollideWorldBounds(false);
         this.char.modeIndicator.setVisible(false);
         this.char.enableEntity(new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25));
-        this.char.handlingProjectileCollisionDelegate = emptyFunction;
-        this.char.createInvulnerableEffect(100, 24, () => { this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
+        this.char.handlingCollisionDelegate = emptyFunction;
+        this.char.createInvulnerableEffect(100, 24, () => { this.char.handlingCollisionDelegate = this.char.handleCollision; });
         // this.char.collectItems();
 
         this.char.scene.tweens.add({
