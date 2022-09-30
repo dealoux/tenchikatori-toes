@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { PoolGroup } from '../../../plugins/Pool';
 import { Character } from '../../characters/Character';
 import { Entity, IVectorPoint } from '../../Entity';
-import { IPPatternData, PPattern } from '../Projectile';
+import { IPPatternData, PPattern, Projectile } from '../Projectile';
 
 export interface IScalePatternData extends IPPatternData{
     scaleSpeed: number;
@@ -11,7 +11,7 @@ export interface IScalePatternData extends IPPatternData{
 export class PPatternScale extends PPattern{
     patternData: IScalePatternData;
 
-    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IScalePatternData){
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup<Projectile> | undefined, pData: IScalePatternData){
         super(parent, pPoint, p, pData);
         this.patternData = pData;
         this.updatePattern = this.scaleBase;

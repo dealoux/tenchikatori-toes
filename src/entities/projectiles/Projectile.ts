@@ -49,7 +49,7 @@ export class Projectile extends Entity{
     }
 
     updateProjectileE({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, directionTracking, scaleSpeed, target} : IUpdateArgs) {
-        this.enableEntity(new Phaser.Math.Vector2(x, y));
+        this.enableEntity({ pos: new Phaser.Math.Vector2(x, y) });
         return this.updateProjectile({x, y, speed, angle, angularVelocity, angularDrag, gx, gy, directionTracking, scaleSpeed, target});
     }
 
@@ -138,12 +138,16 @@ interface IUpdatePatternDelegate{
 export abstract class PPattern{
     nextFire: number;
     parent: Character;
-    projectile: PoolGroup | undefined;
+    projectile?: PoolGroup<Projectile>;
     pPoint: IVectorPoint;
     updatePattern: IUpdatePatternDelegate;
     patternData: IPPatternData;
 
-    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IPPatternData){
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup<Projectile> | undefined, pData: IPPatternData){
+        if(!p){
+            throw Error('bullet group not found');
+        }
+
         this.nextFire = 0;
         this.parent = parent;
         this.pPoint = pPoint;

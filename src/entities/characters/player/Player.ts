@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { eventsCenter, GAMEPLAY_EVENTS } from '../../../plugins/EventsCentre';
-import { COLLISION_CATEGORIES, Entity } from '../../Entity';
+import { COLLISION_CATEGORIES, Entity, IVectorPoint } from '../../Entity';
 import { IShootPoints, DATA_PLAYER_P1, DATA_PLAYER_P2, DATA_PLAYER_PMOON, SHOOTPOINTS_NORMAL, PLAYER_PROJECTILE_POOL, PlayerShot1, PlayerShot2, PlayerSpecialMoon, PLAYER_SPECIAL_POOL } from '../../projectiles/Projectile_Player';
 import { Character, ICharacter } from '../Character';
 import { Projectile } from '../../projectiles/Projectile';
@@ -89,7 +89,7 @@ export class Player extends Character{
     disableInteractiveState: PlayerState_DisableInteractive;
 
     currShootPoints : IShootPoints;
-    projectileManager: PoolManager;
+    projectileManager: PoolManager<Projectile>;
     specialPattern: PPatternScale;
 
     constructor(scene: Phaser.Scene){
@@ -189,10 +189,10 @@ export class Player extends Character{
         this.modeIndicator.disableEntity();
     }
 
-    enableEntity(pos: Phaser.Math.Vector2): void {
-        super.enableEntity(pos);
-        this.hitbox.enableEntity(pos);
-        this.modeIndicator.enableEntity(pos);
+    enableEntity(point?: IVectorPoint): void {
+        super.enableEntity(point);
+        this.hitbox.enableEntity(point);
+        this.modeIndicator.enableEntity(point);
         this.hitbox.setVisible(false);
     }
     

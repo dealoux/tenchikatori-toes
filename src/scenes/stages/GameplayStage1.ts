@@ -57,6 +57,8 @@ export default class GameplayStage1 extends GameplayScene {
 
 		this.stateMachine.initialize(this.interactiveState);
 
+		this.initMob();
+
 		this.time.delayedCall(1500, () => {
 			this.handleMob();
 		}, [], this);
@@ -72,8 +74,8 @@ export default class GameplayStage1 extends GameplayScene {
 		this.boss?.update(time, delta);
 	}
 
-	protected async handleMob(){
-		this.mobManager?.addGroup('yousei1', Yousei1, 10);
+	protected async initMob(){
+		this.mobManager?.addGroup('yousei1', Yousei1, 8);
 		this.mobManager?.addGroup('yousei2', Yousei2, 3);
 		this.mobManager?.addGroup('yousei3', Yousei31, 3);
 
@@ -83,7 +85,9 @@ export default class GameplayStage1 extends GameplayScene {
 			});
 			this.physics.add.overlap(this.player?.hitbox as Entity, eGroup, this.callBack_hitPlayerEnemy, undefined, this);
 		});
+	}
 
+	protected async handleMob(){
 		this.time.delayedCall(100, () => {
 			this.mobManager?.spawnGroup('yousei1', {x: GAMEPLAY_SIZE.WIDTH + 100, y: 50}, {x: 50, y: 30}, {x: -DATA_YOUSEI1.speed!, y: 0}, 4);
 		}, [], this);
@@ -110,7 +114,7 @@ export default class GameplayStage1 extends GameplayScene {
 			this.mobManager?.spawnGroup('yousei1', {x: 0 - 100, y: 50}, {x: 50, y: 30}, {x: DATA_YOUSEI1.speed!, y: 0}, 4);
 		}, [], this);
 
-		this.time.delayedCall(45000, () => {
+		this.time.delayedCall(50000, () => {
 			this.handleBoss();
 		}, [], this);
 	}

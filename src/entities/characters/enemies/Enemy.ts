@@ -32,8 +32,8 @@ const ENEMY_HP_BAR : IUIBar = {
 }
 
 export class Enemy extends Character{
-    static bluePManager : PoolManager;
-    static redPManager : PoolManager;
+    static bluePManager : PoolManager<Projectile>;
+    static redPManager : PoolManager<Projectile>;
 
     // handleDamage: IHandlingDamageDelegate;
 
@@ -107,13 +107,9 @@ export class Enemy extends Character{
         }
     }
 
-    updateTransform(point?: IVectorPoint): void {
-        super.updateTransform(point);
+    enableEntity(point?: IVectorPoint): void {
+        super.enableEntity(point);
         this.stateMachine.initialize(this.idleState);
-    }
-
-    enableEntity(pos: Phaser.Math.Vector2): void {
-        super.enableEntity(pos);
     }
 
     disableEntity(): void {
@@ -153,10 +149,15 @@ export class EnemyWithSpawn extends Enemy{
         return super.decideNextStage(noAttack);
     }
 
-    updateTransform(point?: IVectorPoint): void {
-        super.updateTransform(point);
+    enableEntity(point?: IVectorPoint): void {
+        super.enableEntity(point);
         this.stateMachine.initialize(this.spawnState);
     }
+
+    // updateTransform(point?: IVectorPoint): void {
+    //     super.updateTransform(point);
+    //     this.stateMachine.initialize(this.spawnState);
+    // }
 
     onRetreat(){
     }

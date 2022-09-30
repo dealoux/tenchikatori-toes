@@ -27,7 +27,13 @@ export class EnemyState_Spawn extends EnemyState{
     }
 
     protected spawn(sData: IEnemyStateData_Spawn, onComplete = emptyFunction, onStart = emptyFunction){
-        this.char.enableEntity(sData.spawnPoint.pos);
+        if(this.char.active){
+            this.char.updateTransform({ pos: sData.spawnPoint.pos });
+        }
+        else{
+            this.char.enableEntity({ pos: sData.spawnPoint.pos });
+        }
+        
         this.char.tweenMovement(sData.targetPoint, sData.duration, onComplete, onStart );
     }
 

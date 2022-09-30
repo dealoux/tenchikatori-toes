@@ -20,7 +20,7 @@ import { DialogLineCreateOpts } from '../objects/DialogLine';
 export abstract class GameplayScene extends BaseScene {
 	player?: Player;
 	boss?: EnemyBoss;
-	mobManager?: PoolManager;
+	mobManager?: PoolManager<Enemy>;
 	bgm?: Phaser.Sound.BaseSound;
 	background?: Phaser.GameObjects.TileSprite;
 	stateMachine: StateMachine;
@@ -72,19 +72,19 @@ export abstract class GameplayScene extends BaseScene {
 		eventsCenter.on(CUTSCENE_EVENTS.changeSpeaker, this.switchSpeaker, this);
 		eventsCenter.on(CUTSCENE_EVENTS.dialogEnds, this.nextDialog, this);
 
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.callBack_hitPlayerEnemyProjectile, undefined, this);
-		this.physics.add.overlap(this.player as Player, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key) as PoolGroup, this.callBack_hitGrazeEnemyProjectile, undefined, this);
-		this.physics.add.overlap(this.player as Player, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key) as PoolGroup, this.callBack_hitGrazeEnemyProjectile, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key)!, this.callBack_hitPlayerEnemyProjectile, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key)!, this.callBack_hitPlayerEnemyProjectile, undefined, this);
+		this.physics.add.overlap(this.player as Player, Enemy.bluePManager.getGroup(DATA_SHOTBLUE.texture.key)!, this.callBack_hitGrazeEnemyProjectile, undefined, this);
+		this.physics.add.overlap(this.player as Player, Enemy.redPManager.getGroup(DATA_SHOTRED.texture.key)!, this.callBack_hitGrazeEnemyProjectile, undefined, this);
 
-		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
-		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
-		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_HP_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
-		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitGrazeItem, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerPowerItem, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerScoreItem, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_HP_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerHPItem, undefined, this);
-		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key) as PoolGroup, this.callBack_hitPlayerSpecialItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key)!, this.callBack_hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key)!, this.callBack_hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_HP_ITEM.texture.key)!, this.callBack_hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player as Player, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key)!, this.callBack_hitGrazeItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_POWER_ITEM.texture.key)!, this.callBack_hitPlayerPowerItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SCORE_ITEM.texture.key)!, this.callBack_hitPlayerScoreItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_HP_ITEM.texture.key)!, this.callBack_hitPlayerHPItem, undefined, this);
+		this.physics.add.overlap(this.player?.hitbox as Entity, Character.itemManager.getGroup(DATA_SPECIAL_ITEM.texture.key)!, this.callBack_hitPlayerSpecialItem, undefined, this);
 
 		this.stateMachine.initialize(this.interactiveState);
 	}

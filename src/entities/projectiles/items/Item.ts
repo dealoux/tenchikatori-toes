@@ -38,7 +38,7 @@ const LAUNCH_TIME = 8;
 const LAUNCH_TIME_MS = LAUNCH_TIME*100;
 const LAUNCH_ANGULAR_DRAG = LAUNCH_ANGULAR_VELOCITY/LAUNCH_TIME;
 
-export class ItemManager extends PoolManager{
+export class ItemManager<T extends Entity> extends PoolManager<T>{
     constructor(scene: Phaser.Scene){
         super(scene);
     }

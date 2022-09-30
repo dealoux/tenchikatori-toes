@@ -11,7 +11,7 @@ import { IScatterPatternData, PPatternScatter } from '../../../projectiles/patte
 export const DATA_YOUSEI1: IEnemy = {
     texture: YOUSEI_SPRITES,
     hp: 10,
-    speed: 110,
+    speed: 140,
     movementDuration: 1500,
     shootPoint: { pos: new Phaser.Math.Vector2(0, 30), theta: 90, }
 }

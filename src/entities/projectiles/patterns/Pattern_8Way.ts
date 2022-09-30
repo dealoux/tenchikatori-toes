@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { PoolGroup } from '../../../plugins/Pool';
 import { Character } from '../../characters/Character';
 import { Entity, IVectorPoint } from '../../Entity';
-import { IPPatternData, PPattern } from '../Projectile';
+import { IPPatternData, PPattern, Projectile } from '../Projectile';
 
 export interface I8WayPatternData extends IPPatternData{
     
@@ -11,7 +11,7 @@ export interface I8WayPatternData extends IPPatternData{
 export class PPattern8Way extends PPattern{
     patternData: I8WayPatternData;
 
-    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: I8WayPatternData){
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup<Projectile> | undefined, pData: I8WayPatternData){
         super(parent, pPoint, p, pData);
         this.patternData = pData;
         this.updatePattern = this.scaleBase;

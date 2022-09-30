@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { eventsCenter } from '../../../plugins/EventsCentre';
-import { GRAZEHB_SIZE, IPlayer, Player } from "./Player";
+import { IPlayer, Player } from "./Player";
 import { InputHandler, INPUT_EVENTS } from "../../../plugins/InputHandler";
 import { PLAYER_SHOOT_DELAY, SHOOTPOINTS_FOCUSED, SHOOTPOINTS_NORMAL } from "../../projectiles/Projectile_Player";
 import { GAMEPLAY_SIZE } from "../../../constants";
@@ -46,9 +46,9 @@ export class PlayerState_Spawn extends PlayerState{
     enter(){
         this.char.setCollideWorldBounds(false);
         this.char.modeIndicator.setVisible(false);
-        this.char.enableEntity(new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25));
-        this.char.handlingCollisionDelegate = emptyFunction;
-        this.char.createInvulnerableEffect(100, 24, () => { this.char.handlingCollisionDelegate = this.char.handleCollision; });
+        this.char.enableEntity({ pos: new Phaser.Math.Vector2(GAMEPLAY_SIZE.WIDTH/2, GAMEPLAY_SIZE.HEIGHT* 1.25) });
+        this.char.handlingProjectileCollisionDelegate = emptyFunction;
+        this.char.createInvulnerableEffect(100, 24, () => { this.char.handlingProjectileCollisionDelegate = this.char.handleProjectileCollision; });
         // this.char.collectItems();
 
         this.char.scene.tweens.add({

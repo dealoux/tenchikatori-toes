@@ -50,8 +50,8 @@ export class EnemyPBlue extends EnemyProjectile{
         //this.setCollidesWith([COLLISION_CATEGORIES.blue]);
     }
 
-    updateTransform(point: IVectorPoint) {
-        super.updateTransform(point);
+    enableEntity(point: IVectorPoint) {
+        super.enableEntity(point);
         this.move(point, DATA_SHOTBLUE.speed);
     }
 }
@@ -63,8 +63,8 @@ export class EnemyPRed extends EnemyProjectile{
         //this.setCollidesWith([COLLISION_CATEGORIES.red]);
     }
 
-    updateTransform(point: IVectorPoint) {
-        super.updateTransform(point);
+    enableEntity(point: IVectorPoint) {
+        super.enableEntity(point);
         this.move(point, DATA_SHOTRED.speed);
     }
 }

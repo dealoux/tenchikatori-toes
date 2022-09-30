@@ -1,12 +1,13 @@
 import Phaser from 'phaser';
 import { eventsCenter } from '../../plugins/EventsCentre';
 import { IEntity, Entity, IVectorPoint } from '../Entity';
-import { ItemManager } from '../projectiles/items/Item';
+import { Item, ItemManager } from '../projectiles/items/Item';
 import { IState, StateMachine } from '../../plugins/StateMachine';
 import { PoolManager } from '../../plugins/Pool';
-import { ComponentService, IComponent } from '../../plugins/Component';
+import { ComponentService } from '../../plugins/Component';
 import { ITexture } from '../../scenes/UI';
 import { emptyFunction } from '../../plugins/Utilities';
+import { Projectile } from '../projectiles/Projectile';
 
 export interface ICharacter extends IEntity{
     hp: number,
@@ -21,7 +22,7 @@ export interface IAnimation{
 }
 
 export class Character extends Entity{
-    static itemManager: ItemManager;
+    static itemManager: ItemManager<Item>;
     stateMachine: StateMachine;
     hp: number;
     entData: ICharacter;
@@ -73,8 +74,8 @@ export class Character extends Entity{
         });
     }
 
-    enableEntity(pos: Phaser.Math.Vector2): void {
-        super.enableEntity(pos);
+    enableEntity(point?: IVectorPoint): void {
+        super.enableEntity(point);
         this.components.enable();
     }
 
@@ -93,7 +94,7 @@ export class Character extends Entity{
         this.setVelocityX(speed);
     }
 
-    protected spawnProjectile(manager: PoolManager, name: string, point: IVectorPoint){
+    protected spawnProjectile(manager: PoolManager<Projectile>, name: string, point: IVectorPoint){
         return manager.spawnInstance(name, { pos: new Phaser.Math.Vector2(this.x + point.pos.x, this.y + point.pos.y), theta: point.theta });
     }
 

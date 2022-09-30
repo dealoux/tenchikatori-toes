@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { PoolGroup } from '../../../plugins/Pool';
 import { Character } from '../../characters/Character';
 import { Entity, IVectorPoint } from '../../Entity';
-import { IPPatternData, PPattern } from '../Projectile';
+import { IPPatternData, PPattern, Projectile } from '../Projectile';
 
 export interface IWavePatternData extends IPPatternData{
     wave: Array<number>;
@@ -12,7 +12,7 @@ export interface IWavePatternData extends IPPatternData{
 export class PPatternWave extends PPattern{
     patternData: IWavePatternData;
 
-    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IWavePatternData){
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup<Projectile> | undefined, pData: IWavePatternData){
         super(parent, pPoint, p, pData);
         this.patternData = pData;
         

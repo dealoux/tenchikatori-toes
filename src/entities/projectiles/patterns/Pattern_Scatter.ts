@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { PoolGroup } from '../../../plugins/Pool';
 import { Character } from '../../characters/Character';
 import { Entity, IVectorPoint } from '../../Entity';
-import { IPPatternData, PPattern } from '../Projectile';
+import { IPPatternData, PPattern, Projectile } from '../Projectile';
 
 export interface IScatterPatternData extends IPPatternData{
     scatterDistance: Phaser.Types.Math.Vector2Like,
@@ -11,7 +11,7 @@ export interface IScatterPatternData extends IPPatternData{
 export class PPatternScatter extends PPattern{
     patternData: IScatterPatternData;
 
-    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: IScatterPatternData){
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup<Projectile> | undefined, pData: IScatterPatternData){
         super(parent, pPoint, p, pData);
         this.patternData = pData;
         this.updatePattern = this.scatterBase;

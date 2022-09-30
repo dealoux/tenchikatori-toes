@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { PoolGroup } from '../../../plugins/Pool';
 import { Character } from '../../characters/Character';
 import { Entity, IVectorPoint } from '../../Entity';
-import { IPPatternData, PPattern } from '../Projectile';
+import { IPPatternData, PPattern, Projectile } from '../Projectile';
 
 export interface ISplitPatternData extends IPPatternData{
     splitDrag: number,
@@ -11,7 +11,7 @@ export interface ISplitPatternData extends IPPatternData{
 export class PPatternSplit extends PPattern{
     patternData: ISplitPatternData;
 
-    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup | undefined, pData: ISplitPatternData){
+    constructor(parent: Character, pPoint: IVectorPoint, p: PoolGroup<Projectile> | undefined, pData: ISplitPatternData){
         super(parent, pPoint, p, pData);
         this.patternData = pData;
         this.updatePattern = this.splitBase;

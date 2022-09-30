@@ -69,8 +69,8 @@ export class PlayerShot1 extends PlayerPorjectile{
         super(scene, DATA_PLAYER_P1);
     }
 
-    updateTransform(point: IVectorPoint) {
-        super.updateTransform(point);
+    enableEntity(point: IVectorPoint) {
+        super.enableEntity(point);
         this.move(point, DATA_PLAYER_P1.speed);
     }
 }
@@ -80,8 +80,8 @@ export class PlayerShot2 extends PlayerPorjectile{
         super(scene, DATA_PLAYER_P2);
     }
 
-    updateTransform(point: IVectorPoint) {
-        super.updateTransform(point);
+    enableEntity(point: IVectorPoint) {
+        super.enableEntity(point);
         this.move(point, DATA_PLAYER_P2.speed);
     }
 }

@@ -85,26 +85,28 @@ export class Entity extends Phaser.Physics.Arcade.Sprite{
 
     getBody(){ return this.body as Phaser.Physics.Arcade.Body; }
 
-    updateTransform(point: IVectorPoint = DEFAULT_VECTOR_POINT){
-        // this.setPosition(point.pos.x, point.pos.y);
-        this.setRotation(point.theta);
-        this.enableEntity(point.pos);
-    }
-
     setStatus(status: boolean | false){
         this.setActive(status);
         this.setVisible(status);
     }
 
-    enableEntity(pos = DEFAULT_VECTOR_POINT.pos){
+    enableEntity(point: IVectorPoint = DEFAULT_VECTOR_POINT){
         this.setStatus(true);
-        this.enableBody(true, pos.x, pos.y, true, true);
+        this.setRotation(point.theta);
+        this.enableBody(true, point.pos.x, point.pos.y, true, true);
+    }
+
+    updateTransform(point: IVectorPoint = DEFAULT_VECTOR_POINT){
+        // this.x = point.pos.x;
+        // this.y = point.pos.y;
+        this.setPosition(point.pos.x, point.pos.y);
+        this.setRotation(point.theta);
     }
 
     disableEntity(){
         this.setStatus(false);
         this.disableBody(true, true);
-        //this.removeInteractive();
+        // this.removeInteractive();
     }
 
     setCollisionCategory(mode: number){
