@@ -30,7 +30,7 @@ export interface ITextHUD extends ITextBase{
 }
 
 export function addText(scene: Phaser.Scene, textData: ITextHUD): Phaser.GameObjects.BitmapText;
-export function addText(scene: Phaser.Scene, { text, font, point, textSize: size, textTint: tint }: ITextHUD): Phaser.GameObjects.BitmapText;
+export function addText(scene: Phaser.Scene, { text, font, point, textSize, textTint }: ITextHUD): Phaser.GameObjects.BitmapText;
 export function addText(scene: Phaser.Scene, textData: ITextHUD){
     return scene.add.bitmapText(textData.point.pos.x, textData.point.pos.y, textData.font, textData.text, textData.textSize).setTintFill(textData.textTint);
 };
