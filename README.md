@@ -21,7 +21,17 @@
 - Stage 1: A prototype stage with multiple enemies, a boss, dialogs.
 - Stage 2: Endless stage with 2 respawning enemies.
 
-## Available Commands
+## Development
+### Setup
+
+After cloning the repo, run `npm install` from your project directory. Then, you can start the local development
+server by running `npm run dev` and navigate to localhost.
+
+### Production
+
+After running `npm run build`, the files you need for production will be on the `dist` folder. To the build, run `npm run serve` and navigate to localhost
+
+### Avaliable Commands
 
 | Command | Description |
 |---------|-------------|
@@ -29,15 +39,6 @@
 | `npm run dev` | Builds project and open web server, watching for changes |
 | `npm run build` | Builds code bundle with production settings  |
 | `npm run serve` | Run a web server to serve built code bundle |
-
-## Development
-
-After cloning the repo, run `npm install` from your project directory. Then, you can start the local development
-server by running `npm run dev` and navigate to localhost.
-
-## Production
-
-After running `npm run build`, the files you need for production will be on the `dist` folder. To the build, run `npm run serve` and navigate to localhost
 
 ## Important Links
 
