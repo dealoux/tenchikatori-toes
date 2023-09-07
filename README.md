@@ -7,6 +7,7 @@
 - The player's current shield type is being indicated by a coloured card under the status bar.
 - Stage 1: A prototype stage with multiple enemies, a boss, dialogs.
 - Stage 2: Endless stage with 2 respawning enemies.
+- Try the build on [GitHub pages](https://ennacord.github.io/tenchikatori-toes/)
 
 ## Gameplay Guide
 
