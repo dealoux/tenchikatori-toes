@@ -1,6 +1,13 @@
 # [Tenchikatori ~ Testament of Empyrean Songbird](https://ennacord.github.io/tenchikatori-toes/)
 - An [Enna Alouette](https://www.youtube.com/channel/UCR6qhsLpn62WVxCBK1dkLow?sub_confirmation=1) themed danmaku fangame prototype.
 
+## Build features
+- There are `2` types of enemies bullet with corresponding shield types for the player: `Red` and `Blue`.
+- The player will be immune to either of the bullet type by equipping the corresponding shield colour.
+- The player's current shield type is being indicated by a coloured card under the status bar.
+- Stage 1: A prototype stage with multiple enemies, a boss, dialogs.
+- Stage 2: Endless stage with 2 respawning enemies.
+
 ## Gameplay Guide
 
 | Key | Description |
@@ -14,12 +21,6 @@
 | `C`, `L` | Switch Shield |
 | `Shift` | Focus Mode |
 | `Esc` | Pause |
-
-- There are `2` types of enemies bullet with corresponding shield types for the player: `Red` and `Blue`.
-- The player will be immune to either of the bullet type by equipping the corresponding shield colour.
-- The player's current shield type is being indicated by a coloured card under the status bar.
-- Stage 1: A prototype stage with multiple enemies, a boss, dialogs.
-- Stage 2: Endless stage with 2 respawning enemies.
 
 ## Development
 ### Setup
